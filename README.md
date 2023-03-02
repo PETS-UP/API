@@ -1,3 +1,3 @@
 # API
-Repositório para API SPRINGBOOT
+Repositório para API SPRING
 
