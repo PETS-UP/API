@@ -1,4 +1,4 @@
-package sptech.school.loginlogoff;
+package sptech.school.loginlogoff.objetos;
 
 public class Login {
     private String usuario;
