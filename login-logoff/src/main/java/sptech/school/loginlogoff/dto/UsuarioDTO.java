@@ -1,11 +1,11 @@
 package sptech.school.loginlogoff.dto;
 
-public class UsuarioVisivel{
+public class UsuarioDTO {
     private String usuario;
     private String nome;
     private boolean autenticado;
 
-    public UsuarioVisivel(String usuario, String nome, boolean autenticado) {
+    public UsuarioDTO(String usuario, String nome, boolean autenticado) {
         this.usuario = usuario;
         this.nome = nome;
         this.autenticado = autenticado;

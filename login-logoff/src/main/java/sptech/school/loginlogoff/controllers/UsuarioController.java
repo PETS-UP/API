@@ -2,7 +2,7 @@ package sptech.school.loginlogoff.controllers;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
-import sptech.school.loginlogoff.dto.UsuarioVisivel;
+import sptech.school.loginlogoff.dto.UsuarioDTO;
 import sptech.school.loginlogoff.objetos.Login;
 import sptech.school.loginlogoff.objetos.Usuario;
 
@@ -25,12 +25,12 @@ public class UsuarioController {
     }
 
     @PostMapping("/autenticacao")
-    public UsuarioVisivel autenticar(@RequestBody Login login) {
+    public UsuarioDTO autenticar(@RequestBody Login login) {
         for (int i = 0; i < users.size(); i++) {
             if (login.getUsuario().equals(users.get(i).getUsuario())) {
                 if (login.getSenha().equals(users.get(i).getSenha())) {
                     users.get(i).setAutenticado(true);
-                    UsuarioVisivel userVisivel = new UsuarioVisivel(users.get(i).getUsuario(),
+                    UsuarioDTO userVisivel = new UsuarioDTO(users.get(i).getUsuario(),
                             users.get(i).getNome(),
                             users.get(i).isAutenticado());
                     return userVisivel;
@@ -57,10 +57,10 @@ public class UsuarioController {
 
 
     @GetMapping
-    public List<UsuarioVisivel> listar() {
-        List<UsuarioVisivel> usuariosVisiveis = new ArrayList<>();
+    public List<UsuarioDTO> listar() {
+        List<UsuarioDTO> usuariosVisiveis = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
-            UsuarioVisivel userClone = new UsuarioVisivel(users.get(i).getUsuario(),
+            UsuarioDTO userClone = new UsuarioDTO(users.get(i).getUsuario(),
                     users.get(i).getNome(),
                     users.get(i).isAutenticado());
             usuariosVisiveis.add(userClone);
@@ -86,11 +86,11 @@ public class UsuarioController {
     //Percorre a lista de usuarios em busca de um nome.
     // Retorna todos os resultados que contém o texto digitado.
     @GetMapping("/{nome}")
-    public List<UsuarioVisivel> buscarNome(@PathVariable String nome) {
-        List<UsuarioVisivel> usuariosVisiveis = new ArrayList<>();
+    public List<UsuarioDTO> buscarNome(@PathVariable String nome) {
+        List<UsuarioDTO> usuariosVisiveis = new ArrayList<>();
         for (int i = 0; i < users.size(); i++) {
             if (users.get(i).getNome().contains(nome)) {
-                UsuarioVisivel userClone = new UsuarioVisivel(users.get(i).getUsuario(),
+                UsuarioDTO userClone = new UsuarioDTO(users.get(i).getUsuario(),
                         users.get(i).getNome(),
                         users.get(i).isAutenticado());
                 usuariosVisiveis.add(userClone);
