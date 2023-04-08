@@ -4,7 +4,8 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
 @Entity
-public class Loja {
+@Table(name = "Petshop")
+public class PetshopEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
