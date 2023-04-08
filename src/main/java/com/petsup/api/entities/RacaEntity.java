@@ -18,5 +18,27 @@ public class RacaEntity {
     @NotBlank
     private String nome;
 
+    public Integer getId() {
+        return id;
+    }
 
+    public void setId(Integer id) {
+        this.id = id;
+    }
+
+    public TipoEntity getTipo() {
+        return tipo;
+    }
+
+    public void setTipo(TipoEntity tipo) {
+        this.tipo = tipo;
+    }
+
+    public String getNome() {
+        return nome;
+    }
+
+    public void setNome(String nome) {
+        this.nome = nome;
+    }
 }
