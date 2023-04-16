@@ -1,6 +1,6 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.entities.usurario.Usuario;
+import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/usuarios")

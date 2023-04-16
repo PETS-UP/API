@@ -1,4 +1,4 @@
-package com.petsup.api.entities.usurario;
+package com.petsup.api.entities.usuario;
 
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;

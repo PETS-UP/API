@@ -1,4 +1,4 @@
-package com.petsup.api.entities.usurario;
+package com.petsup.api.entities.usuario;
 
 import org.hibernate.validator.constraints.br.CPF;
 
