@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Raca")
-public class RacaEntity {
+public class Raca {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -13,7 +13,7 @@ public class RacaEntity {
 
     @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
     @JoinColumn(name = "id")
-    private TipoEntity tipo;
+    private Especie tipo;
 
     @NotBlank
     private String nome;
@@ -26,11 +26,11 @@ public class RacaEntity {
         this.id = id;
     }
 
-    public TipoEntity getTipo() {
+    public Especie getTipo() {
         return tipo;
     }
 
-    public void setTipo(TipoEntity tipo) {
+    public void setTipo(Especie tipo) {
         this.tipo = tipo;
     }
 

@@ -6,7 +6,7 @@ import java.util.Set;
 
 @Entity
 @Table(name = "Tipo")
-public class TipoEntity {
+public class Especie {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -16,7 +16,7 @@ public class TipoEntity {
     private String nome;
 
     @OneToMany(mappedBy = "Raca")
-    private Set<RacaEntity> racas;
+    private Set<Raca> racas;
 
     public Integer getId() {
         return id;
@@ -34,11 +34,11 @@ public class TipoEntity {
         this.nome = nome;
     }
 
-    public Set<RacaEntity> getRacas() {
+    public Set<Raca> getRacas() {
         return racas;
     }
 
-    public void setRacas(Set<RacaEntity> racas) {
+    public void setRacas(Set<Raca> racas) {
         this.racas = racas;
     }
 }

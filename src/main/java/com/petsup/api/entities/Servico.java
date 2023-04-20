@@ -6,35 +6,29 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
 @Entity
-@Table(name = "ServicoPetshop")
-public class ServicoPetshopEntity {
+@Table(name = "Servico")
+public class Servico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotBlank
+    private String nome;
+
+    @NotBlank
+    private String descricao;
+
     @NotNull
     @DecimalMin("0.0")
     private Double preco;
 
-    @NotBlank
-    @Column(length = 300)
-    private String descricao;
-
-    public Integer getId() {
-        return id;
+    public String getNome() {
+        return nome;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Double getPreco() {
-        return preco;
-    }
-
-    public void setPreco(Double preco) {
-        this.preco = preco;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 
     public String getDescricao() {
@@ -43,5 +37,13 @@ public class ServicoPetshopEntity {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public Double getPreco() {
+        return preco;
+    }
+
+    public void setPreco(Double preco) {
+        this.preco = preco;
     }
 }

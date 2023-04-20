@@ -1,22 +1,22 @@
 package com.petsup.api.entities;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.DecimalMax;
-import jakarta.validation.constraints.DecimalMin;
+import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
 
+import java.time.LocalDateTime;
+
 @Entity
-@Table(name = "AvaliacaoPetshop")
-public class AvaliacaoPetshopEntity {
+@Table(name = "Agendamento")
+public class Agendamento {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
     @NotNull
-    @DecimalMin("0.0")
-    @DecimalMax("5.0")
-    private Double nota;
+    @Future
+    private LocalDateTime dataHora;
 
     public Integer getId() {
         return id;
@@ -26,11 +26,11 @@ public class AvaliacaoPetshopEntity {
         this.id = id;
     }
 
-    public Double getNota() {
-        return nota;
+    public LocalDateTime getDataHora() {
+        return dataHora;
     }
 
-    public void setNota(Double nota) {
-        this.nota = nota;
+    public void setDataHora(LocalDateTime dataHora) {
+        this.dataHora = dataHora;
     }
 }
