@@ -1,21 +1,14 @@
-package com.petsup.api.entities.usuario;
+package com.petsup.api.service.dto;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-@Entity
-public class Usuario {
+public class UsuarioDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
     @NotBlank
+    @Size(min=3)
     private String nome;
     @NotBlank
     @Email
@@ -30,14 +23,8 @@ public class Usuario {
             message = "Indique um telefone válido")
     private String telefone;
 
-    public Integer getId() {
-        return id;
-    }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
+    //Getters and setters
     public String getNome() {
         return nome;
     }
