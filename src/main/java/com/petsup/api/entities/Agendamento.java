@@ -1,5 +1,7 @@
 package com.petsup.api.entities;
 
+import com.petsup.api.entities.usuario.UsuarioDonoPet;
+import com.petsup.api.entities.usuario.UsuarioLoja;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -18,6 +20,18 @@ public class Agendamento {
     @Future
     private LocalDateTime dataHora;
 
+    @ManyToOne
+    @Column(name = "fk_pet")
+    private Pet pet;
+
+    @ManyToOne
+    @Column(name = "fk_loja")
+    private UsuarioLoja donoLoja;
+
+    @ManyToOne
+    @Column(name = "fk_donoPet")
+    private UsuarioDonoPet donoPet;
+
     public Integer getId() {
         return id;
     }
@@ -32,5 +46,29 @@ public class Agendamento {
 
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
+    }
+
+    public Pet getPet() {
+        return pet;
+    }
+
+    public void setPet(Pet pet) {
+        this.pet = pet;
+    }
+
+    public UsuarioLoja getDonoLoja() {
+        return donoLoja;
+    }
+
+    public void setDonoLoja(UsuarioLoja donoLoja) {
+        this.donoLoja = donoLoja;
+    }
+
+    public UsuarioDonoPet getDonoPet() {
+        return donoPet;
+    }
+
+    public void setDonoPet(UsuarioDonoPet donoPet) {
+        this.donoPet = donoPet;
     }
 }

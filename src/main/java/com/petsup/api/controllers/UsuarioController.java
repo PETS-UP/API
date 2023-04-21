@@ -59,10 +59,10 @@ public class UsuarioController {
         return ResponseEntity.status(401).build();
     }
 
-    ListaObj<Agendamento> lista = new ListaObj(10);
-    Scanner leitorStr = new Scanner(System.in);
-    Scanner leitorNum = new Scanner(System.in);
-    int a = 0;
+//    ListaObj<Agendamento> lista = new ListaObj(10);
+//    Scanner leitorStr = new Scanner(System.in);
+//    Scanner leitorNum = new Scanner(System.in);
+//    int a = 0;
 
     public static void leituraNomeCsv(int tamLista){
         ListaObj<Agendamento> lista = new ListaObj(tamLista);
@@ -119,9 +119,10 @@ public class UsuarioController {
 
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
-//                Livro c = list.getElemento(i);
-//                saida.format("%d;%s;%s;%d;%d;%s;%.2f\n", c.getId(), c.getTitulo(), c.getAutor(),
-//                        c.getPaginas(), c.getEdicao(), c.getIsbn(), c.getPreco());
+                Agendamento a = list.getElemento(i);
+                saida.format("%d;%s;%s;%s;%s;%s;%s;%s\n", a.getId(), a.getDataHora(), a.getPet().getDonoPet().getNome(),
+                        a.getPet().getDonoPet().getEmail(), a.getPet().getNome(), a.getPet().getEspecie(),
+                        a.getPet().getRaca(), a.getPet().getSexo());
             }
 
         } catch (FormatterClosedException fc) {

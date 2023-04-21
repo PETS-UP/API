@@ -5,40 +5,23 @@ import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "Raca")
-public class Raca {
+public enum Raca {
+    PASTOR_ALEMAO(Especie.CACHORRO),
+    LABRADOR(Especie.CACHORRO),
+    PERSA(Especie.GATO),
+    SIAMES(Especie.GATO),
+    ANGORA(Especie.COELHO),
+    HOLANDES(Especie.ROEDOR),
+    PERUANO(Especie.ROEDOR);
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
+    @ManyToOne
+    private final Especie especie;
 
-    @ManyToOne(cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    @JoinColumn(name = "id")
-    private Especie tipo;
-
-    @NotBlank
-    private String nome;
-
-    public Integer getId() {
-        return id;
+    Raca(Especie especie) {
+        this.especie = Raca.this.especie;
     }
 
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
-    public Especie getTipo() {
-        return tipo;
-    }
-
-    public void setTipo(Especie tipo) {
-        this.tipo = tipo;
-    }
-
-    public String getNome() {
-        return nome;
-    }
-
-    public void setNome(String nome) {
-        this.nome = nome;
+    public Especie getEspecie() {
+        return especie;
     }
 }
