@@ -1,7 +1,10 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.usuario.Usuario;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.petsup.api.repositories.UsuarioRepository;
+import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.dto.UsuarioDto;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -14,11 +17,14 @@ import java.util.List;
 public class UsuarioController {
     @Autowired
     private UsuarioRepository usuarioRepository;
+    @Autowired
+    private UsuarioService usuarioService;
 
     @PostMapping
-    public ResponseEntity<Usuario> postUser(@RequestBody @Valid Usuario usuario){
-        Usuario usuarioCadastrado = (Usuario)this.usuarioRepository.save(usuario);
-        return ResponseEntity.status(201).body(usuarioCadastrado);
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> postUser(@RequestBody @Valid UsuarioDto usuarioDto){
+        this.usuarioService.criar(usuarioDto);
+        return ResponseEntity.status(201).build();
     }
 
     @GetMapping
