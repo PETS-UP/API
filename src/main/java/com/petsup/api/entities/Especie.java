@@ -4,8 +4,6 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import java.util.Set;
 
-@Entity
-@Table(name = "Especie")
 public enum Especie {
     CACHORRO,
     GATO,

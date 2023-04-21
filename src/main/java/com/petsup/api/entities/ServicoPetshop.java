@@ -5,6 +5,8 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
+import java.util.List;
+
 @Entity
 @Table(name = "ServicoPetshop")
 public class ServicoPetshop {
@@ -20,6 +22,9 @@ public class ServicoPetshop {
     @NotBlank
     @Column(length = 300)
     private String descricao;
+
+    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+    private List<Agendamento> agendamentos;
 
     public Integer getId() {
         return id;
@@ -43,5 +48,13 @@ public class ServicoPetshop {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
     }
 }

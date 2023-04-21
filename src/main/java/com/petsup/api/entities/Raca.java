@@ -3,8 +3,6 @@ package com.petsup.api.entities;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 
-@Entity
-@Table(name = "Raca")
 public enum Raca {
     PASTOR_ALEMAO(Especie.CACHORRO),
     LABRADOR(Especie.CACHORRO),
@@ -14,7 +12,6 @@ public enum Raca {
     HOLANDES(Especie.ROEDOR),
     PERUANO(Especie.ROEDOR);
 
-    @ManyToOne
     private final Especie especie;
 
     Raca(Especie especie) {

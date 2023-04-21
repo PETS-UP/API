@@ -5,8 +5,8 @@ import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 
-@Entity
-@Table(name = "Servico")
 public enum Servico {
-
+    BANHO,
+    TOSA,
+    BANHOTOSA;
 }

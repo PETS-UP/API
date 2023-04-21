@@ -32,6 +32,10 @@ public class Agendamento {
     @Column(name = "fk_donoPet")
     private UsuarioDonoPet donoPet;
 
+    @ManyToOne
+    @Column(name = "fk_servicoPetShop")
+    private ServicoPetshop servicoPetshop;
+
     public Integer getId() {
         return id;
     }
@@ -70,5 +74,13 @@ public class Agendamento {
 
     public void setDonoPet(UsuarioDonoPet donoPet) {
         this.donoPet = donoPet;
+    }
+
+    public ServicoPetshop getServicoPetshop() {
+        return servicoPetshop;
+    }
+
+    public void setServicoPetshop(ServicoPetshop servicoPetshop) {
+        this.servicoPetshop = servicoPetshop;
     }
 }
