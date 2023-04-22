@@ -31,10 +31,11 @@ public class Pet {
     private Integer castrado;
     private char especie;
     private char raca;
-    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fk_pet", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
     @ManyToOne
-    private UsuarioDonoPet donoPet;
+    @JoinColumn(name = "fk_dono")
+    private UsuarioDonoPet fk_dono;
 
     public Integer getId() {
         return id;
@@ -100,11 +101,11 @@ public class Pet {
         this.agendamentos = agendamentos;
     }
 
-    public UsuarioDonoPet getDonoPet() {
-        return donoPet;
+    public UsuarioDonoPet getFk_dono() {
+        return fk_dono;
     }
 
-    public void setDonoPet(UsuarioDonoPet donoPet) {
-        this.donoPet = donoPet;
+    public void setFk_dono(UsuarioDonoPet fk_dono) {
+        this.fk_dono = fk_dono;
     }
 }

@@ -54,7 +54,8 @@ public class UsuarioController {
     @GetMapping("/report")
     public ResponseEntity<Void> report(@RequestBody Usuario usuario){
         if(usuario instanceof UsuarioLoja){
-            leituraNomeCsv(10);
+            List<Agendamento> as = usuarioRepository.findByAgendamentos(usuario);
+            leituraNomeCsv(as.size());
         }
         return ResponseEntity.status(401).build();
     }
@@ -66,41 +67,45 @@ public class UsuarioController {
 
     public static void leituraNomeCsv(int tamLista){
         ListaObj<Agendamento> lista = new ListaObj(tamLista);
-        Scanner leitorStr = new Scanner(System.in);
-        Scanner leitorNum = new Scanner(System.in);
-        int a = -1;
+//        Scanner leitorStr = new Scanner(System.in);
+//        Scanner leitorNum = new Scanner(System.in);
+        String nomeArq = "agendamento";
+//        int a = -1;
 
         lista.exibe();
 
-        do {
-        System.out.println("\n*------------------------------*" +
-                "\n|    Exercício arquivo CSV     |" +
-                "\n|------------------------------|" +
-                "\n| Gravar um arquivo (digite 1) |" +
-                "\n| Ler um arquivo    (digite 2) |" +
-                "\n| Cancelar          (digite 0) |" +
-                "\n*------------------------------*" +
-                "\nEscolha uma opção:");
-        try {
-            a = leitorNum.nextInt();
-        } catch (Exception e){
-            System.out.println("Digite um número entre 0, 1 e 2");
-        }
+        gravaArquivoCsv(lista, nomeArq);
+        leArquivoCsv(nomeArq);
 
-        if (a == 1){
-            System.out.println("Nome do arquivo: ");
-            String l = leitorStr.nextLine();
-            gravaArquivoCsv(lista, l);
-        } else if (a == 2) {
-            System.out.println("Nome do arquivo: ");
-            String l = leitorStr.nextLine();
-            leArquivoCsv(l);
-        } else if (a == 0) {
-            System.out.println("Execução finalizada");
-        } else {
-            System.out.println("Digite um número entre 0, 1 ou 2");
-        }
-    } while(a != 0);
+//        do {
+//        System.out.println("\n*------------------------------*" +
+//                "\n|    Exercício arquivo CSV     |" +
+//                "\n|------------------------------|" +
+//                "\n| Gravar um arquivo (digite 1) |" +
+//                "\n| Ler um arquivo    (digite 2) |" +
+//                "\n| Cancelar          (digite 0) |" +
+//                "\n*------------------------------*" +
+//                "\nEscolha uma opção:");
+//        try {
+//            a = leitorNum.nextInt();
+//        } catch (Exception e){
+//            System.out.println("Digite um número entre 0, 1 e 2");
+//        }
+//
+//        if (a == 1){
+//            System.out.println("Nome do arquivo: ");
+//            String l = leitorStr.nextLine();
+//            gravaArquivoCsv(lista, l);
+//        } else if (a == 2) {
+//            System.out.println("Nome do arquivo: ");
+//            String l = leitorStr.nextLine();
+//            leArquivoCsv(l);
+//        } else if (a == 0) {
+//            System.out.println("Execução finalizada");
+//        } else {
+//            System.out.println("Digite um número entre 0, 1 ou 2");
+//        }
+//    } while(a != 0);
 }
     public static void gravaArquivoCsv(ListaObj<Agendamento> list, String nomeArq) {
         FileWriter arq = null;
@@ -120,9 +125,10 @@ public class UsuarioController {
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%s;%s;%s\n", a.getId(), a.getDataHora(), a.getPet().getDonoPet().getNome(),
-                        a.getPet().getDonoPet().getEmail(), a.getPet().getNome(), a.getPet().getEspecie(),
-                        a.getPet().getRaca(), a.getPet().getSexo());
+                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(), a.getFk_pet().getFk_dono().getNome(),
+                        a.getFk_pet().getFk_dono().getEmail(), a.getFk_pet().getNome(), a.getFk_pet().getEspecie(),
+                        a.getFk_pet().getRaca(), a.getFk_pet().getSexo(), a.getFk_servicoPetShop(),
+                        a.getFk_servicoPetShop().getPreco());
             }
 
         } catch (FormatterClosedException fc) {
@@ -160,20 +166,22 @@ public class UsuarioController {
         }
 
         try {
-            System.out.printf("%-4S %-15S %-20S %-7S %-6S %-14S %-10S\n",
-                    "id", "titulo", "autor", "paginas", "edicao", "isbn", "preco");
+            System.out.printf("%-4S %-11S %-20S %-20S %-15 %-15S %-15S %-1S %-10S %-6S\n",
+                    "id", "dia/horario", "cliente", "email", "pet", "especie", "raca", "sexo", "servico", "valor");
 
             while (entrada.hasNext()) {
                 int id = entrada.nextInt();
-                String titulo = entrada.next();
-                String autor = entrada.next();
-                int paginas = entrada.nextInt();
-                int edicao = entrada.nextInt();
-                String isbn = entrada.next();
-                double preco = entrada.nextDouble();
+                String diaHorario = entrada.next();
+                String cliente = entrada.next();
+                String email = entrada.next();
+                String pet = entrada.next();
+                String especie = entrada.next();
+                String sexo = entrada.next();
+                String servico = entrada.next();
+                double valor = entrada.nextDouble();
 
-                System.out.printf("%04d %-15S %-20S %-7d %-6d %14S %-10.2f\n",
-                        id, titulo, autor, paginas, edicao, isbn, preco);
+                System.out.printf("%04d  %-11S %-20S %-20S %-15 %-15S %-15S %-1S %-10S %-6.2f\n",
+                        id, diaHorario, cliente, email, pet, especie, sexo, servico, valor);
             }
 
         } catch (NoSuchElementException ns) {

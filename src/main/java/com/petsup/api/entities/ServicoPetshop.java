@@ -23,7 +23,7 @@ public class ServicoPetshop {
     @Column(length = 300)
     private String descricao;
 
-    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fk_servicoPetShop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public Integer getId() {
