@@ -16,9 +16,8 @@ public abstract class UsuarioDto {
     @Size(min=6, max=50)
     @NotBlank
     private String senha;
-
-    private String endereco;
-
+    @NotBlank
+    private String cep;
     @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
             message = "Indique um telefone válido")
     private String telefone;
@@ -49,12 +48,12 @@ public abstract class UsuarioDto {
         this.senha = senha;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getCep() {
+        return cep;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public String getTelefone() {
