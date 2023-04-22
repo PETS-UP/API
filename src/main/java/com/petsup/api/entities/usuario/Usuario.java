@@ -9,6 +9,11 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+<<<<<<< HEAD
+public class Usuario {
+
+    @NotBlank
+=======
 @Entity
 public abstract class Usuario {
 
@@ -16,6 +21,7 @@ public abstract class Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+>>>>>>> ed37948b45d41e0c9c3efe75793921ba685e34e2
     private String nome;
 
     private String email;
@@ -40,14 +46,6 @@ public abstract class Usuario {
 
     @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;

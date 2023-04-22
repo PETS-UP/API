@@ -3,5 +3,5 @@ package com.petsup.api.entities.enums;
 public enum NomeServico {
     BANHO,
     TOSA,
-    BANHOTOSA;
+    BANHO_E_TOSA;
 }
