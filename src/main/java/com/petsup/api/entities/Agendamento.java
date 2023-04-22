@@ -1,8 +1,8 @@
 package com.petsup.api.entities;
 
 import com.petsup.api.entities.usuario.Usuario;
-import com.petsup.api.entities.usuario.UsuarioDonoPet;
-import com.petsup.api.entities.usuario.UsuarioLoja;
+import com.petsup.api.entities.usuario.UsuarioCliente;
+import com.petsup.api.entities.usuario.UsuarioPetshop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -25,21 +25,21 @@ public class Agendamento {
     @JoinColumn(name = "fk_pet")
     private Pet fk_pet;
 
-//    @ManyToOne
-//    @JoinColumn(name = "fk_loja")
-//    private UsuarioLoja fk_loja;
+    @ManyToOne
+    @JoinColumn(name = "fk_petshop")
+    private UsuarioPetshop fk_petshop;
 
-//    @ManyToOne
-//    @JoinColumn(name = "fk_donoPet")
-//    private UsuarioDonoPet fk_donoPet;
+    @ManyToOne
+    @JoinColumn(name = "fk_cliente")
+    private UsuarioCliente fk_cliente;
 
     @ManyToOne
     @JoinColumn(name = "fk_user")
     private Usuario fk_user;
 
     @ManyToOne
-    @JoinColumn(name = "fk_servicoPetShop")
-    private ServicoPetshop fk_servicoPetShop;
+    @JoinColumn(name = "fk_servico")
+    private ServicoPetshop fk_servico;
 
     public Integer getId() {
         return id;
@@ -65,19 +65,35 @@ public class Agendamento {
         this.fk_pet = fk_pet;
     }
 
+    public UsuarioPetshop getFk_petshop() {
+        return fk_petshop;
+    }
+
+    public void setFk_petshop(UsuarioPetshop fk_petshop) {
+        this.fk_petshop = fk_petshop;
+    }
+
+    public UsuarioCliente getFk_cliente() {
+        return fk_cliente;
+    }
+
+    public void setFk_cliente(UsuarioCliente fk_cliente) {
+        this.fk_cliente = fk_cliente;
+    }
+
+    public ServicoPetshop getFk_servico() {
+        return fk_servico;
+    }
+
+    public void setFk_servico(ServicoPetshop fk_servico) {
+        this.fk_servico = fk_servico;
+    }
+
     public Usuario getFk_user() {
         return fk_user;
     }
 
     public void setFk_user(Usuario fk_user) {
         this.fk_user = fk_user;
-    }
-
-    public ServicoPetshop getFk_servicoPetShop() {
-        return fk_servicoPetShop;
-    }
-
-    public void setFk_servicoPetShop(ServicoPetshop fk_servicoPetShop) {
-        this.fk_servicoPetShop = fk_servicoPetShop;
     }
 }

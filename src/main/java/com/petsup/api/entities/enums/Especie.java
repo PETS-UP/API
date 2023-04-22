@@ -1,4 +1,4 @@
-package com.petsup.api.entities;
+package com.petsup.api.entities.enums;
 
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;

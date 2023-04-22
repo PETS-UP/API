@@ -5,20 +5,22 @@ import com.petsup.api.entities.Pet;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
 
 @Entity
-public class UsuarioDonoPet extends Usuario {
+@Table(name = "Cliente")
+public class UsuarioCliente extends Usuario {
     @CPF
     private String CPF;
 
-    @OneToMany(mappedBy = "fk_dono", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fk_cliente", fetch = FetchType.LAZY)
     private List<Pet> pets;
 
-//    @OneToMany(mappedBy = "fk_donoPet", fetch = FetchType.LAZY)
-//    private List<Agendamento> agendamentos;
+    @OneToMany(mappedBy = "fk_cliente", fetch = FetchType.LAZY)
+    private List<Agendamento> agendamentos;
 
     public String getCPF() {
         return CPF;
@@ -36,4 +38,11 @@ public class UsuarioDonoPet extends Usuario {
         this.pets = pets;
     }
 
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
 }

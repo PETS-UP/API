@@ -80,4 +80,12 @@ public class Usuario {
     public void setTelefone(String telefone) {
         this.telefone = telefone;
     }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
 }
