@@ -1,6 +1,12 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.usuario.Usuario;
+<<<<<<< HEAD
+=======
+import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.service.dto.UsuarioClienteDto;
+import com.petsup.api.service.dto.UsuarioPetshopDto;
+>>>>>>> ed37948b45d41e0c9c3efe75793921ba685e34e2
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.petsup.api.repositories.UsuarioRepository;
 import jakarta.validation.Valid;
@@ -18,10 +24,17 @@ public class UsuarioController {
     @Autowired
     private UsuarioService usuarioService;
 
-    @PostMapping
+    @PostMapping("/newClient")
     @SecurityRequirement(name = "Bearer")
-    public ResponseEntity<Void> postUser(@RequestBody @Valid UsuarioDto usuarioDto){
-        this.usuarioService.criar(usuarioDto);
+    public ResponseEntity<Void> postUserCliente(@RequestBody @Valid UsuarioClienteDto usuarioDto){
+        this.usuarioService.criarCliente(usuarioDto);
+        return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/newPetshop")
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto){
+        this.usuarioService.criarPetshop(usuarioDto);
         return ResponseEntity.status(201).build();
     }
 

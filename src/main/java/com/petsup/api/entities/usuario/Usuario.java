@@ -9,21 +9,27 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
+<<<<<<< HEAD
 public class Usuario {
 
     @NotBlank
+=======
+@Entity
+public abstract class Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+>>>>>>> ed37948b45d41e0c9c3efe75793921ba685e34e2
     private String nome;
 
-    @NotBlank
-    @Email
     private String email;
 
-    @Size(min=6, max=50)
-    @NotBlank
     private String senha;
 
-    @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
-            message = "Indique um telefone válido")
+    private String endereco;
+
     private String telefone;
 
     private String cep;
