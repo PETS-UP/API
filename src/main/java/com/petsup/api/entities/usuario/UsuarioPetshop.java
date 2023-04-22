@@ -22,14 +22,6 @@ public class UsuarioPetshop extends Usuario {
     @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
-    }
-
     public String getCNPJ() {
         return CNPJ;
     }
