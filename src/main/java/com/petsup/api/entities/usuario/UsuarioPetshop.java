@@ -12,8 +12,9 @@ import java.util.List;
 @Entity
 @Table(name = "Petshop")
 public class UsuarioPetshop extends Usuario {
-    @CNPJ
     private String CNPJ;
+
+    private String razaoSocial;
 
     @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
@@ -24,6 +25,14 @@ public class UsuarioPetshop extends Usuario {
 
     public void setCNPJ(String CNPJ) {
         this.CNPJ = CNPJ;
+    }
+
+    public String getRazaoSocial() {
+        return razaoSocial;
+    }
+
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
     }
 
     public List<Agendamento> getAgendamentos() {

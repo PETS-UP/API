@@ -10,24 +10,20 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
-public class Usuario {
+public abstract class Usuario {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
-    @NotBlank
+
     private String nome;
-    @NotBlank
-    @Email
+
     private String email;
-    @Size(min=6, max=50)
-    @NotBlank
+
     private String senha;
-    @NotBlank
+
     private String endereco;
 
-    @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
-            message = "Indique um telefone válido")
     private String telefone;
 
     @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class UsuarioDto {
+public abstract class UsuarioDto {
 
     @NotBlank
     @Size(min=3)
@@ -16,7 +16,7 @@ public class UsuarioDto {
     @Size(min=6, max=50)
     @NotBlank
     private String senha;
-    @NotBlank
+
     private String endereco;
 
     @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
