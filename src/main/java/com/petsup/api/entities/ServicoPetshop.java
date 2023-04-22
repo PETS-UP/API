@@ -1,5 +1,6 @@
 package com.petsup.api.entities;
 
+import com.petsup.api.entities.enums.NomeServico;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -15,6 +16,8 @@ public class ServicoPetshop {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    private NomeServico nome;
+
     @NotNull
     @DecimalMin("0.0")
     private Double preco;
@@ -23,7 +26,7 @@ public class ServicoPetshop {
     @Column(length = 300)
     private String descricao;
 
-    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fk_servico", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public Integer getId() {
@@ -32,6 +35,14 @@ public class ServicoPetshop {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public NomeServico getNome() {
+        return nome;
+    }
+
+    public void setNome(NomeServico nome) {
+        this.nome = nome;
     }
 
     public Double getPreco() {

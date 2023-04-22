@@ -1,17 +1,21 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
+import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
 import jakarta.persistence.OneToMany;
+import jakarta.persistence.Table;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.util.List;
 
-public class UsuarioLoja extends Usuario {
+@Entity
+@Table(name = "Petshop")
+public class UsuarioPetshop extends Usuario {
     @CNPJ
     private String CNPJ;
 
-    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public String getCNPJ() {

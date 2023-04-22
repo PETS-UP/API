@@ -1,13 +1,13 @@
 package com.petsup.api.entities.usuario;
 
-import jakarta.persistence.Entity;
-import jakarta.persistence.GeneratedValue;
-import jakarta.persistence.GenerationType;
-import jakarta.persistence.Id;
+import com.petsup.api.entities.Agendamento;
+import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+
+import java.util.List;
 
 @Entity
 public class Usuario {
@@ -29,6 +29,9 @@ public class Usuario {
     @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
             message = "Indique um telefone válido")
     private String telefone;
+
+    @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
+    private List<Agendamento> agendamentos;
 
     public Integer getId() {
         return id;
@@ -76,5 +79,13 @@ public class Usuario {
 
     public void setTelefone(String telefone) {
         this.telefone = telefone;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
     }
 }

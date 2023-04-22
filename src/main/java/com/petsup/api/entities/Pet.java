@@ -1,6 +1,8 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.usuario.UsuarioDonoPet;
+import com.petsup.api.entities.enums.Especie;
+import com.petsup.api.entities.enums.Raca;
+import com.petsup.api.entities.usuario.UsuarioCliente;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
@@ -29,12 +31,16 @@ public class Pet {
     @Max(1)
     @NotNull
     private Integer castrado;
-    private char especie;
-    private char raca;
-    @OneToMany(mappedBy = "Agendamento", fetch = FetchType.LAZY)
+
+    private Especie especie;
+
+    private Raca raca;
+
+    @OneToMany(mappedBy = "fk_pet", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
     @ManyToOne
-    private UsuarioDonoPet donoPet;
+    @JoinColumn(name = "fk_cliente")
+    private UsuarioCliente fk_cliente;
 
     public Integer getId() {
         return id;
@@ -76,19 +82,19 @@ public class Pet {
         this.castrado = castrado;
     }
 
-    public char getEspecie() {
+    public Especie getEspecie() {
         return especie;
     }
 
-    public void setEspecie(char especie) {
+    public void setEspecie(Especie especie) {
         this.especie = especie;
     }
 
-    public char getRaca() {
+    public Raca getRaca() {
         return raca;
     }
 
-    public void setRaca(char raca) {
+    public void setRaca(Raca raca) {
         this.raca = raca;
     }
 
@@ -100,11 +106,11 @@ public class Pet {
         this.agendamentos = agendamentos;
     }
 
-    public UsuarioDonoPet getDonoPet() {
-        return donoPet;
+    public UsuarioCliente getFk_cliente() {
+        return fk_cliente;
     }
 
-    public void setDonoPet(UsuarioDonoPet donoPet) {
-        this.donoPet = donoPet;
+    public void setFk_cliente(UsuarioCliente fk_cliente) {
+        this.fk_cliente = fk_cliente;
     }
 }
