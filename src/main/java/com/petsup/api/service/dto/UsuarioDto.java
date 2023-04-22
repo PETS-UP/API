@@ -1,21 +1,14 @@
-package com.petsup.api.entities.usuario;
+package com.petsup.api.service.dto;
 
-import com.petsup.api.entities.Agendamento;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-import java.util.List;
+public class UsuarioDto {
 
-@Entity
-public class Usuario {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
     @NotBlank
+    @Size(min=3)
     private String nome;
     @NotBlank
     @Email
@@ -30,17 +23,8 @@ public class Usuario {
             message = "Indique um telefone válido")
     private String telefone;
 
-    @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
-    private List<Agendamento> agendamentos;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
+    //Getters and setters
     public String getNome() {
         return nome;
     }
