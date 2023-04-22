@@ -2,10 +2,7 @@ package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.Pet;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import jakarta.persistence.*;
 import org.hibernate.validator.constraints.br.CPF;
 
 import java.util.List;
@@ -13,6 +10,11 @@ import java.util.List;
 @Entity
 @Table(name = "Cliente")
 public class UsuarioCliente extends Usuario {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
     @CPF
     private String CPF;
 
@@ -21,6 +23,14 @@ public class UsuarioCliente extends Usuario {
 
     @OneToMany(mappedBy = "fk_cliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCPF() {
         return CPF;

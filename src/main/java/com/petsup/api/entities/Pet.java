@@ -40,7 +40,7 @@ public class Pet {
     private List<Agendamento> agendamentos;
     @ManyToOne
     @JoinColumn(name = "fk_cliente")
-    private UsuarioCliente fk_cliente;
+    private UsuarioCliente fkCliente;
 
     public Integer getId() {
         return id;
@@ -106,11 +106,11 @@ public class Pet {
         this.agendamentos = agendamentos;
     }
 
-    public UsuarioCliente getFk_cliente() {
-        return fk_cliente;
+    public UsuarioCliente getFkCliente() {
+        return fkCliente;
     }
 
-    public void setFk_cliente(UsuarioCliente fk_cliente) {
-        this.fk_cliente = fk_cliente;
+    public void setFkCliente(UsuarioCliente fkCliente) {
+        this.fkCliente = fkCliente;
     }
 }

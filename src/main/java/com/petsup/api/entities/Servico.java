@@ -9,8 +9,8 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@Table(name = "ServicoPetshop")
-public class ServicoPetshop {
+@Table(name = "Servico")
+public class Servico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)

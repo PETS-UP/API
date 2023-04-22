@@ -9,12 +9,7 @@ import jakarta.validation.constraints.Size;
 
 import java.util.List;
 
-@Entity
 public class Usuario {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
 
     @NotBlank
     private String nome;
@@ -45,14 +40,6 @@ public class Usuario {
 
     @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
