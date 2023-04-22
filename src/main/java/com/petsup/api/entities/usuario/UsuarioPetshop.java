@@ -15,12 +15,9 @@ import java.util.List;
 @Table(name = "Petshop")
 public class UsuarioPetshop extends Usuario {
 
-    @NotBlank
-    @Size(min = 6, max = 100)
-    private String razaoSocial;
-
-    @CNPJ
     private String CNPJ;
+
+    private String razaoSocial;
 
     @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
@@ -39,6 +36,14 @@ public class UsuarioPetshop extends Usuario {
 
     public void setCNPJ(String CNPJ) {
         this.CNPJ = CNPJ;
+    }
+
+    public String getRazaoSocial() {
+        return razaoSocial;
+    }
+
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
     }
 
     public List<Agendamento> getAgendamentos() {
