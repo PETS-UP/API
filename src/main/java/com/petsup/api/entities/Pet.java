@@ -105,4 +105,12 @@ public class Pet {
     public void setFkCliente(UsuarioCliente fkCliente) {
         this.fkCliente = fkCliente;
     }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
 }
