@@ -21,6 +21,7 @@ public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
+    
     @GetMapping("/report")
     public ResponseEntity<Void> report(@RequestBody Usuario usuario){
         if(usuario instanceof UsuarioPetshop){
@@ -177,4 +178,45 @@ public class PetshopController {
 
     }
 
+    @GetMapping
+    public ResponseEntity<List<Agendamento>> ordenarAgendamentosPorData(List<Agendamento> agendamentos) {
+
+        List<Agendamento> listaLocal = agendamentos;
+
+        for (int i = 0; i < listaLocal.size(); i++) {
+            if (i < listaLocal.size()) {
+                System.out.print(listaLocal.get(i) + ", ");
+            } else {
+                System.out.print(listaLocal.get(i));
+            }
+        }
+
+        for (int i = 0; i < listaLocal.size(); i++) {
+            int aux = i;
+            for (int j = i + 1; j < listaLocal.size(); j++) {
+                if (listaLocal.get(j).getDataHora().isBefore(listaLocal.get(aux).getDataHora())) {
+                    aux = j;
+                }
+            }
+            Agendamento ag = listaLocal.get(aux);
+
+            ag = listaLocal.get(i);
+            listaLocal.set(aux, listaLocal.get(i));
+            listaLocal.set(i, ag);
+        }
+        
+        for (int i = 0; i < listaLocal.size(); i++) {
+            if (i < listaLocal.size()) {
+                System.out.print(listaLocal.get(i) + ", ");
+            } else {
+                System.out.print(listaLocal.get(i));
+            }
+        }
+
+        if (listaLocal.isEmpty()) {
+            return ResponseEntity.status(204).build();
+        }
+
+        return ResponseEntity.status(200).body(listaLocal);
+    }
 }
