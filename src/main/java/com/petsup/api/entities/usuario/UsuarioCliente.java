@@ -1,10 +1,14 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.AvaliacaoPetshop;
+import com.petsup.api.entities.Favorito;
 import com.petsup.api.entities.Pet;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Past;
 import org.hibernate.validator.constraints.br.CPF;
 
+import java.time.LocalDate;
 import java.util.List;
 
 @Entity
@@ -14,6 +18,15 @@ public class UsuarioCliente extends Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @OneToMany(mappedBy = "fkCliente")
+    private List<AvaliacaoPetshop> avaliacoes;
+
+    @OneToMany(mappedBy = "fkCliente")
+    private List<Favorito> favoritos;
+
+    @Past
+    private LocalDate dataNasc;
 
     @CPF
     private String CPF;
@@ -30,6 +43,14 @@ public class UsuarioCliente extends Usuario {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public LocalDate getDataNasc() {
+        return dataNasc;
+    }
+
+    public void setDataNasc(LocalDate dataNasc) {
+        this.dataNasc = dataNasc;
     }
 
     public String getCPF() {

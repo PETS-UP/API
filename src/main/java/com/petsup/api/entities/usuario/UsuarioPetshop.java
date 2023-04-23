@@ -1,6 +1,8 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.AvaliacaoPetshop;
+import com.petsup.api.entities.Favorito;
 import com.petsup.api.entities.Servico;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
@@ -16,6 +18,12 @@ public class UsuarioPetshop extends Usuario {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<AvaliacaoPetshop> avaliacoes;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<Favorito> favoritos;
 
     @OneToMany(mappedBy = "fkPetshop")
     private List<Servico> servicos;
