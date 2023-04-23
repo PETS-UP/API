@@ -37,14 +37,6 @@ public class UsuarioPetshop extends Usuario {
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
-
     public String getCNPJ() {
         return CNPJ;
     }

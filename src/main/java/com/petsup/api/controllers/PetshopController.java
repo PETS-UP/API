@@ -6,10 +6,13 @@ import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
+import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.dto.UsuarioPetshopDto;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,10 +20,46 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@RestController
+@RequestMapping("/petshops")
 public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
+    @Autowired
+    private UsuarioService usuarioService;
+    //Crud inicio
+    @PostMapping
+    @SecurityRequirement(name = "Bearer")
+    public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto){
+        this.usuarioService.criarPetshop(usuarioDto);
+        return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping
+    public ResponseEntity<List<UsuarioPetshop>> getPetshops(){
+        List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
+        return usuarios.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuarios);
+    }
+
+    @GetMapping("/{id}")
+    public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id){
+        return ResponseEntity.of(this.petshopRepository.findById(id));
+    }
+
+    @DeleteMapping
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id){
+        this.petshopRepository.deleteById(id);
+        return ResponseEntity.status(200).build();
+    }
+
+    @PatchMapping("/{id}")
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
+        UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
+        return ResponseEntity.status(200).body(updateUser);
+    }
+
+    //Crud fim
     
     @GetMapping("/report")
     public ResponseEntity<Void> report(@RequestBody Usuario usuario){
@@ -178,7 +217,7 @@ public class PetshopController {
 
     }
 
-    @GetMapping
+    @GetMapping("/agendamentos")
     public ResponseEntity<List<Agendamento>> ordenarAgendamentosPorData(List<Agendamento> agendamentos) {
 
         List<Agendamento> listaLocal = agendamentos;
