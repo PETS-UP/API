@@ -36,10 +36,10 @@ public class Pet {
 
     private Raca raca;
 
-    @OneToMany(mappedBy = "fk_pet", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkPet", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
     @ManyToOne
-    @JoinColumn(name = "fk_cliente")
+    @JoinColumn(name = "fkCliente")
     private UsuarioCliente fkCliente;
 
     public Integer getId() {
@@ -96,14 +96,6 @@ public class Pet {
 
     public void setRaca(Raca raca) {
         this.raca = raca;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
     }
 
     public UsuarioCliente getFkCliente() {
