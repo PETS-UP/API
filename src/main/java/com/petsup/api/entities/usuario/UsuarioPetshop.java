@@ -1,6 +1,7 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.Servico;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
@@ -16,6 +17,9 @@ public class UsuarioPetshop extends Usuario {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<Servico> servicos;
+
     @NotBlank
     @Size(min = 6, max = 100)
     private String razaoSocial;
@@ -23,7 +27,7 @@ public class UsuarioPetshop extends Usuario {
     @CNPJ
     private String CNPJ;
 
-    @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public Integer getId() {
@@ -48,13 +52,5 @@ public class UsuarioPetshop extends Usuario {
 
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
     }
 }

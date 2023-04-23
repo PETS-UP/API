@@ -18,10 +18,10 @@ public class UsuarioCliente extends Usuario {
     @CPF
     private String CPF;
 
-    @OneToMany(mappedBy = "fk_cliente", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Pet> pets;
 
-    @OneToMany(mappedBy = "fk_cliente", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public Integer getId() {
@@ -38,21 +38,5 @@ public class UsuarioCliente extends Usuario {
 
     public void setCPF(String CPF) {
         this.CPF = CPF;
-    }
-
-    public List<Pet> getPets() {
-        return pets;
-    }
-
-    public void setPets(List<Pet> pets) {
-        this.pets = pets;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
     }
 }

@@ -10,10 +10,11 @@ import jakarta.validation.constraints.Size;
 import java.util.List;
 
 @Entity
+@Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
 public abstract class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @GeneratedValue(strategy = GenerationType.TABLE)
     private Integer id;
 
     private String nome;
@@ -35,9 +36,6 @@ public abstract class Usuario {
     private String rua;
 
     private String numero;
-
-    @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
-    private List<Agendamento> agendamentos;
 
     public Integer getId() {
         return id;
@@ -125,13 +123,5 @@ public abstract class Usuario {
 
     public void setNumero(String numero) {
         this.numero = numero;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
     }
 }
