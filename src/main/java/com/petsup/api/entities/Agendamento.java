@@ -22,19 +22,19 @@ public class Agendamento {
     private LocalDateTime dataHora;
 
     @ManyToOne
-    @JoinColumn(name = "fk_pet")
+    @JoinColumn(name = "fkPet")
     private Pet fkPet;
 
     @ManyToOne
-    @JoinColumn(name = "fk_petshop")
+    @JoinColumn(name = "fkPetshop")
     private UsuarioPetshop fkPetshop;
 
     @ManyToOne
-    @JoinColumn(name = "fk_cliente")
+    @JoinColumn(name = "fkCliente")
     private UsuarioCliente fkCliente;
 
     @ManyToOne
-    @JoinColumn(name = "fk_servico")
+    @JoinColumn(name = "fkServico")
     private Servico fkServico;
 
     public Integer getId() {
