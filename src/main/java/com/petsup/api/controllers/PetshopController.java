@@ -96,9 +96,9 @@ public class PetshopController {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
                 saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
-                        a.getFk_pet().getFk_cliente().getNome(), a.getFk_pet().getFk_cliente().getEmail(),
-                        a.getFk_pet().getNome(), a.getFk_pet().getEspecie(), a.getFk_pet().getRaca(),
-                        a.getFk_pet().getSexo(), a.getFk_servico(), a.getFk_servico().getPreco());
+                        a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
+                        a.getFkPet().getNome(), a.getFkPet().getEspecie(), a.getFkPet().getRaca(),
+                        a.getFkPet().getSexo(), a.getFkServico(), a.getFkServico().getPreco());
             }
 
         } catch (FormatterClosedException fc) {

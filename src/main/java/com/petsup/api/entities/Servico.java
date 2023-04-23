@@ -1,6 +1,7 @@
 package com.petsup.api.entities;
 
 import com.petsup.api.entities.enums.NomeServico;
+import com.petsup.api.entities.usuario.UsuarioPetshop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.NotBlank;
@@ -9,12 +10,16 @@ import jakarta.validation.constraints.NotNull;
 import java.util.List;
 
 @Entity
-@Table(name = "ServicoPetshop")
-public class ServicoPetshop {
+@Table(name = "Servico")
+public class Servico {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name = "fkPetshop")
+    private UsuarioPetshop fkPetshop;
 
     private NomeServico nome;
 
@@ -26,7 +31,7 @@ public class ServicoPetshop {
     @Column(length = 300)
     private String descricao;
 
-    @OneToMany(mappedBy = "fk_servico", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkServico", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
     public Integer getId() {
@@ -35,6 +40,14 @@ public class ServicoPetshop {
 
     public void setId(Integer id) {
         this.id = id;
+    }
+
+    public UsuarioPetshop getFkPetshop() {
+        return fkPetshop;
+    }
+
+    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+        this.fkPetshop = fkPetshop;
     }
 
     public NomeServico getNome() {
@@ -59,13 +72,5 @@ public class ServicoPetshop {
 
     public void setDescricao(String descricao) {
         this.descricao = descricao;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
     }
 }

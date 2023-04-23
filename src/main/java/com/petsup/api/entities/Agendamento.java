@@ -22,24 +22,20 @@ public class Agendamento {
     private LocalDateTime dataHora;
 
     @ManyToOne
-    @JoinColumn(name = "fk_pet")
-    private Pet fk_pet;
+    @JoinColumn(name = "fkPet")
+    private Pet fkPet;
 
     @ManyToOne
-    @JoinColumn(name = "fk_petshop")
-    private UsuarioPetshop fk_petshop;
+    @JoinColumn(name = "fkPetshop")
+    private UsuarioPetshop fkPetshop;
 
     @ManyToOne
-    @JoinColumn(name = "fk_cliente")
-    private UsuarioCliente fk_cliente;
+    @JoinColumn(name = "fkCliente")
+    private UsuarioCliente fkCliente;
 
     @ManyToOne
-    @JoinColumn(name = "fk_user")
-    private Usuario fk_user;
-
-    @ManyToOne
-    @JoinColumn(name = "fk_servico")
-    private ServicoPetshop fk_servico;
+    @JoinColumn(name = "fkServico")
+    private Servico fkServico;
 
     public Integer getId() {
         return id;
@@ -57,43 +53,35 @@ public class Agendamento {
         this.dataHora = dataHora;
     }
 
-    public Pet getFk_pet() {
-        return fk_pet;
+    public Pet getFkPet() {
+        return fkPet;
     }
 
-    public void setFk_pet(Pet fk_pet) {
-        this.fk_pet = fk_pet;
+    public void setFkPet(Pet fkPet) {
+        this.fkPet = fkPet;
     }
 
-    public UsuarioPetshop getFk_petshop() {
-        return fk_petshop;
+    public UsuarioPetshop getFkPetshop() {
+        return fkPetshop;
     }
 
-    public void setFk_petshop(UsuarioPetshop fk_petshop) {
-        this.fk_petshop = fk_petshop;
+    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+        this.fkPetshop = fkPetshop;
     }
 
-    public UsuarioCliente getFk_cliente() {
-        return fk_cliente;
+    public UsuarioCliente getFkCliente() {
+        return fkCliente;
     }
 
-    public void setFk_cliente(UsuarioCliente fk_cliente) {
-        this.fk_cliente = fk_cliente;
+    public void setFkCliente(UsuarioCliente fkCliente) {
+        this.fkCliente = fkCliente;
     }
 
-    public ServicoPetshop getFk_servico() {
-        return fk_servico;
+    public Servico getFkServico() {
+        return fkServico;
     }
 
-    public void setFk_servico(ServicoPetshop fk_servico) {
-        this.fk_servico = fk_servico;
-    }
-
-    public Usuario getFk_user() {
-        return fk_user;
-    }
-
-    public void setFk_user(Usuario fk_user) {
-        this.fk_user = fk_user;
+    public void setFkServico(Servico fkServico) {
+        this.fkServico = fkServico;
     }
 }
