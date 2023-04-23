@@ -4,12 +4,12 @@ import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ListaObj;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.*;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -17,13 +17,17 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.*;
 
+@RestController
+@RequestMapping("/petshops")
 public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
     
     @GetMapping("/report")
-    public ResponseEntity<Void> report(@RequestBody Usuario usuario){
+    public ResponseEntity<Void> report(@RequestBody UsuarioPetshop usuario){
         if(usuario instanceof UsuarioPetshop){
             List<Agendamento> as = petshopRepository.findByAgendamentos(usuario);
             leituraNomeCsv(as.size());
@@ -178,42 +182,33 @@ public class PetshopController {
 
     }
 
-    @GetMapping
-    public ResponseEntity<List<Agendamento>> ordenarAgendamentosPorData(List<Agendamento> agendamentos) {
+    @GetMapping("/{id}")
+    public ResponseEntity<ListaObj<Agendamento>> ordenarAgendamentosPorData(@PathVariable Integer id) {
 
-        List<Agendamento> listaLocal = agendamentos;
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(id);
+        ListaObj<Agendamento> listaLocal = new ListaObj<>(listaAgendamentos.size());
 
-        for (int i = 0; i < listaLocal.size(); i++) {
-            if (i < listaLocal.size()) {
-                System.out.print(listaLocal.get(i) + ", ");
-            } else {
-                System.out.print(listaLocal.get(i));
-            }
+        for (int i = 0; i < listaAgendamentos.size(); i++){
+            listaLocal.adiciona(listaAgendamentos.get(i));
         }
 
-        for (int i = 0; i < listaLocal.size(); i++) {
+        for (int i = 0; i < listaLocal.getTamanho(); i++) {
             int aux = i;
-            for (int j = i + 1; j < listaLocal.size(); j++) {
-                if (listaLocal.get(j).getDataHora().isBefore(listaLocal.get(aux).getDataHora())) {
+            for (int j = i + 1; j < listaLocal.getTamanho(); j++) {
+                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(aux).getDataHora())) {
                     aux = j;
                 }
             }
-            Agendamento ag = listaLocal.get(aux);
 
-            ag = listaLocal.get(i);
-            listaLocal.set(aux, listaLocal.get(i));
-            listaLocal.set(i, ag);
-        }
-        
-        for (int i = 0; i < listaLocal.size(); i++) {
-            if (i < listaLocal.size()) {
-                System.out.print(listaLocal.get(i) + ", ");
-            } else {
-                System.out.print(listaLocal.get(i));
-            }
+            Agendamento ag = listaLocal.getElemento(aux);
+            //ag = listaLocal.getElemento(i);
+            listaLocal.removeDeixaNulo(aux);
+            listaLocal.adicionaNoNulo(aux, listaLocal.getElemento(i));
+            listaLocal.removeDeixaNulo(i);
+            listaLocal.adicionaNoNulo(i, ag);
         }
 
-        if (listaLocal.isEmpty()) {
+        if (listaLocal.getTamanho() == 0) {
             return ResponseEntity.status(204).build();
         }
 

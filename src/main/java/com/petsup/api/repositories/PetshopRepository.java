@@ -10,5 +10,5 @@ import java.util.List;
 
 @Repository
 public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Integer> {
-    List<Agendamento> findByAgendamentos (Usuario usuario);
+    List<Agendamento> findByAgendamentos (UsuarioPetshop usuario);
 }
