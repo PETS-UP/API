@@ -1,12 +1,10 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.usuario.Usuario;
-<<<<<<< HEAD
-=======
 import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
->>>>>>> ed37948b45d41e0c9c3efe75793921ba685e34e2
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import com.petsup.api.repositories.UsuarioRepository;
 import jakarta.validation.Valid;

@@ -12,7 +12,6 @@ import java.util.List;
 @Table(name = "Petshop")
 public class UsuarioPetshop extends Usuario {
 
-<<<<<<< HEAD
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
@@ -22,11 +21,7 @@ public class UsuarioPetshop extends Usuario {
     private String razaoSocial;
 
     @CNPJ
-=======
->>>>>>> ed37948b45d41e0c9c3efe75793921ba685e34e2
     private String CNPJ;
-
-    private String razaoSocial;
 
     @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
@@ -37,14 +32,6 @@ public class UsuarioPetshop extends Usuario {
 
     public void setId(Integer id) {
         this.id = id;
-    }
-
-    public String getRazaoSocial() {
-        return razaoSocial;
-    }
-
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
     }
 
     public String getCNPJ() {
