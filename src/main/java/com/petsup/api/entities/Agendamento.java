@@ -1,7 +1,8 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.usuario.UsuarioDonoPet;
-import com.petsup.api.entities.usuario.UsuarioLoja;
+import com.petsup.api.entities.usuario.Usuario;
+import com.petsup.api.entities.usuario.UsuarioCliente;
+import com.petsup.api.entities.usuario.UsuarioPetshop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -21,20 +22,20 @@ public class Agendamento {
     private LocalDateTime dataHora;
 
     @ManyToOne
-    @Column(name = "fk_pet")
-    private Pet pet;
+    @JoinColumn(name = "fk_pet")
+    private Pet fkPet;
 
     @ManyToOne
-    @Column(name = "fk_loja")
-    private UsuarioLoja donoLoja;
+    @JoinColumn(name = "fk_petshop")
+    private UsuarioPetshop fkPetshop;
 
     @ManyToOne
-    @Column(name = "fk_donoPet")
-    private UsuarioDonoPet donoPet;
+    @JoinColumn(name = "fk_cliente")
+    private UsuarioCliente fkCliente;
 
     @ManyToOne
-    @Column(name = "fk_servicoPetShop")
-    private ServicoPetshop servicoPetshop;
+    @JoinColumn(name = "fk_servico")
+    private Servico fkServico;
 
     public Integer getId() {
         return id;
@@ -52,35 +53,35 @@ public class Agendamento {
         this.dataHora = dataHora;
     }
 
-    public Pet getPet() {
-        return pet;
+    public Pet getFkPet() {
+        return fkPet;
     }
 
-    public void setPet(Pet pet) {
-        this.pet = pet;
+    public void setFkPet(Pet fkPet) {
+        this.fkPet = fkPet;
     }
 
-    public UsuarioLoja getDonoLoja() {
-        return donoLoja;
+    public UsuarioPetshop getFkPetshop() {
+        return fkPetshop;
     }
 
-    public void setDonoLoja(UsuarioLoja donoLoja) {
-        this.donoLoja = donoLoja;
+    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+        this.fkPetshop = fkPetshop;
     }
 
-    public UsuarioDonoPet getDonoPet() {
-        return donoPet;
+    public UsuarioCliente getFkCliente() {
+        return fkCliente;
     }
 
-    public void setDonoPet(UsuarioDonoPet donoPet) {
-        this.donoPet = donoPet;
+    public void setFkCliente(UsuarioCliente fkCliente) {
+        this.fkCliente = fkCliente;
     }
 
-    public ServicoPetshop getServicoPetshop() {
-        return servicoPetshop;
+    public Servico getFkServico() {
+        return fkServico;
     }
 
-    public void setServicoPetshop(ServicoPetshop servicoPetshop) {
-        this.servicoPetshop = servicoPetshop;
+    public void setFkServico(Servico fkServico) {
+        this.fkServico = fkServico;
     }
 }
