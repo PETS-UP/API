@@ -73,4 +73,12 @@ public class Servico {
     public void setDescricao(String descricao) {
         this.descricao = descricao;
     }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
+    }
 }

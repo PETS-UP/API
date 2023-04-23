@@ -4,6 +4,7 @@ import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ListaObj;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.service.UsuarioService;
@@ -11,13 +12,16 @@ import com.petsup.api.service.dto.UsuarioPetshopDto;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.*;
 
 @RestController
@@ -26,8 +30,13 @@ public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
+    
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
+    
     @Autowired
     private UsuarioService usuarioService;
+    
     //Crud inicio
     @PostMapping
     @SecurityRequirement(name = "Bearer")
@@ -61,13 +70,18 @@ public class PetshopController {
 
     //Crud fim
     
-    @GetMapping("/report")
-    public ResponseEntity<Void> report(@RequestBody Usuario usuario){
-        if(usuario instanceof UsuarioPetshop){
-            List<Agendamento> as = petshopRepository.findByAgendamentos(usuario);
-            leituraNomeCsv(as.size());
+    @GetMapping("/report/arquivo/{usuario}")
+    public ResponseEntity<Void> report(@PathVariable int usuario){
+            List<Agendamento> as = agendamentoRepository.findByFkPetshopId(usuario);
+
+        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+
+        for (int i = 0; i < as.size(); i++){
+            listaLocal.adiciona(as.get(i));
         }
-        return ResponseEntity.status(401).build();
+        gravaArquivoCsv(listaLocal, "agendamento");
+        //return ResponseEntity.status(401).build();
+        return ResponseEntity.status(201).build();
     }
 
 //    ListaObj<Agendamento> lista = new ListaObj(10);
@@ -135,7 +149,7 @@ public class PetshopController {
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
+                saida.format("%d;%s;%s;%s;%s;%d;%d;%s;%d;%.2f\n", a.getId(), a.getDataHora(),
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
                         a.getFkPet().getNome(), a.getFkPet().getEspecie(), a.getFkPet().getRaca(),
                         a.getFkPet().getSexo(), a.getFkServico(), a.getFkServico().getPreco());
@@ -158,14 +172,13 @@ public class PetshopController {
                 System.exit(1);
             }
         }
+        leArquivoCsv(nomeArq);
     }
 
     public static void leArquivoCsv(String nomeArq) {
         FileReader arq = null;
         Scanner entrada = null;
         boolean bool = false;
-
-        nomeArq += ".csv";
 
         try {
             arq = new FileReader(nomeArq);
@@ -182,16 +195,18 @@ public class PetshopController {
             while (entrada.hasNext()) {
                 int id = entrada.nextInt();
                 String diaHorario = entrada.next();
+                //LocalDate.parse(diaHorario);
                 String cliente = entrada.next();
                 String email = entrada.next();
                 String pet = entrada.next();
-                String especie = entrada.next();
+                int especie = entrada.nextInt();
+                int raca = entrada.nextInt();
                 String sexo = entrada.next();
-                String servico = entrada.next();
+                int servico = entrada.nextInt();
                 double valor = entrada.nextDouble();
 
-                System.out.printf("%04d  %-11S %-20S %-20S %-15 %-15S %-15S %-1S %-10S %-6.2f\n",
-                        id, diaHorario, cliente, email, pet, especie, sexo, servico, valor);
+                System.out.printf("%04d %-11S %-20S %-20S %-15S %-15d %-15d %-1S %-10d %-6.2f\n",
+                        id, diaHorario, cliente, email, pet, especie, raca, sexo, servico, valor);
             }
 
         } catch (NoSuchElementException ns) {
@@ -217,44 +232,63 @@ public class PetshopController {
 
     }
 
-    @GetMapping("/agendamentos")
-    public ResponseEntity<List<Agendamento>> ordenarAgendamentosPorData(List<Agendamento> agendamentos) {
+    @GetMapping("/report/{usuario}")
+    public ResponseEntity<ListaObj<Agendamento>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
 
-        List<Agendamento> listaLocal = agendamentos;
+        Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
 
-        for (int i = 0; i < listaLocal.size(); i++) {
-            if (i < listaLocal.size()) {
-                System.out.print(listaLocal.get(i) + ", ");
-            } else {
-                System.out.print(listaLocal.get(i));
-            }
+        if (usuarioPetshopOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
         }
 
-        for (int i = 0; i < listaLocal.size(); i++) {
-            int aux = i;
-            for (int j = i + 1; j < listaLocal.size(); j++) {
-                if (listaLocal.get(j).getDataHora().isBefore(listaLocal.get(aux).getDataHora())) {
-                    aux = j;
-                }
-            }
-            Agendamento ag = listaLocal.get(aux);
+        UsuarioPetshop usuarioPetshop = usuarioPetshopOptional.get();
 
-            ag = listaLocal.get(i);
-            listaLocal.set(aux, listaLocal.get(i));
-            listaLocal.set(i, ag);
-        }
-        
-        for (int i = 0; i < listaLocal.size(); i++) {
-            if (i < listaLocal.size()) {
-                System.out.print(listaLocal.get(i) + ", ");
-            } else {
-                System.out.print(listaLocal.get(i));
-            }
-        }
+        List<Agendamento> listaAgendamentos = usuarioPetshop.getAgendamentos();
 
-        if (listaLocal.isEmpty()) {
+        ListaObj<Agendamento> listaLocal = new ListaObj<>(500);
+
+        if (listaAgendamentos.size() == 0) {
             return ResponseEntity.status(204).build();
         }
+
+        for (int i = 0; i < listaAgendamentos.size(); i++){
+            listaLocal.adiciona(listaAgendamentos.get(i));
+        }
+
+        int i, j, indMenor;
+        for (i = 0; i < listaAgendamentos.size() - 1; i++){
+            indMenor = i;
+            for (j = i+1; j < listaAgendamentos.size(); j++){
+                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(indMenor).getDataHora())){
+                    indMenor = j;
+                }
+            }
+            Agendamento ag = listaLocal.getElemento(indMenor);
+            //ag = listaLocal.getElemento(i);
+            listaLocal.removeDeixaNulo(indMenor);
+            listaLocal.adicionaNoNulo(indMenor, listaLocal.getElemento(i));
+            listaLocal.removeDeixaNulo(i);
+            listaLocal.adicionaNoNulo(i, ag);
+        }
+
+
+//        for (int i = 0; i < listaLocal.getTamanho() - 1; i++) {
+//            int aux = i;
+//            for (int j = i + 1; j < listaLocal.getTamanho() - 1; j++) {
+//                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(aux).getDataHora())) {
+//                    aux = j;
+//                }
+//            }
+//            Agendamento ag = listaLocal.getElemento(aux);
+//            //ag = listaLocal.getElemento(i);
+//            listaLocal.removeDeixaNulo(aux);
+//            listaLocal.adicionaNoNulo(aux, listaLocal.getElemento(i));
+//            listaLocal.removeDeixaNulo(i);
+//            listaLocal.adicionaNoNulo(i, ag);
+//
+//        }
 
         return ResponseEntity.status(200).body(listaLocal);
     }
