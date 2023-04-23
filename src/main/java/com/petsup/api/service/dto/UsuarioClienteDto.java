@@ -3,6 +3,7 @@ package com.petsup.api.service.dto;
 import org.hibernate.validator.constraints.br.CPF;
 
 public class UsuarioClienteDto extends UsuarioDto{
+    
     @CPF
     private String CPF;
 
