@@ -21,10 +21,10 @@ public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
-
+    
     @GetMapping("/report")
-    public ResponseEntity<Void> report(@RequestBody Usuario usuario) {
-        if (usuario instanceof UsuarioPetshop) {
+    public ResponseEntity<Void> report(@RequestBody Usuario usuario){
+        if(usuario instanceof UsuarioPetshop){
             List<Agendamento> as = petshopRepository.findByAgendamentos(usuario);
             leituraNomeCsv(as.size());
         }
@@ -36,7 +36,7 @@ public class PetshopController {
 //    Scanner leitorNum = new Scanner(System.in);
 //    int a = 0;
 
-    public static void leituraNomeCsv(int tamLista) {
+    public static void leituraNomeCsv(int tamLista){
         ListaObj<Agendamento> lista = new ListaObj(tamLista);
 //        Scanner leitorStr = new Scanner(System.in);
 //        Scanner leitorNum = new Scanner(System.in);
@@ -78,7 +78,6 @@ public class PetshopController {
 //        }
 //    } while(a != 0);
     }
-
     public static void gravaArquivoCsv(ListaObj<Agendamento> list, String nomeArq) {
         FileWriter arq = null;
         Formatter saida = null;
@@ -98,9 +97,9 @@ public class PetshopController {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
                 saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
-                        a.getFk_pet().getFk_cliente().getNome(), a.getFk_pet().getFk_cliente().getEmail(),
-                        a.getFk_pet().getNome(), a.getFk_pet().getEspecie(), a.getFk_pet().getRaca(),
-                        a.getFk_pet().getSexo(), a.getFk_servico(), a.getFk_servico().getPreco());
+                        a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
+                        a.getFkPet().getNome(), a.getFkPet().getEspecie(), a.getFkPet().getRaca(),
+                        a.getFkPet().getSexo(), a.getFkServico(), a.getFkServico().getPreco());
             }
 
         } catch (FormatterClosedException fc) {
@@ -177,7 +176,6 @@ public class PetshopController {
             }
         }
 
-
     }
 
     @GetMapping
@@ -185,8 +183,6 @@ public class PetshopController {
 
         List<Agendamento> listaLocal = agendamentos;
 
-        System.out.println("\n--Selection Sort--");
-        System.out.println("Vetor fora de ordem: ");
         for (int i = 0; i < listaLocal.size(); i++) {
             if (i < listaLocal.size()) {
                 System.out.print(listaLocal.get(i) + ", ");
@@ -208,8 +204,7 @@ public class PetshopController {
             listaLocal.set(aux, listaLocal.get(i));
             listaLocal.set(i, ag);
         }
-
-        System.out.println("\nVetor em ordem: ");
+        
         for (int i = 0; i < listaLocal.size(); i++) {
             if (i < listaLocal.size()) {
                 System.out.print(listaLocal.get(i) + ", ");
@@ -224,5 +219,4 @@ public class PetshopController {
 
         return ResponseEntity.status(200).body(listaLocal);
     }
-
 }

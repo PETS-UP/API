@@ -1,10 +1,12 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.Agendamento;
-import jakarta.persistence.Entity;
-import jakarta.persistence.FetchType;
-import jakarta.persistence.OneToMany;
-import jakarta.persistence.Table;
+import com.petsup.api.entities.AvaliacaoPetshop;
+import com.petsup.api.entities.Favorito;
+import com.petsup.api.entities.Servico;
+import jakarta.persistence.*;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.util.List;
@@ -12,11 +14,36 @@ import java.util.List;
 @Entity
 @Table(name = "Petshop")
 public class UsuarioPetshop extends Usuario {
-    @CNPJ
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<AvaliacaoPetshop> avaliacoes;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<Favorito> favoritos;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<Servico> servicos;
+
+    @NotBlank
+    @Size(min = 6, max = 100)
+    private String razaoSocial;
+
     private String CNPJ;
 
-    @OneToMany(mappedBy = "fk_petshop", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCNPJ() {
         return CNPJ;
@@ -26,11 +53,11 @@ public class UsuarioPetshop extends Usuario {
         this.CNPJ = CNPJ;
     }
 
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
+    public String getRazaoSocial() {
+        return razaoSocial;
     }
 
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
+    public void setRazaoSocial(String razaoSocial) {
+        this.razaoSocial = razaoSocial;
     }
 }

@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
-public class UsuarioDto {
+public abstract class UsuarioDto {
 
     @NotBlank
     @Size(min=3)
@@ -17,8 +17,7 @@ public class UsuarioDto {
     @NotBlank
     private String senha;
     @NotBlank
-    private String endereco;
-
+    private String cep;
     @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
             message = "Indique um telefone válido")
     private String telefone;
@@ -49,12 +48,12 @@ public class UsuarioDto {
         this.senha = senha;
     }
 
-    public String getEndereco() {
-        return endereco;
+    public String getCep() {
+        return cep;
     }
 
-    public void setEndereco(String endereco) {
-        this.endereco = endereco;
+    public void setCep(String cep) {
+        this.cep = cep;
     }
 
     public String getTelefone() {
