@@ -5,7 +5,7 @@ import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
 
 public class UsuarioPetshopDto extends UsuarioDto{
-    @CNPJ
+    @Size(min = 14, max = 14)
     @NotBlank
     private String CNPJ;
     @Size(min=5)

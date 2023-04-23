@@ -32,7 +32,6 @@ public class UsuarioPetshop extends Usuario {
     @Size(min = 6, max = 100)
     private String razaoSocial;
 
-    @CNPJ
     private String CNPJ;
 
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
