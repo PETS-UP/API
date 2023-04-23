@@ -22,8 +22,6 @@ public abstract class Usuario {
 
     private String senha;
 
-    private String endereco;
-
     private String telefone;
 
     private String cep;
@@ -40,6 +38,14 @@ public abstract class Usuario {
 
     @OneToMany(mappedBy = "fk_user", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
