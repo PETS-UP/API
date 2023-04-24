@@ -10,11 +10,11 @@ public abstract class UsuarioDto {
 
     @NotBlank
     @Size(min=3)
-    @Schema(description = "Nome do usuário", example = "Beca Massayuki")
+    @Schema(description = "Nome do usuário", example = "Ana Carolina")
     private String nome;
     @NotBlank
     @Email
-    @Schema(description = "Email do usuário", example = "beca01@gmail.com")
+    @Schema(description = "Email do usuário", example = "ana@gmail.com")
     private String email;
     @Size(min=6, max=50)
     @NotBlank
