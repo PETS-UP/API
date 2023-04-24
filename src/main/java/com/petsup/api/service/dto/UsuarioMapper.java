@@ -33,4 +33,38 @@ public class UsuarioMapper {
 
         return usuario;
     }
+
+    public static UsuarioClienteDto ofClienteDto(UsuarioCliente usuarioCliente) {
+        UsuarioClienteDto usuarioClienteDto = new UsuarioClienteDto();
+
+        usuarioClienteDto.setNome(usuarioCliente.getNome());
+        usuarioClienteDto.setEmail(usuarioCliente.getEmail());
+        usuarioClienteDto.setDataNasc(usuarioCliente.getDataNasc());
+        usuarioClienteDto.setTelefone(usuarioCliente.getTelefone());
+        usuarioClienteDto.setCep(usuarioCliente.getCep());
+        usuarioClienteDto.setEstado(usuarioCliente.getEstado());
+        usuarioClienteDto.setCidade(usuarioCliente.getCidade());
+        usuarioClienteDto.setBairro(usuarioCliente.getBairro());
+        usuarioClienteDto.setRua(usuarioCliente.getRua());
+        usuarioClienteDto.setNumero(usuarioCliente.getNumero());
+
+        return usuarioClienteDto;
+    }
+
+    public static UsuarioPetshopDto ofPetshopDto(UsuarioPetshop usuarioPetshop) {
+        UsuarioPetshopDto usuarioPetshopDto = new UsuarioPetshopDto();
+
+        usuarioPetshopDto.setNome(usuarioPetshop.getNome());
+        usuarioPetshopDto.setEmail(usuarioPetshop.getEmail());
+        usuarioPetshopDto.setTelefone(usuarioPetshop.getTelefone());
+        usuarioPetshopDto.setRazaoSocial(usuarioPetshop.getRazaoSocial());
+        usuarioPetshopDto.setCep(usuarioPetshop.getCep());
+        usuarioPetshopDto.setEstado(usuarioPetshop.getEstado());
+        usuarioPetshopDto.setCidade(usuarioPetshop.getCidade());
+        usuarioPetshopDto.setBairro(usuarioPetshopDto.getBairro());
+        usuarioPetshopDto.setRua(usuarioPetshop.getRua());
+        usuarioPetshopDto.setNumero(usuarioPetshop.getNumero());
+
+        return usuarioPetshopDto;
+    }
 }

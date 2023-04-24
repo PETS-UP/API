@@ -5,6 +5,7 @@ import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.dto.UsuarioClienteDto;
+import com.petsup.api.service.dto.UsuarioMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -13,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
@@ -35,9 +37,15 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de clientes.")
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso não haja clientes cadastrados.")
     @GetMapping
-    public ResponseEntity<List<UsuarioCliente>> getClientes(){
+    public ResponseEntity<List<UsuarioClienteDto>> getClientes(){
         List<UsuarioCliente> usuarios = this.clienteRepository.findAll();
-        return usuarios.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuarios);
+        List<UsuarioClienteDto> usuariosDto = new ArrayList<>();
+
+        for (UsuarioCliente usuario : usuarios) {
+            usuariosDto.add(UsuarioMapper.ofClienteDto(usuario));
+        }
+
+        return usuariosDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuariosDto);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
