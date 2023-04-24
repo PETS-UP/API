@@ -17,8 +17,6 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @NotNull
-    @Future
     private LocalDateTime dataHora;
 
     @ManyToOne
