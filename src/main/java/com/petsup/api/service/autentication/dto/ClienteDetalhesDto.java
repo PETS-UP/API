@@ -20,7 +20,7 @@ public class ClienteDetalhesDto implements UserDetails {
         this.senha = usuarioCliente.getSenha();
         this.cep = usuarioCliente.getCep();
         this.telefone = usuarioCliente.getTelefone();
-        this.CPF = usuarioCliente.getCPF();
+        this.CPF = usuarioCliente.getCpf();
     }
 
     public String getNome() {

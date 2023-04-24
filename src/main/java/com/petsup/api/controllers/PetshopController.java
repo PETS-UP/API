@@ -8,6 +8,8 @@ import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.autentication.dto.PetshopLoginDto;
+import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
@@ -50,6 +52,13 @@ public class PetshopController {
     public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto){
         this.usuarioService.criarPetshop(usuarioDto);
         return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<PetshopTokenDto> login(@RequestBody PetshopLoginDto usuarioLoginDto) {
+        PetshopTokenDto usuarioTokenDto = this.usuarioService.autenticarPetshop(usuarioLoginDto);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
     }
 
     @GetMapping
