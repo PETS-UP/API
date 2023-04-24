@@ -12,6 +12,7 @@ import java.util.Optional;
 
 @Repository
 public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Integer> {
+
     List<Agendamento> findByAgendamentos (Usuario usuario);
     Optional<UsuarioPetshop> findByEmail(String email);
 }
