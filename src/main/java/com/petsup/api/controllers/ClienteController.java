@@ -4,6 +4,8 @@ import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.autentication.dto.ClienteLoginDto;
+import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -30,6 +32,13 @@ public class ClienteController {
     public ResponseEntity<Void> postUserCliente(@RequestBody @Valid UsuarioClienteDto usuarioDto){
         this.usuarioService.criarCliente(usuarioDto);
         return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/login")
+    public ResponseEntity<ClienteTokenDto> login(@RequestBody ClienteLoginDto usuarioLoginDto) {
+        ClienteTokenDto usuarioTokenDto = this.usuarioService.autenticarCliente(usuarioLoginDto);
+
+        return ResponseEntity.status(200).body(usuarioTokenDto);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de clientes.")
