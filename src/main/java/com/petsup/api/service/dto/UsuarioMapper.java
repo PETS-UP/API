@@ -16,7 +16,7 @@ public class UsuarioMapper {
         usuario.setSenha(usuarioCriacaoDto.getSenha());
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setTelefone(usuarioCriacaoDto.getTelefone());
-        usuario.setCPF(usuarioCriacaoDto.getCPF());
+        usuario.setCpf(usuarioCriacaoDto.getCpf());
 
         return usuario;
     }
@@ -30,7 +30,7 @@ public class UsuarioMapper {
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setTelefone(usuarioCriacaoDto.getTelefone());
         usuario.setCep(usuarioCriacaoDto.getCep());
-        usuario.setCNPJ(usuarioCriacaoDto.getCNPJ());
+        usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
 
         return usuario;

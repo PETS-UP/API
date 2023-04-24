@@ -1,5 +1,6 @@
 package com.petsup.api.service.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 import org.hibernate.validator.constraints.br.CNPJ;
@@ -7,24 +8,27 @@ import org.hibernate.validator.constraints.br.CNPJ;
 public class UsuarioPetshopDto extends UsuarioDto{
     @Size(min = 14, max = 14)
     @NotBlank
-    private String CNPJ;
-    @Size(min=5)
-    @NotBlank
-    private String RazaoSocial;
+    @Schema(description = "CNPJ do petshop", example = "12.345.678/0001-00")
+    private String cnpj;
 
-    public String getCNPJ() {
-        return CNPJ;
+    @NotBlank
+    @Size(min = 6, max = 100)
+    @Schema(description = "Nome do petshop", example = "Fofinho Petshop")
+    private String razaoSocial;
+
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setCNPJ(String CNPJ) {
-        this.CNPJ = CNPJ;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getRazaoSocial() {
-        return RazaoSocial;
+        return razaoSocial;
     }
 
     public void setRazaoSocial(String razaoSocial) {
-        RazaoSocial = razaoSocial;
+        this.razaoSocial = razaoSocial;
     }
 }

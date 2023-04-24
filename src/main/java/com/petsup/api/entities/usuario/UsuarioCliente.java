@@ -25,11 +25,9 @@ public class UsuarioCliente extends Usuario {
     @OneToMany(mappedBy = "fkCliente")
     private List<Favorito> favoritos;
 
-    @Past
     private LocalDate dataNasc;
 
-    @CPF
-    private String CPF;
+    private String cpf;
 
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Pet> pets;
@@ -53,11 +51,43 @@ public class UsuarioCliente extends Usuario {
         this.dataNasc = dataNasc;
     }
 
-    public String getCPF() {
-        return CPF;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
+    }
+
+    public List<AvaliacaoPetshop> getAvaliacoes() {
+        return avaliacoes;
+    }
+
+    public void setAvaliacoes(List<AvaliacaoPetshop> avaliacoes) {
+        this.avaliacoes = avaliacoes;
+    }
+
+    public List<Favorito> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(List<Favorito> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public List<Pet> getPets() {
+        return pets;
+    }
+
+    public void setPets(List<Pet> pets) {
+        this.pets = pets;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
     }
 }

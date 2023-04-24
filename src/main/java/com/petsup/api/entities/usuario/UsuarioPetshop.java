@@ -28,21 +28,19 @@ public class UsuarioPetshop extends Usuario {
     @OneToMany(mappedBy = "fkPetshop")
     private List<Servico> servicos;
 
-    @NotBlank
-    @Size(min = 6, max = 100)
     private String razaoSocial;
 
-    private String CNPJ;
+    private String cnpj;
 
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
-    public String getCNPJ() {
-        return CNPJ;
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setCNPJ(String CNPJ) {
-        this.CNPJ = CNPJ;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getRazaoSocial() {
@@ -51,5 +49,37 @@ public class UsuarioPetshop extends Usuario {
 
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
+    }
+
+    public List<AvaliacaoPetshop> getAvaliacoes() {
+        return avaliacoes;
+    }
+
+    public void setAvaliacoes(List<AvaliacaoPetshop> avaliacoes) {
+        this.avaliacoes = avaliacoes;
+    }
+
+    public List<Favorito> getFavoritos() {
+        return favoritos;
+    }
+
+    public void setFavoritos(List<Favorito> favoritos) {
+        this.favoritos = favoritos;
+    }
+
+    public List<Servico> getServicos() {
+        return servicos;
+    }
+
+    public void setServicos(List<Servico> servicos) {
+        this.servicos = servicos;
+    }
+
+    public List<Agendamento> getAgendamentos() {
+        return agendamentos;
+    }
+
+    public void setAgendamentos(List<Agendamento> agendamentos) {
+        this.agendamentos = agendamentos;
     }
 }

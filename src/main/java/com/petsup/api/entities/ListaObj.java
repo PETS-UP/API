@@ -96,6 +96,16 @@ public class ListaObj <T>{
         }
     }
 
+    public T removeDeixaNulo(Integer indice) {
+        vetor[indice] = null;
+        return null;
+    }
+
+    public T adicionaNoNulo(Integer indice, T elemento) {
+        vetor[indice] = elemento;
+        return null;
+    }
+
     /* limpa() - limpa a lista */
     public void limpa() {
         nroElem = 0;
