@@ -28,21 +28,19 @@ public class UsuarioPetshop extends Usuario {
     @OneToMany(mappedBy = "fkPetshop")
     private List<Servico> servicos;
 
-    @NotBlank
-    @Size(min = 6, max = 100)
     private String razaoSocial;
 
-    private String CNPJ;
+    private String cnpj;
 
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
-    public String getCNPJ() {
-        return CNPJ;
+    public String getCnpj() {
+        return cnpj;
     }
 
-    public void setCNPJ(String CNPJ) {
-        this.CNPJ = CNPJ;
+    public void setCnpj(String cnpj) {
+        this.cnpj = cnpj;
     }
 
     public String getRazaoSocial() {

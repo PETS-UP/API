@@ -25,11 +25,9 @@ public class UsuarioCliente extends Usuario {
     @OneToMany(mappedBy = "fkCliente")
     private List<Favorito> favoritos;
 
-    @Past
     private LocalDate dataNasc;
 
-    @CPF
-    private String CPF;
+    private String cpf;
 
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Pet> pets;
@@ -53,12 +51,12 @@ public class UsuarioCliente extends Usuario {
         this.dataNasc = dataNasc;
     }
 
-    public String getCPF() {
-        return CPF;
+    public String getCpf() {
+        return cpf;
     }
 
-    public void setCPF(String CPF) {
-        this.CPF = CPF;
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 
     public List<AvaliacaoPetshop> getAvaliacoes() {
