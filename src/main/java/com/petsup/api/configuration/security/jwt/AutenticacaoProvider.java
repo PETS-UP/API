@@ -1,6 +1,6 @@
-package com.petsup.api.configuration.security;
+package com.petsup.api.configuration.security.jwt;
 
-import com.petsup.api.service.autentication.AuthPetshopService;
+import com.petsup.api.service.autentication.AutenticacaoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -9,12 +9,12 @@ import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-public class AutenticacaoPetshopProvider implements AuthenticationProvider {
+public class AutenticacaoProvider implements AuthenticationProvider {
 
-    private final AuthPetshopService usuarioAutorizacaoService;
+    private final AutenticacaoService usuarioAutorizacaoService;
     private final PasswordEncoder passwordEncoder;
 
-    public AutenticacaoPetshopProvider(AuthPetshopService usuarioAutorizacaoService, PasswordEncoder passwordEncoder) {
+    public AutenticacaoProvider(AutenticacaoService usuarioAutorizacaoService, PasswordEncoder passwordEncoder) {
         this.usuarioAutorizacaoService = usuarioAutorizacaoService;
         this.passwordEncoder = passwordEncoder;
     }

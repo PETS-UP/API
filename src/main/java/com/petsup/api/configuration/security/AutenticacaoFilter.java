@@ -1,8 +1,7 @@
 package com.petsup.api.configuration.security;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.petsup.api.service.autentication.AuthClienteService;
-import com.petsup.api.service.autentication.AuthPetshopService;
+import com.petsup.api.service.autentication.AutenticacaoService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -19,16 +18,16 @@ import org.springframework.web.filter.OncePerRequestFilter;
 import java.io.IOException;
 import java.util.Objects;
 
-public class AutenticacaoFilterPetshop extends OncePerRequestFilter {
+public class AutenticacaoFilter extends OncePerRequestFilter {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilterPetshop.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(AutenticacaoFilter.class);
 
-    private final AuthPetshopService authPetshopService;
+    private final AutenticacaoService autenticacaoService;
 
     private final GerenciadorTokenJwt jwtTokenManager;
 
-    public AutenticacaoFilterPetshop(AuthPetshopService authPetshopService, GerenciadorTokenJwt jwtTokenManager) {
-        this.authPetshopService = authPetshopService;
+    public AutenticacaoFilter(AutenticacaoService autenticacaoService, GerenciadorTokenJwt jwtTokenManager) {
+        this.autenticacaoService = autenticacaoService;
         this.jwtTokenManager = jwtTokenManager;
     }
 
@@ -65,7 +64,7 @@ public class AutenticacaoFilterPetshop extends OncePerRequestFilter {
 
     private void addUsernameInContext(HttpServletRequest request, String username, String jwtToken) {
 
-        UserDetails userDetails = authPetshopService.loadUserByUsername(username);
+        UserDetails userDetails = autenticacaoService.loadUserByUsername(username);
 
         if (jwtTokenManager.validateToken(jwtToken, userDetails)) {
 

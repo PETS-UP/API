@@ -10,11 +10,15 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.stereotype.Service;
 
 import java.util.Optional;
 
-public class AuthPetshopService implements UserDetailsService{
+@Service
+public class AutenticacaoService implements UserDetailsService {
 
+    @Autowired
+    private ClienteRepository clienteRepository;
     @Autowired
     private PetshopRepository petshopRepository;
 
@@ -23,12 +27,15 @@ public class AuthPetshopService implements UserDetailsService{
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
         Optional<UsuarioPetshop> usuarioOpt = petshopRepository.findByEmail(username);
-
         if (usuarioOpt.isEmpty()) {
-
-            throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", username));
+            Optional<UsuarioCliente> usuarioOptCli = clienteRepository.findByEmail(username);
+            if(usuarioOptCli.isEmpty()){
+                throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", username));
+            }else{
+                return new ClienteDetalhesDto(usuarioOptCli.get());
+            }
+        }else{
+            return new PetshopDeatlhesDto(usuarioOpt.get());
         }
-
-        return new PetshopDeatlhesDto(usuarioOpt.get());
     }
 }
