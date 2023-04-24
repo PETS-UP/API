@@ -1,9 +1,9 @@
 package com.petsup.api.controllers;
 
+import com.petsup.api.entities.Pet;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
-import com.petsup.api.service.PetService;
-import com.petsup.api.service.dto.PetDto;
+import com.petsup.api.repositories.PetRepository;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -21,14 +21,15 @@ import java.util.Optional;
 public class PetController {
 
     @Autowired
-    private PetService petService;
+    private PetRepository petRepository;
 
     @Autowired
     private ClienteRepository clienteRepository;
 
     @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
-    @PostMapping("/{idCliente}")
-    public ResponseEntity<Void> postPet(@RequestBody @Valid PetDto petDto, @PathVariable Integer idCliente) {
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
+    @PostMapping
+    public ResponseEntity<Void> postPet(@RequestBody @Valid Pet pet, @RequestParam Integer idCliente) {
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
 
         if (clienteOptional.isEmpty()){
@@ -38,8 +39,8 @@ public class PetController {
         }
 
         UsuarioCliente cliente = clienteOptional.get();
-        petDto.setFkCliente(cliente);
-        petService.criarPet(petDto);
+        pet.setFkCliente(cliente);
+        petRepository.save(pet);
         return ResponseEntity.status(201).build();
     }
 
