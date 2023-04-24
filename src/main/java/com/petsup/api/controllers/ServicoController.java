@@ -27,7 +27,7 @@ public class ServicoController {
     private PetshopRepository petshopRepository;
 
     @ApiResponse(responseCode = "201", description = "Serviço cadastrado com sucesso.")
-    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
+    @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PostMapping
     public ResponseEntity<Void> postServico(@RequestBody @Valid Servico servico, @RequestParam Integer idPetshop) {
         Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
@@ -38,6 +38,8 @@ public class ServicoController {
             );
         }
 
+        UsuarioPetshop petshop = petshopOptional.get();
+        servico.setFkPetshop(petshop);
         servicoRepository.save(servico);
         return ResponseEntity.status(201).build();
     }
