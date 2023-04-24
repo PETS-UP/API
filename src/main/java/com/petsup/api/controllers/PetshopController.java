@@ -28,7 +28,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
-@Tag(name = "Petshops", description = "Requisicoes relacionadas a petshops")
+@Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
 @RestController
 @RequestMapping("/petshops")
 public class PetshopController {
@@ -55,7 +55,7 @@ public class PetshopController {
     @GetMapping
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
-    @ApiResponse(responseCode = "200", description = "petshops encontrados.")
+    @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
     public ResponseEntity<List<UsuarioPetshop>> getPetshops(){
         List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
         return usuarios.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuarios);
