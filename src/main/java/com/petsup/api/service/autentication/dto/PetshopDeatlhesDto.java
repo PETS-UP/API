@@ -22,7 +22,7 @@ public class PetshopDeatlhesDto implements UserDetails {
         this.senha = usuarioPetshop.getSenha();
         this.cep = usuarioPetshop.getCep();
         this.telefone = usuarioPetshop.getTelefone();
-        this.CNPJ = usuarioPetshop.getCNPJ();
+        this.CNPJ = usuarioPetshop.getCnpj();
         this.razaoSocial = usuarioPetshop.getRazaoSocial();
     }
 
