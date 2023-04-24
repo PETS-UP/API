@@ -23,12 +23,8 @@ public class Servico {
 
     private NomeServico nome;
 
-    @NotNull
-    @DecimalMin("0.0")
     private Double preco;
 
-    @NotBlank
-    @Column(length = 300)
     private String descricao;
 
     @OneToMany(mappedBy = "fkServico", fetch = FetchType.LAZY)
