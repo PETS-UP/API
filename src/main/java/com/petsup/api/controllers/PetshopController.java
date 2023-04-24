@@ -9,7 +9,11 @@ import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -24,6 +28,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.*;
 
+@Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
 @RestController
 @RequestMapping("/petshops")
 public class PetshopController {
@@ -40,29 +45,39 @@ public class PetshopController {
     //Crud inicio
     @PostMapping
     @SecurityRequirement(name = "Bearer")
+    @ApiResponse(responseCode = "201", description =
+            "Petshop cadastrado com sucesso.", content = @Content(schema = @Schema(hidden = true)))
     public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto){
         this.usuarioService.criarPetshop(usuarioDto);
         return ResponseEntity.status(201).build();
     }
 
     @GetMapping
+    @ApiResponse(responseCode = "204", description =
+            "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
     public ResponseEntity<List<UsuarioPetshop>> getPetshops(){
         List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
         return usuarios.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuarios);
     }
 
     @GetMapping("/{id}")
+    @ApiResponse(responseCode = "204", description =
+            "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
     public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id){
         return ResponseEntity.of(this.petshopRepository.findById(id));
     }
 
     @DeleteMapping
+    @ApiResponse(responseCode = "204", description = "Petshop deletado.")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id){
         this.petshopRepository.deleteById(id);
-        return ResponseEntity.status(200).build();
+        return ResponseEntity.status(204).build();
     }
 
     @PatchMapping("/{id}")
+    @ApiResponse(responseCode = "200", description = "Petshop atualizao.")
     public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
         UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
         return ResponseEntity.status(200).body(updateUser);
@@ -71,6 +86,7 @@ public class PetshopController {
     //Crud fim
     
     @GetMapping("/report/arquivo/{usuario}")
+    @ApiResponse(responseCode = "201", description = "Relatório gravado.")
     public ResponseEntity<Void> report(@PathVariable int usuario){
             List<Agendamento> as = agendamentoRepository.findByFkPetshopId(usuario);
 
@@ -233,6 +249,9 @@ public class PetshopController {
     }
 
     @GetMapping("/report/{usuario}")
+    @ApiResponse(responseCode = "204", description =
+            "Não há petshops com esse identificador.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
     public ResponseEntity<ListaObj<Agendamento>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
 
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
@@ -247,7 +266,7 @@ public class PetshopController {
 
         List<Agendamento> listaAgendamentos = usuarioPetshop.getAgendamentos();
 
-        ListaObj<Agendamento> listaLocal = new ListaObj<>(500);
+        ListaObj<Agendamento> listaLocal = new ListaObj<>(listaAgendamentos.size());
 
         if (listaAgendamentos.size() == 0) {
             return ResponseEntity.status(204).build();
