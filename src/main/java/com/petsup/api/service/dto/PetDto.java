@@ -24,8 +24,10 @@ public class PetDto {
     @NotNull
     private Integer castrado;
 
+    @NotNull
     private Especie especie;
 
+    @NotNull
     private Raca raca;
 
     public String getNome() {

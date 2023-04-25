@@ -21,7 +21,7 @@ public abstract class UsuarioDto {
     @Schema(description = "Senha do usuário", example = "12345678")
     private String senha;
     @NotBlank
-    @Schema(description = "CNPJ do petshop", example = "01001-000")
+    @Schema(description = "CEP do usuário", example = "01001-000")
     private String cep;
     @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
             message = "Indique um telefone válido")

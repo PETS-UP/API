@@ -6,18 +6,21 @@ import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
+import com.petsup.api.service.dto.AgendamentoDto;
+import com.petsup.api.service.dto.AgendamentoMapper;
+import com.petsup.api.service.dto.PetDto;
+import com.petsup.api.service.dto.PetMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
@@ -83,5 +86,25 @@ public class AgendamentoController {
         agendamento.setFkServico(servico);
         agendamentoRepository.save(agendamento);
         return ResponseEntity.status(201).build();
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao petshop.")
+    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o petshop não tenha agendamentos.")
+    @ApiResponse(responseCode = "404", description = "Petshop não encontrado")
+    @GetMapping
+    public ResponseEntity<List<AgendamentoDto>> getPetsByIdCliente(@RequestParam Integer idPetshop) {
+
+        if (petshopRepository.findById(idPetshop).isPresent()) {
+            List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
+            List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
+
+            for (Agendamento agendamento : agendamentos) {
+                agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(agendamento));
+            }
+
+            return agendamentoDtos.isEmpty() ? ResponseEntity.status(204).build()
+                    : ResponseEntity.status(200).body(agendamentoDtos);
+        }
+        return ResponseEntity.status(404).build();
     }
 }
