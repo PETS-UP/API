@@ -1,48 +1,34 @@
-package com.petsup.api.entities;
+package com.petsup.api.service.dto;
 
 import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.enums.Raca;
 import com.petsup.api.entities.usuario.UsuarioCliente;
-import jakarta.persistence.*;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
-import java.util.List;
 
-@Entity
-@Table(name = "Pet")
-public class Pet {
+public class PetDto {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Integer id;
-
+    @NotBlank
     private String nome;
 
+    @NotBlank
     private String sexo;
 
+    @NotNull
+    @PastOrPresent
     private LocalDate dataNasc;
 
+    @Min(0)
+    @Max(1)
+    @NotNull
     private Integer castrado;
 
+    @NotNull
     private Especie especie;
 
+    @NotNull
     private Raca raca;
-
-    @OneToMany(mappedBy = "fkPet", fetch = FetchType.LAZY)
-    private List<Agendamento> agendamentos;
-
-    @ManyToOne
-    @JoinColumn(name = "fkCliente")
-    private UsuarioCliente fkCliente;
-
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 
     public String getNome() {
         return nome;
@@ -92,19 +78,4 @@ public class Pet {
         this.raca = raca;
     }
 
-    public UsuarioCliente getFkCliente() {
-        return fkCliente;
-    }
-
-    public void setFkCliente(UsuarioCliente fkCliente) {
-        this.fkCliente = fkCliente;
-    }
-
-    public List<Agendamento> getAgendamentos() {
-        return agendamentos;
-    }
-
-    public void setAgendamentos(List<Agendamento> agendamentos) {
-        this.agendamentos = agendamentos;
-    }
 }

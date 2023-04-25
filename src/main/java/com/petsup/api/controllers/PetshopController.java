@@ -8,6 +8,7 @@ import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
@@ -65,9 +66,15 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
-    public ResponseEntity<List<UsuarioPetshop>> getPetshops(){
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshops(){
         List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
-        return usuarios.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuarios);
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+
+        for (UsuarioPetshop petshop : usuarios) {
+            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshop));
+        }
+
+        return petshopsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petshopsDto);
     }
 
     @GetMapping("/{id}")
