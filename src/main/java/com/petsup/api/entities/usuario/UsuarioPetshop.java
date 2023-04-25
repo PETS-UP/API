@@ -5,9 +5,6 @@ import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.Favorito;
 import com.petsup.api.entities.Servico;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.util.List;
 
@@ -34,6 +31,8 @@ public class UsuarioPetshop extends Usuario {
 
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+    private List<UsuarioCliente> inscritos;
 
     public String getCnpj() {
         return cnpj;
@@ -81,5 +80,26 @@ public class UsuarioPetshop extends Usuario {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public List<UsuarioCliente> getInscritos() {
+        return inscritos;
+    }
+
+    public void setInscritos(List<UsuarioCliente> inscritos) {
+        this.inscritos = inscritos;
+    }
+
+    // Observer
+    public void inscricao(UsuarioCliente listener){
+        inscritos.add(listener);
+    }
+
+    public void desinscricao(UsuarioCliente listener){
+        inscritos.remove(listener);
+    }
+
+    public void notifica(String emailRemetente, String emailDestinatario, String host){
+        inscritos.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario, host));
     }
 }

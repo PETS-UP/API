@@ -1,6 +1,5 @@
 package com.petsup.api.repositories;
 
-import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import org.springframework.data.jpa.repository.JpaRepository;
 
