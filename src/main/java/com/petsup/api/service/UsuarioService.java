@@ -45,11 +45,19 @@ public class UsuarioService {
 
     public void criarCliente(UsuarioClienteDto usuarioDto){
         final Usuario novoUsuario = UsuarioMapper.ofCliente(usuarioDto);
+
+        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
+        novoUsuario.setSenha(senhaCriptografada);
+
         this.usuarioRepository.save(novoUsuario);
     }
 
     public void criarPetshop(UsuarioPetshopDto usuarioDto){
         final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
+
+        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
+        novoUsuario.setSenha(senhaCriptografada);
+
         this.usuarioRepository.save(novoUsuario);
     }
 
