@@ -2,12 +2,15 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ListaObj;
+import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.PetshopRepository;
+import com.petsup.api.repositories.ServicoRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.dto.ServicoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
@@ -41,6 +44,9 @@ public class PetshopController {
     
     @Autowired
     private AgendamentoRepository agendamentoRepository;
+
+    @Autowired
+    private ServicoRepository servicoRepository;
     
     @Autowired
     private UsuarioService usuarioService;
@@ -97,6 +103,24 @@ public class PetshopController {
     public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
         UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
         return ResponseEntity.status(200).body(updateUser);
+    }
+
+    @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
+    @PatchMapping("/atualizar/preco")
+    public ResponseEntity<Servico> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico) {
+        Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
+
+        if (servicoOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        Servico servico = servicoOptional.get();
+        servico.setPreco(servicoAtt.getPreco());
+        servicoRepository.save(servico);
+        return ResponseEntity.status(200).body(servico);
     }
 
     //Crud fim
