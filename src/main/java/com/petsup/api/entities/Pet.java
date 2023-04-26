@@ -4,7 +4,6 @@ import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.enums.Raca;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
 import java.util.List;

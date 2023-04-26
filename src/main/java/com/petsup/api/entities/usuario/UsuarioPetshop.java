@@ -1,13 +1,7 @@
 package com.petsup.api.entities.usuario;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.AvaliacaoPetshop;
-import com.petsup.api.entities.Favorito;
-import com.petsup.api.entities.Servico;
+import com.petsup.api.entities.*;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Size;
-import org.hibernate.validator.constraints.br.CNPJ;
 
 import java.util.List;
 
@@ -34,6 +28,19 @@ public class UsuarioPetshop extends Usuario {
 
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<ClientePetshopSubscriber> inscritos;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCnpj() {
         return cnpj;
@@ -81,5 +88,25 @@ public class UsuarioPetshop extends Usuario {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public List<ClientePetshopSubscriber> getInscritos() {
+        return inscritos;
+    }
+
+    public void setInscritos(List<ClientePetshopSubscriber> inscritos) {
+        this.inscritos = inscritos;
+    }
+
+    public void inscricao(ClientePetshopSubscriber listener){
+        inscritos.add(listener);
+    }
+
+    public void desinscricao(ClientePetshopSubscriber listener){
+        inscritos.remove(listener);
+    }
+
+    public void notifica(String emailRemetente, String emailDestinatario){
+        inscritos.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario));
     }
 }

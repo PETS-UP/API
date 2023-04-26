@@ -1,13 +1,14 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.ClientePetshopSubscriber;
 import com.petsup.api.entities.ListaObj;
+import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
-import com.petsup.api.repositories.AgendamentoRepository;
-import com.petsup.api.repositories.PetshopRepository;
-import com.petsup.api.repositories.UsuarioRepository;
+import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
+import com.petsup.api.service.dto.ServicoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
@@ -43,7 +44,13 @@ public class PetshopController {
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
+    private ServicoRepository servicoRepository;
+
+    @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private ClientePetshopSubscriberRepository clientePetshopSubscriberRepository;
 
     //Crud inicio
     @PostMapping
@@ -93,10 +100,41 @@ public class PetshopController {
     }
 
     @PatchMapping("/{id}")
-    @ApiResponse(responseCode = "200", description = "Petshop atualizao.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario) {
+    @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
         UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
         return ResponseEntity.status(200).body(updateUser);
+    }
+
+    @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
+    @PatchMapping("/atualizar/preco")
+    public ResponseEntity<Servico> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+                                               @RequestParam Integer idPetshop) {
+        Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
+        Optional<UsuarioPetshop> petshopOptional = servicoRepository.findByFkPetshop(idPetshop);
+        Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
+                clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
+
+        if (servicoOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        Servico servico = servicoOptional.get();
+        UsuarioPetshop petshop = petshopOptional.get();
+        ClientePetshopSubscriber cps = clientePetshopSubscriberOptional.get();
+
+        if (servico.getPreco() > servicoAtt.getPreco()){
+            for (int i = 0; i < cps.getFkPetshop().getInscritos().size(); i++){
+            petshop.notifica(petshop.getEmail(), cps.getFkCliente().getEmail());
+            }
+        }
+
+        servico.setPreco(servicoAtt.getPreco());
+        servicoRepository.save(servico);
+        return ResponseEntity.status(200).body(servico);
     }
 
     //Crud fim

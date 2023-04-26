@@ -8,8 +8,6 @@ import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
-import com.petsup.api.service.dto.PetDto;
-import com.petsup.api.service.dto.PetMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

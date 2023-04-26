@@ -2,7 +2,6 @@ package com.petsup.api.service.dto;
 
 import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.enums.Raca;
-import com.petsup.api.entities.usuario.UsuarioCliente;
 import jakarta.validation.constraints.*;
 
 import java.time.LocalDate;
