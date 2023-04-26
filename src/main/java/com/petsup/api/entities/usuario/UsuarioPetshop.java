@@ -1,9 +1,6 @@
 package com.petsup.api.entities.usuario;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.AvaliacaoPetshop;
-import com.petsup.api.entities.Favorito;
-import com.petsup.api.entities.Servico;
+import com.petsup.api.entities.*;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -32,7 +29,18 @@ public class UsuarioPetshop extends Usuario {
     @OneToMany(mappedBy = "fkPetshop", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
 
-    private List<UsuarioCliente> inscritos;
+    @OneToMany(mappedBy = "fkPetshop")
+    private List<ClientePetshopSubscriber> inscritos;
+
+    @Override
+    public Integer getId() {
+        return id;
+    }
+
+    @Override
+    public void setId(Integer id) {
+        this.id = id;
+    }
 
     public String getCnpj() {
         return cnpj;
@@ -82,24 +90,23 @@ public class UsuarioPetshop extends Usuario {
         this.agendamentos = agendamentos;
     }
 
-    public List<UsuarioCliente> getInscritos() {
+    public List<ClientePetshopSubscriber> getInscritos() {
         return inscritos;
     }
 
-    public void setInscritos(List<UsuarioCliente> inscritos) {
+    public void setInscritos(List<ClientePetshopSubscriber> inscritos) {
         this.inscritos = inscritos;
     }
 
-    // Observer
-    public void inscricao(UsuarioCliente listener){
+    public void inscricao(ClientePetshopSubscriber listener){
         inscritos.add(listener);
     }
 
-    public void desinscricao(UsuarioCliente listener){
+    public void desinscricao(ClientePetshopSubscriber listener){
         inscritos.remove(listener);
     }
 
-    public void notifica(String emailRemetente, String emailDestinatario, String host){
-        inscritos.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario, host));
+    public void notifica(String emailRemetente, String emailDestinatario){
+        inscritos.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario));
     }
 }

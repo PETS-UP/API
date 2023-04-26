@@ -14,4 +14,5 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
 
     List<Agendamento> findByAgendamentos (Usuario usuario);
     Optional<UsuarioPetshop> findByEmail(String email);
+//    Optional<UsuarioPetshop> findBy
 }
