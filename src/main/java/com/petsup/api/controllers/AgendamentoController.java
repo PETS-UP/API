@@ -43,6 +43,7 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "201", description = "Serviço cadastrado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Entidade não encontrada.")
+    @PostMapping
     public ResponseEntity<Void> postAgendamento(@RequestBody @Valid Agendamento agendamento,
                                                 @RequestParam Integer idCliente, @RequestParam Integer idPetshop,
                                                 @RequestParam Integer idPet, @RequestParam Integer idServico) {
