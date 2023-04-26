@@ -38,19 +38,19 @@ public class PetshopController {
 
     @Autowired
     private PetshopRepository petshopRepository;
-    
+
     @Autowired
     private AgendamentoRepository agendamentoRepository;
-    
+
     @Autowired
     private UsuarioService usuarioService;
-    
+
     //Crud inicio
     @PostMapping
     @SecurityRequirement(name = "Bearer")
     @ApiResponse(responseCode = "201", description =
             "Petshop cadastrado com sucesso.", content = @Content(schema = @Schema(hidden = true)))
-    public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto){
+    public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto) {
         this.usuarioService.criarPetshop(usuarioDto);
         return ResponseEntity.status(201).build();
     }
@@ -66,7 +66,7 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
-    public ResponseEntity<List<UsuarioPetshopDto>> getPetshops(){
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshops() {
         List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
         List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
 
@@ -81,34 +81,34 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id){
+    public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id) {
         return ResponseEntity.of(this.petshopRepository.findById(id));
     }
 
     @DeleteMapping
     @ApiResponse(responseCode = "204", description = "Petshop deletado.")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id){
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         this.petshopRepository.deleteById(id);
         return ResponseEntity.status(204).build();
     }
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizao.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario) {
         UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
         return ResponseEntity.status(200).body(updateUser);
     }
 
     //Crud fim
-    
+
     @GetMapping("/report/arquivo/{usuario}")
     @ApiResponse(responseCode = "201", description = "Relatório gravado.")
-    public ResponseEntity<Void> report(@PathVariable int usuario){
-            List<Agendamento> as = agendamentoRepository.findByFkPetshopId(usuario);
+    public ResponseEntity<Void> report(@PathVariable int usuario) {
+        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(usuario);
 
         ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
 
-        for (int i = 0; i < as.size(); i++){
+        for (int i = 0; i < as.size(); i++) {
             listaLocal.adiciona(as.get(i));
         }
         gravaArquivoCsv(listaLocal, "agendamento");
@@ -121,7 +121,7 @@ public class PetshopController {
 //    Scanner leitorNum = new Scanner(System.in);
 //    int a = 0;
 
-    public static void leituraNomeCsv(int tamLista){
+    public static void leituraNomeCsv(int tamLista) {
         ListaObj<Agendamento> lista = new ListaObj(tamLista);
 //        Scanner leitorStr = new Scanner(System.in);
 //        Scanner leitorNum = new Scanner(System.in);
@@ -163,6 +163,7 @@ public class PetshopController {
 //        }
 //    } while(a != 0);
     }
+
     public static void gravaArquivoCsv(ListaObj<Agendamento> list, String nomeArq) {
         FileWriter arq = null;
         Formatter saida = null;
@@ -181,10 +182,10 @@ public class PetshopController {
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%d;%d;%s;%d;%.2f\n", a.getId(), a.getDataHora(),
+                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
-                        a.getFkPet().getNome(), a.getFkPet().getEspecie(), a.getFkPet().getRaca(),
-                        a.getFkPet().getSexo(), a.getFkServico(), a.getFkServico().getPreco());
+                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(), a.getFkPet().getRaca().toString(),
+                        a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
             }
 
         } catch (FormatterClosedException fc) {
@@ -221,7 +222,7 @@ public class PetshopController {
         }
 
         try {
-            System.out.printf("%-4S %-11S %-20S %-20S %-15 %-15S %-15S %-1S %-10S %-6S\n",
+            System.out.printf("%-4S %-11S %-20S %-20S %-15S %-15S %-15S %-1S %-10S %-6S\n",
                     "id", "dia/horario", "cliente", "email", "pet", "especie", "raca", "sexo", "servico", "valor");
 
             while (entrada.hasNext()) {
@@ -272,7 +273,7 @@ public class PetshopController {
 
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
 
-        if (usuarioPetshopOptional.isEmpty()){
+        if (usuarioPetshopOptional.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
             );
@@ -288,15 +289,15 @@ public class PetshopController {
             return ResponseEntity.status(204).build();
         }
 
-        for (int i = 0; i < listaAgendamentos.size(); i++){
+        for (int i = 0; i < listaAgendamentos.size(); i++) {
             listaLocal.adiciona(listaAgendamentos.get(i));
         }
 
         int i, j, indMenor;
-        for (i = 0; i < listaAgendamentos.size() - 1; i++){
+        for (i = 0; i < listaAgendamentos.size() - 1; i++) {
             indMenor = i;
-            for (j = i+1; j < listaAgendamentos.size(); j++){
-                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(indMenor).getDataHora())){
+            for (j = i + 1; j < listaAgendamentos.size(); j++) {
+                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(indMenor).getDataHora())) {
                     indMenor = j;
                 }
             }
