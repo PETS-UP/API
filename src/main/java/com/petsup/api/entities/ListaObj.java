@@ -86,6 +86,10 @@ public class ListaObj <T>{
         return nroElem;
     }
 
+    public T[] getVetor() {
+        return vetor;
+    }
+
     /* getElemento() - recebe um indice e retorna o elemento desse indice */
     public T getElemento(int indice) {
         if (indice < 0 || indice >= nroElem) {   // se indice invalido

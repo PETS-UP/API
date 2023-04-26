@@ -87,11 +87,11 @@ public class AgendamentoController {
         return ResponseEntity.status(201).build();
     }
 
-    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao petshop.")
-    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o petshop não tenha agendamentos.")
-    @ApiResponse(responseCode = "404", description = "Petshop não encontrado")
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao pet shop.")
+    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
+    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado")
     @GetMapping
-    public ResponseEntity<List<AgendamentoDto>> getPetsByIdCliente(@RequestParam Integer idPetshop) {
+    public ResponseEntity<List<AgendamentoDto>> getPetsByIdPetshop(@RequestParam Integer idPetshop) {
 
         if (petshopRepository.findById(idPetshop).isPresent()) {
             List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
