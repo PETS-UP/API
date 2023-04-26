@@ -11,6 +11,8 @@ import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.dto.*;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
+import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.util.GeradorCsv;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -137,168 +139,31 @@ public class PetshopController {
 
     //Crud fim
 
-    @GetMapping("/report/arquivo/{usuario}")
+    @GetMapping("/report/arquivo/{id}")
     @ApiResponse(responseCode = "201", description = "Relatório gravado.")
-    public ResponseEntity<Void> report(@PathVariable int usuario) {
-        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(usuario);
+    public ResponseEntity<Void> gerarReport(@PathVariable int id) {
+        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
 
         ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
 
         for (int i = 0; i < as.size(); i++) {
             listaLocal.adiciona(as.get(i));
         }
-        gravaArquivoCsv(listaLocal, "agendamento");
-        //return ResponseEntity.status(401).build();
+        GeradorCsv.gravaArquivoCsv(listaLocal);
         return ResponseEntity.status(201).build();
     }
 
-//    ListaObj<Agendamento> lista = new ListaObj(10);
-//    Scanner leitorStr = new Scanner(System.in);
-//    Scanner leitorNum = new Scanner(System.in);
-//    int a = 0;
-
-    public static void leituraNomeCsv(int tamLista) {
-        ListaObj<Agendamento> lista = new ListaObj(tamLista);
-//        Scanner leitorStr = new Scanner(System.in);
-//        Scanner leitorNum = new Scanner(System.in);
-        String nomeArq = "agendamento";
-//        int a = -1;
-
-        lista.exibe();
-
-        gravaArquivoCsv(lista, nomeArq);
-        leArquivoCsv(nomeArq);
-
-//        do {
-//        System.out.println("\n*------------------------------*" +
-//                "\n|    Exercício arquivo CSV     |" +
-//                "\n|------------------------------|" +
-//                "\n| Gravar um arquivo (digite 1) |" +
-//                "\n| Ler um arquivo    (digite 2) |" +
-//                "\n| Cancelar          (digite 0) |" +
-//                "\n*------------------------------*" +
-//                "\nEscolha uma opção:");
-//        try {
-//            a = leitorNum.nextInt();
-//        } catch (Exception e){
-//            System.out.println("Digite um número entre 0, 1 e 2");
-//        }
-//
-//        if (a == 1){
-//            System.out.println("Nome do arquivo: ");
-//            String l = leitorStr.nextLine();
-//            gravaArquivoCsv(lista, l);
-//        } else if (a == 2) {
-//            System.out.println("Nome do arquivo: ");
-//            String l = leitorStr.nextLine();
-//            leArquivoCsv(l);
-//        } else if (a == 0) {
-//            System.out.println("Execução finalizada");
-//        } else {
-//            System.out.println("Digite um número entre 0, 1 ou 2");
-//        }
-//    } while(a != 0);
-    }
-
-    public static void gravaArquivoCsv(ListaObj<Agendamento> list, String nomeArq) {
-        FileWriter arq = null;
-        Formatter saida = null;
-        boolean bool = false;
-
-        nomeArq += ".csv";
-
-        try {
-            arq = new FileWriter(nomeArq);
-            saida = new Formatter(arq);
-        } catch (IOException io) {
-            System.out.println("Erro ao abrir o arquivo");
-            System.exit(1);
-        }
-
-        try {
-            for (int i = 0; i < list.getTamanho(); i++) {
-                Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
-                        a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
-                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(), a.getFkPet().getRaca().toString(),
-                        a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
+    @GetMapping("/download/{id}")
+    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos")
+    public ResponseEntity<byte[]> downlad(@PathVariable int id){
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+            //Transfere elementos de list para agendamentos
+            for (int i = 0; i < list.size(); i++) {
+                agendamentos.adiciona(list.get(i));
             }
-
-        } catch (FormatterClosedException fc) {
-            System.out.println("Erro ao gravar o arquivo");
-            bool = true;
-        } finally {
-            saida.close();
-
-            try {
-                arq.close();
-            } catch (IOException io) {
-                System.out.println("Erro ao fechar o arquivo");
-                bool = true;
-            }
-
-            if (bool) {
-                System.exit(1);
-            }
-        }
-        leArquivoCsv(nomeArq);
-    }
-
-    public static void leArquivoCsv(String nomeArq) {
-        FileReader arq = null;
-        Scanner entrada = null;
-        boolean bool = false;
-
-        try {
-            arq = new FileReader(nomeArq);
-            entrada = new Scanner(arq).useDelimiter(";|\\n");
-        } catch (FileNotFoundException fn) {
-            System.out.println("Arquivo não encontrado");
-            System.exit(1);
-        }
-
-        try {
-            System.out.printf("%-4S %-11S %-20S %-20S %-15S %-15S %-15S %-1S %-10S %-6S\n",
-                    "id", "dia/horario", "cliente", "email", "pet", "especie", "raca", "sexo", "servico", "valor");
-
-            while (entrada.hasNext()) {
-                int id = entrada.nextInt();
-                String diaHorario = entrada.next();
-                //LocalDate.parse(diaHorario);
-                String cliente = entrada.next();
-                String email = entrada.next();
-                String pet = entrada.next();
-                int especie = entrada.nextInt();
-                int raca = entrada.nextInt();
-                String sexo = entrada.next();
-                int servico = entrada.nextInt();
-                double valor = entrada.nextDouble();
-
-                System.out.printf("%04d %-11S %-20S %-20S %-15S %-15d %-15d %-1S %-10d %-6.2f\n",
-                        id, diaHorario, cliente, email, pet, especie, raca, sexo, servico, valor);
-            }
-
-        } catch (NoSuchElementException ns) {
-            System.out.println("Arquivo com problema");
-            bool = true;
-        } catch (IllegalStateException is) {
-            System.out.println("Erro na leitura do arquivo");
-            bool = true;
-        } finally {
-            entrada.close();
-
-            try {
-                arq.close();
-            } catch (IOException io) {
-                System.out.println("Erro ao fechar o arquivo");
-                bool = true;
-            }
-
-            if (bool) {
-                System.exit(1);
-            }
-        }
-
+        GeradorCsv.gravaArquivoCsv(agendamentos);
+        return GeradorCsv.buscaArquivoCsv();
     }
 
     @GetMapping("/report/{usuario}")
@@ -344,23 +209,6 @@ public class PetshopController {
             listaLocal.removeDeixaNulo(i);
             listaLocal.adicionaNoNulo(i, ag);
         }
-
-
-//        for (int i = 0; i < listaLocal.getTamanho() - 1; i++) {
-//            int aux = i;
-//            for (int j = i + 1; j < listaLocal.getTamanho() - 1; j++) {
-//                if (listaLocal.getElemento(j).getDataHora().isBefore(listaLocal.getElemento(aux).getDataHora())) {
-//                    aux = j;
-//                }
-//            }
-//            Agendamento ag = listaLocal.getElemento(aux);
-//            //ag = listaLocal.getElemento(i);
-//            listaLocal.removeDeixaNulo(aux);
-//            listaLocal.adicionaNoNulo(aux, listaLocal.getElemento(i));
-//            listaLocal.removeDeixaNulo(i);
-//            listaLocal.adicionaNoNulo(i, ag);
-//
-//        }
 
         return ResponseEntity.status(200).body(listaLocal);
     }
