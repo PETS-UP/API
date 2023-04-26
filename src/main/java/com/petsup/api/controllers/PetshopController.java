@@ -8,11 +8,9 @@ import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
-import com.petsup.api.service.dto.ServicoDto;
-import com.petsup.api.service.dto.UsuarioMapper;
+import com.petsup.api.service.dto.*;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
-import com.petsup.api.service.dto.UsuarioPetshopDto;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -307,7 +305,7 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Não há petshops com esse identificador.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
-    public ResponseEntity<ListaObj<Agendamento>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
+    public ResponseEntity<ListaObj<AgendamentoDto>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
 
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
 
@@ -319,16 +317,16 @@ public class PetshopController {
 
         UsuarioPetshop usuarioPetshop = usuarioPetshopOptional.get();
 
-        List<Agendamento> listaAgendamentos = usuarioPetshop.getAgendamentos();
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
 
-        ListaObj<Agendamento> listaLocal = new ListaObj<>(listaAgendamentos.size());
+        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
 
         if (listaAgendamentos.size() == 0) {
             return ResponseEntity.status(204).build();
         }
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-            listaLocal.adiciona(listaAgendamentos.get(i));
+            listaLocal.adiciona(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
         }
 
         int i, j, indMenor;
@@ -339,7 +337,7 @@ public class PetshopController {
                     indMenor = j;
                 }
             }
-            Agendamento ag = listaLocal.getElemento(indMenor);
+            AgendamentoDto ag = listaLocal.getElemento(indMenor);
             //ag = listaLocal.getElemento(i);
             listaLocal.removeDeixaNulo(indMenor);
             listaLocal.adicionaNoNulo(indMenor, listaLocal.getElemento(i));

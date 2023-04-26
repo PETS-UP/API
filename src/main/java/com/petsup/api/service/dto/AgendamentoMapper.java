@@ -10,6 +10,7 @@ public class AgendamentoMapper {
         agendamentoDto.setId(agendamento.getId());
         agendamentoDto.setDataHora(agendamento.getDataHora());
         agendamentoDto.setNomeCliente(agendamento.getFkCliente().getNome());
+        agendamentoDto.setEmailCliente(agendamento.getFkCliente().getEmail());
         agendamentoDto.setNomePetshop(agendamento.getFkPetshop().getNome());
         agendamentoDto.setNomePet(agendamento.getFkPet().getNome());
         agendamentoDto.setNomePet(agendamento.getFkPet().getNome());
