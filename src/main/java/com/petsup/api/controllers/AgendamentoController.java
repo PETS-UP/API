@@ -8,8 +8,6 @@ import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
-import com.petsup.api.service.dto.PetDto;
-import com.petsup.api.service.dto.PetMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -45,6 +43,7 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "201", description = "Serviço cadastrado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Entidade não encontrada.")
+    @PostMapping
     public ResponseEntity<Void> postAgendamento(@RequestBody @Valid Agendamento agendamento,
                                                 @RequestParam Integer idCliente, @RequestParam Integer idPetshop,
                                                 @RequestParam Integer idPet, @RequestParam Integer idServico) {
@@ -88,11 +87,11 @@ public class AgendamentoController {
         return ResponseEntity.status(201).build();
     }
 
-    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao petshop.")
-    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o petshop não tenha agendamentos.")
-    @ApiResponse(responseCode = "404", description = "Petshop não encontrado")
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao pet shop.")
+    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
+    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado")
     @GetMapping
-    public ResponseEntity<List<AgendamentoDto>> getPetsByIdCliente(@RequestParam Integer idPetshop) {
+    public ResponseEntity<List<AgendamentoDto>> getPetsByIdPetshop(@RequestParam Integer idPetshop) {
 
         if (petshopRepository.findById(idPetshop).isPresent()) {
             List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);

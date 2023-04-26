@@ -1,6 +1,5 @@
 package com.petsup.api.service.autentication.dto;
 
-import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -13,7 +12,7 @@ public class PetshopDeatlhesDto implements UserDetails {
     private final String senha;
     private final String cep;
     private final String telefone;
-    private final String CNPJ;
+    private final String cnpj;
     private String razaoSocial;
 
     public PetshopDeatlhesDto(UsuarioPetshop usuarioPetshop) {
@@ -22,7 +21,7 @@ public class PetshopDeatlhesDto implements UserDetails {
         this.senha = usuarioPetshop.getSenha();
         this.cep = usuarioPetshop.getCep();
         this.telefone = usuarioPetshop.getTelefone();
-        this.CNPJ = usuarioPetshop.getCNPJ();
+        this.cnpj = usuarioPetshop.getCnpj();
         this.razaoSocial = usuarioPetshop.getRazaoSocial();
     }
 

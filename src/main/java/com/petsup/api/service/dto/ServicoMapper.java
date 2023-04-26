@@ -9,7 +9,7 @@ public class ServicoMapper {
 
         servicoDto.setNome(servico.getNome());
         servicoDto.setPreco(servico.getPreco());
-        servicoDto.setDescricao(servicoDto.getDescricao());
+        servicoDto.setDescricao(servico.getDescricao());
 
         return servicoDto;
     }

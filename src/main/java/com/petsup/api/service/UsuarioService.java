@@ -12,7 +12,6 @@ import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
-import com.petsup.api.service.dto.UsuarioDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -45,11 +44,19 @@ public class UsuarioService {
 
     public void criarCliente(UsuarioClienteDto usuarioDto){
         final Usuario novoUsuario = UsuarioMapper.ofCliente(usuarioDto);
+
+        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
+        novoUsuario.setSenha(senhaCriptografada);
+
         this.usuarioRepository.save(novoUsuario);
     }
 
     public void criarPetshop(UsuarioPetshopDto usuarioDto){
         final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
+
+        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
+        novoUsuario.setSenha(senhaCriptografada);
+
         this.usuarioRepository.save(novoUsuario);
     }
 

@@ -12,7 +12,7 @@ public class ClienteDetalhesDto implements UserDetails {
     private final String senha;
     private final String cep;
     private final String telefone;
-    private final String CPF;
+    private final String cpf;
 
     public ClienteDetalhesDto(UsuarioCliente usuarioCliente) {
         this.nome = usuarioCliente.getNome();
@@ -20,7 +20,7 @@ public class ClienteDetalhesDto implements UserDetails {
         this.senha = usuarioCliente.getSenha();
         this.cep = usuarioCliente.getCep();
         this.telefone = usuarioCliente.getTelefone();
-        this.CPF = usuarioCliente.getCpf();
+        this.cpf = usuarioCliente.getCpf();
     }
 
     public String getNome() {

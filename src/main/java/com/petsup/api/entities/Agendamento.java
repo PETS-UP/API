@@ -1,6 +1,5 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import jakarta.persistence.*;
@@ -17,6 +16,8 @@ public class Agendamento {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
+    @NotNull
+    @Future
     private LocalDateTime dataHora;
 
     @ManyToOne
@@ -47,7 +48,7 @@ public class Agendamento {
         return dataHora;
     }
 
-    public void setDataHora(LocalDateTime dataHora) {
+    public void setDataHora(LocalDateTime dataHora)  {
         this.dataHora = dataHora;
     }
 
