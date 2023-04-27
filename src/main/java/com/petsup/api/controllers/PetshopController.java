@@ -169,8 +169,9 @@ public class PetshopController {
 
     @GetMapping("/report/{usuario}")
     @ApiResponse(responseCode = "204", description =
-            "Não há petshops com esse identificador.", content = @Content(schema = @Schema(hidden = true)))
+            "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
+    @ApiResponse(responseCode = "404", description = "Não há petshops com esse identificador.")
     public ResponseEntity<ListaObj<AgendamentoDto>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
 
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
@@ -185,11 +186,53 @@ public class PetshopController {
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
 
-        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
-
         if (listaAgendamentos.size() == 0) {
             return ResponseEntity.status(204).build();
         }
+
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+
+        return ResponseEntity.status(200).body(listaLocal);
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
+    @GetMapping("report/agendamento/{usuario}")
+    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
+
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+        Optional<AgendamentoDto> agendamentoDtoOptional = pesquisaBinaria(listaLocal, dataHora);
+
+        if (agendamentoDtoOptional.isPresent()) {
+            return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    public static Optional<AgendamentoDto> pesquisaBinaria(ListaObj<AgendamentoDto> agendamentos, LocalDateTime dataHoraAgendamento) {
+        int inicio = 0;
+        int fim = agendamentos.getTamanho() - 1;
+        Optional<AgendamentoDto> agendamentoDtoOptional;
+
+        do {
+            int meio = (inicio + fim) / 2;
+            if (dataHoraAgendamento.isEqual(agendamentos.getElemento(meio).getDataHora())) {
+                agendamentoDtoOptional = Optional.of(agendamentos.getElemento(meio));
+                return agendamentoDtoOptional;
+            } else {
+                if (dataHoraAgendamento.isAfter(agendamentos.getElemento(meio).getDataHora())) {
+                    inicio = meio + 1;
+                } else {
+                    fim = meio - 1;
+                }
+            }
+        } while (inicio <= fim);
+        return Optional.empty();
+    }
+
+    public static ListaObj<AgendamentoDto> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
+
+        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
             listaLocal.adiciona(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
@@ -210,31 +253,6 @@ public class PetshopController {
             listaLocal.removeDeixaNulo(i);
             listaLocal.adicionaNoNulo(i, ag);
         }
-
-        return ResponseEntity.status(200).body(listaLocal);
-    }
-
-    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData() {
-
-
-    }
-
-    public AgendamentoDto pesquisaBinaria(ListaObj<AgendamentoDto> agendamentos, LocalDateTime dataHoraAgendamento) {
-        int inicio = 0;
-        int fim = agendamentos.getTamanho() - 1;
-
-        do {
-            int meio = (inicio + fim) / 2;
-            if (dataHoraAgendamento == agendamentos.getElemento(meio).getDataHora()) {
-                return agendamentos.getElemento(meio);
-            } else {
-                if (dataHoraAgendamento > agendamentos.getElemento(meio).getDataHora()) {
-                    inicio = meio + 1;
-                } else {
-                    fim = meio - 1;
-                }
-            }
-        } while (inicio <= fim);
-        return -1;
+        return listaLocal;
     }
 }
