@@ -5,6 +5,7 @@ import com.petsup.api.entities.ClientePetshopSubscriber;
 import com.petsup.api.entities.ListaObj;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
+import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
@@ -48,6 +49,9 @@ public class PetshopController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private ClientePetshopSubscriberRepository clientePetshopSubscriberRepository;
@@ -164,6 +168,38 @@ public class PetshopController {
             }
         GeradorCsv.gravaArquivoCsv(agendamentos);
         return GeradorCsv.buscaArquivoCsv();
+    }
+
+    @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
+    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
+    @PostMapping("/inscrever/{idPetshop}")
+    public ResponseEntity<Void> subscribeToPetshop(@PathVariable Integer idPetshop, @RequestParam Integer idCliente) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+
+        if (clienteOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Cliente não encontrado."
+            );
+        }
+
+        if (petshopOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Pet shop não encontrado."
+            );
+        }
+
+        UsuarioCliente usuarioCliente = clienteOptional.get();
+        UsuarioPetshop usuarioPetshop = petshopOptional.get();
+        ClientePetshopSubscriber inscrito = new ClientePetshopSubscriber();
+        inscrito.setFkCliente(usuarioCliente);
+        inscrito.setFkPetshop(usuarioPetshop);
+        clientePetshopSubscriberRepository.save(inscrito);
+
+        return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/report/{usuario}")
