@@ -13,5 +13,5 @@ import java.util.Optional;
 public interface ServicoRepository extends JpaRepository<Servico, Integer> {
 
     List<Servico> findByFkPetshopId(int fkPetshop);
-    Optional<UsuarioPetshop> findByFkPetshop(Integer integer);
+    Optional<UsuarioPetshop> findFkPetshopById(Integer integer);
 }

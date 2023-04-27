@@ -109,12 +109,12 @@ public class PetshopController {
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/preco")
-    public ResponseEntity<Servico> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+    public ResponseEntity<ServicoDto> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
                                                @RequestParam Integer idPetshop) {
         Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
-        Optional<UsuarioPetshop> petshopOptional = servicoRepository.findByFkPetshop(idPetshop);
-        Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
-                clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+        //Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
+        //        clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
 
         if (servicoOptional.isEmpty()){
             throw new ResponseStatusException(
@@ -124,17 +124,17 @@ public class PetshopController {
 
         Servico servico = servicoOptional.get();
         UsuarioPetshop petshop = petshopOptional.get();
-        ClientePetshopSubscriber cps = clientePetshopSubscriberOptional.get();
+        ClientePetshopSubscriber cps;
 
         if (servico.getPreco() > servicoAtt.getPreco()){
-            for (int i = 0; i < cps.getFkPetshop().getInscritos().size(); i++){
-            petshop.notifica(petshop.getEmail(), cps.getFkCliente().getEmail());
+            for (int i = 0; i < petshop.getInscritos().size(); i++){
+            petshop.notifica(petshop.getEmail(), petshop.getInscritos().get(i).getFkCliente().getEmail());
             }
         }
 
         servico.setPreco(servicoAtt.getPreco());
         servicoRepository.save(servico);
-        return ResponseEntity.status(200).body(servico);
+        return ResponseEntity.status(200).body(servicoAtt);
     }
 
     //Crud fim
