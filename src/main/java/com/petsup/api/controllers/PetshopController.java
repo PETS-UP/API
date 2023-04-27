@@ -30,6 +30,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
@@ -155,7 +156,7 @@ public class PetshopController {
 
     @GetMapping("/download/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos")
-    public ResponseEntity<byte[]> downlad(@PathVariable int id){
+    public ResponseEntity<byte[]> download(@PathVariable int id){
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
             //Transfere elementos de list para agendamentos
@@ -211,5 +212,29 @@ public class PetshopController {
         }
 
         return ResponseEntity.status(200).body(listaLocal);
+    }
+
+    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData() {
+
+
+    }
+
+    public AgendamentoDto pesquisaBinaria(ListaObj<AgendamentoDto> agendamentos, LocalDateTime dataHoraAgendamento) {
+        int inicio = 0;
+        int fim = agendamentos.getTamanho() - 1;
+
+        do {
+            int meio = (inicio + fim) / 2;
+            if (dataHoraAgendamento == agendamentos.getElemento(meio).getDataHora()) {
+                return agendamentos.getElemento(meio);
+            } else {
+                if (dataHoraAgendamento > agendamentos.getElemento(meio).getDataHora()) {
+                    inicio = meio + 1;
+                } else {
+                    fim = meio - 1;
+                }
+            }
+        } while (inicio <= fim);
+        return -1;
     }
 }
