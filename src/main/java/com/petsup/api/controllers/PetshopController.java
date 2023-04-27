@@ -5,6 +5,7 @@ import com.petsup.api.entities.ClientePetshopSubscriber;
 import com.petsup.api.entities.ListaObj;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
+import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
@@ -49,6 +50,9 @@ public class PetshopController {
 
     @Autowired
     private UsuarioService usuarioService;
+
+    @Autowired
+    private ClienteRepository clienteRepository;
 
     @Autowired
     private ClientePetshopSubscriberRepository clientePetshopSubscriberRepository;
@@ -110,12 +114,12 @@ public class PetshopController {
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/preco")
-    public ResponseEntity<Servico> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+    public ResponseEntity<ServicoDto> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
                                                @RequestParam Integer idPetshop) {
         Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
-        Optional<UsuarioPetshop> petshopOptional = servicoRepository.findByFkPetshop(idPetshop);
-        Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
-                clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+        //Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
+        //        clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
 
         if (servicoOptional.isEmpty()){
             throw new ResponseStatusException(
@@ -125,17 +129,17 @@ public class PetshopController {
 
         Servico servico = servicoOptional.get();
         UsuarioPetshop petshop = petshopOptional.get();
-        ClientePetshopSubscriber cps = clientePetshopSubscriberOptional.get();
+        ClientePetshopSubscriber cps;
 
         if (servico.getPreco() > servicoAtt.getPreco()){
-            for (int i = 0; i < cps.getFkPetshop().getInscritos().size(); i++){
-            petshop.notifica(petshop.getEmail(), cps.getFkCliente().getEmail());
+            for (int i = 0; i < petshop.getInscritos().size(); i++){
+            petshop.notifica(petshop.getEmail(), petshop.getInscritos().get(i).getFkCliente().getEmail());
             }
         }
 
         servico.setPreco(servicoAtt.getPreco());
         servicoRepository.save(servico);
-        return ResponseEntity.status(200).body(servico);
+        return ResponseEntity.status(200).body(servicoAtt);
     }
 
     //Crud fim
@@ -165,6 +169,38 @@ public class PetshopController {
             }
         GeradorCsv.gravaArquivoCsv(agendamentos);
         return GeradorCsv.buscaArquivoCsv();
+    }
+
+    @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
+    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
+    @PostMapping("/inscrever/{idPetshop}")
+    public ResponseEntity<Void> subscribeToPetshop(@PathVariable Integer idPetshop, @RequestParam Integer idCliente) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+
+        if (clienteOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Cliente não encontrado."
+            );
+        }
+
+        if (petshopOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND,
+                    "Pet shop não encontrado."
+            );
+        }
+
+        UsuarioCliente usuarioCliente = clienteOptional.get();
+        UsuarioPetshop usuarioPetshop = petshopOptional.get();
+        ClientePetshopSubscriber inscrito = new ClientePetshopSubscriber();
+        inscrito.setFkCliente(usuarioCliente);
+        inscrito.setFkPetshop(usuarioPetshop);
+        clientePetshopSubscriberRepository.save(inscrito);
+
+        return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/report/{usuario}")
