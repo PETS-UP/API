@@ -89,12 +89,32 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao pet shop.")
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
-    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado")
-    @GetMapping
-    public ResponseEntity<List<AgendamentoDto>> getPetsByIdPetshop(@RequestParam Integer idPetshop) {
+    @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
+    @GetMapping("/petshop")
+    public ResponseEntity<List<AgendamentoDto>> getAgendamentosByIdPetshop(@RequestParam Integer idPetshop) {
 
         if (petshopRepository.findById(idPetshop).isPresent()) {
             List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
+            List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
+
+            for (Agendamento agendamento : agendamentos) {
+                agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(agendamento));
+            }
+
+            return agendamentoDtos.isEmpty() ? ResponseEntity.status(204).build()
+                    : ResponseEntity.status(200).body(agendamentoDtos);
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao cliente.")
+    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha agendamentos.")
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
+    @GetMapping("/cliente")
+    public ResponseEntity<List<AgendamentoDto>> getAgendamentosByIdCliente(@RequestParam Integer idCliente) {
+
+        if (clienteRepository.findById(idCliente).isPresent()) {
+            List<Agendamento> agendamentos = agendamentoRepository.findByFkClienteId(idCliente);
             List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
 
             for (Agendamento agendamento : agendamentos) {

@@ -10,4 +10,5 @@ import java.util.List;
 public interface AgendamentoRepository extends JpaRepository<Agendamento, Integer> {
 
     List<Agendamento> findByFkPetshopId(int fkPetshop);
+    List<Agendamento> findByFkClienteId(int fkCliente);
 }
