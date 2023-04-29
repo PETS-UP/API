@@ -14,6 +14,7 @@ import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.GeradorCsv;
+import com.petsup.api.util.GeradorTxt;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -144,9 +145,9 @@ public class PetshopController {
 
     //Crud fim
 
-    @GetMapping("/report/arquivo/{id}")
-    @ApiResponse(responseCode = "201", description = "Relatório gravado.")
-    public ResponseEntity<Void> gerarReport(@PathVariable int id) {
+    @GetMapping("/report/arquivo/csv/{id}")
+    @ApiResponse(responseCode = "201", description = "Relatório gravado em CSV.")
+    public ResponseEntity<Void> gerarReportCsv(@PathVariable int id) {
         List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
 
         ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
@@ -158,9 +159,23 @@ public class PetshopController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/download/{id}")
-    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos")
-    public ResponseEntity<byte[]> download(@PathVariable int id){
+    @GetMapping("/report/arquivo/txt/{id}")
+    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
+    public ResponseEntity<Void> gerarReportTxt(@PathVariable int id) {
+        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
+
+        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+
+        for (int i = 0; i < as.size(); i++) {
+            listaLocal.adiciona(as.get(i));
+        }
+        GeradorTxt.gravaArquivoTxt(listaLocal);
+        return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping("/download/csv/{id}")
+    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
+    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id){
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
             //Transfere elementos de list para agendamentos
@@ -169,6 +184,19 @@ public class PetshopController {
             }
         GeradorCsv.gravaArquivoCsv(agendamentos);
         return GeradorCsv.buscaArquivoCsv();
+    }
+
+    @GetMapping("/download/txt/{id}")
+    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
+    public ResponseEntity<byte[]> downloadTxt(@PathVariable int id){
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+        //Transfere elementos de list para agendamentos
+        for (int i = 0; i < list.size(); i++) {
+            agendamentos.adiciona(list.get(i));
+        }
+        GeradorTxt.gravaArquivoTxt(agendamentos);
+        return GeradorTxt.buscaArquivoTxt();
     }
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
