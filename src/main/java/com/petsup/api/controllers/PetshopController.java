@@ -132,7 +132,7 @@ public class PetshopController {
 
         if (servico.getPreco() > servicoAtt.getPreco()){
             for (int i = 0; i < petshop.getInscritos().size(); i++){
-            petshop.notifica(petshop.getEmail(), petshop.getInscritos().get(i).getFkCliente().getEmail());
+            petshop.notifica(petshop.getInscritos().get(i).getFkCliente().getEmail(), servicoAtt.getPreco());
             }
         }
 
