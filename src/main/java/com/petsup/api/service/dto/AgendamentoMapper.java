@@ -17,6 +17,7 @@ public class AgendamentoMapper {
         agendamentoDto.setEspecie(agendamento.getFkPet().getEspecie());
         agendamentoDto.setRaca(agendamento.getFkPet().getRaca());
         agendamentoDto.setSexo(agendamento.getFkPet().getSexo());
+        agendamentoDto.setServico(agendamento.getFkServico().getNome());
         agendamentoDto.setPreco(agendamento.getFkServico().getPreco());
 
         return agendamentoDto;

@@ -2,6 +2,7 @@ package com.petsup.api.service.dto;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.enums.Especie;
+import com.petsup.api.entities.enums.NomeServico;
 import com.petsup.api.entities.enums.Raca;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -24,9 +25,12 @@ public class AgendamentoDto {
     private String nomePet;
 
     private Especie especie;
+
     private Raca raca;
 
     private String sexo;
+
+    private NomeServico servico;
 
     private Double preco;
 
@@ -44,6 +48,10 @@ public class AgendamentoDto {
 
     public void setDataHora(LocalDateTime dataHora) {
         this.dataHora = dataHora;
+    }
+
+    public String getNomeCliente() {
+        return nomeCliente;
     }
 
     public void setNomeCliente(String nomeCliente) {
@@ -96,6 +104,14 @@ public class AgendamentoDto {
 
     public void setSexo(String sexo) {
         this.sexo = sexo;
+    }
+
+    public NomeServico getServico() {
+        return servico;
+    }
+
+    public void setServico(NomeServico servico) {
+        this.servico = servico;
     }
 
     public Double getPreco() {
