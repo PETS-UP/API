@@ -1,10 +1,12 @@
 package com.petsup.api.entities;
 
+import com.petsup.api.entities.notificacao.Mail;
 import com.petsup.api.entities.usuario.ClienteObserver;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import jakarta.persistence.*;
+import org.springframework.context.annotation.Bean;
 import org.springframework.mail.MailException;
 import org.springframework.mail.MailSender;
 import org.springframework.mail.SimpleMailMessage;
@@ -25,9 +27,6 @@ public class ClientePetshopSubscriber implements ClienteObserver {
 
     @ManyToOne
     UsuarioPetshop fkPetshop;
-
-    private MailSender mailSender;
-    private SimpleMailMessage templateMessage;
 
     public int getId() {
         return id;
@@ -51,14 +50,6 @@ public class ClientePetshopSubscriber implements ClienteObserver {
 
     public void setFkPetshop(UsuarioPetshop fkPetshop) {
         this.fkPetshop = fkPetshop;
-    }
-
-    public void setMailSender(MailSender mailSender) {
-        this.mailSender = mailSender;
-    }
-
-    public void setTemplateMessage(SimpleMailMessage templateMessage) {
-        this.templateMessage = templateMessage;
     }
 
     // Observer
@@ -133,13 +124,14 @@ public class ClientePetshopSubscriber implements ClienteObserver {
 //        } catch (MessagingException mex) {
 //            mex.printStackTrace();
 //        }
+        Mail instMail = new Mail();
 
-        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+        SimpleMailMessage msg = new SimpleMailMessage(instMail.getTemplateMessage());
         msg.setTo(email);
         msg.setText(
                  "Novo preço: " + preco);
         try{
-            this.mailSender.send(msg);
+            instMail.getMailSender().send(msg);
         }
         catch (MailException ex) {
             // simply log it and go on...
