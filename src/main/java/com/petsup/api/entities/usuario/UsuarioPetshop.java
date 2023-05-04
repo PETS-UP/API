@@ -1,6 +1,8 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.*;
+import com.petsup.api.service.dto.UsuarioClienteDto;
+import com.petsup.api.service.dto.UsuarioPetshopDto;
 import jakarta.persistence.*;
 
 import java.util.List;
@@ -106,7 +108,7 @@ public class UsuarioPetshop extends Usuario {
         inscritos.remove(listener);
     }
 
-    public void notifica(String emailRemetente, String emailDestinatario){
-        inscritos.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario));
+    public void notifica(String email, double preco){
+        inscritos.forEach(listener -> listener.atualiza(email, preco));
     }
 }
