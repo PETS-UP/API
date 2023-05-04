@@ -31,6 +31,7 @@ import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.*;
 
 @Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
@@ -159,7 +160,7 @@ public class PetshopController {
 
     @GetMapping("/download/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos")
-    public ResponseEntity<byte[]> downlad(@PathVariable int id){
+    public ResponseEntity<byte[]> download(@PathVariable int id){
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
             //Transfere elementos de list para agendamentos
@@ -204,8 +205,9 @@ public class PetshopController {
 
     @GetMapping("/report/{usuario}")
     @ApiResponse(responseCode = "204", description =
-            "Não há petshops com esse identificador.", content = @Content(schema = @Schema(hidden = true)))
+            "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
+    @ApiResponse(responseCode = "404", description = "Não há petshops com esse identificador.")
     public ResponseEntity<ListaObj<AgendamentoDto>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
 
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
@@ -220,11 +222,53 @@ public class PetshopController {
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
 
-        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
-
         if (listaAgendamentos.size() == 0) {
             return ResponseEntity.status(204).build();
         }
+
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+
+        return ResponseEntity.status(200).body(listaLocal);
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
+    @GetMapping("report/agendamento/{usuario}")
+    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
+
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+        Optional<AgendamentoDto> agendamentoDtoOptional = pesquisaBinaria(listaLocal, dataHora);
+
+        if (agendamentoDtoOptional.isPresent()) {
+            return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    public static Optional<AgendamentoDto> pesquisaBinaria(ListaObj<AgendamentoDto> agendamentos, LocalDateTime dataHoraAgendamento) {
+        int inicio = 0;
+        int fim = agendamentos.getTamanho() - 1;
+        Optional<AgendamentoDto> agendamentoDtoOptional;
+
+        do {
+            int meio = (inicio + fim) / 2;
+            if (dataHoraAgendamento.isEqual(agendamentos.getElemento(meio).getDataHora())) {
+                agendamentoDtoOptional = Optional.of(agendamentos.getElemento(meio));
+                return agendamentoDtoOptional;
+            } else {
+                if (dataHoraAgendamento.isAfter(agendamentos.getElemento(meio).getDataHora())) {
+                    inicio = meio + 1;
+                } else {
+                    fim = meio - 1;
+                }
+            }
+        } while (inicio <= fim);
+        return Optional.empty();
+    }
+
+    public static ListaObj<AgendamentoDto> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
+
+        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
             listaLocal.adiciona(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
@@ -245,7 +289,6 @@ public class PetshopController {
             listaLocal.removeDeixaNulo(i);
             listaLocal.adicionaNoNulo(i, ag);
         }
-
-        return ResponseEntity.status(200).body(listaLocal);
+        return listaLocal;
     }
 }
