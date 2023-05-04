@@ -1,7 +1,11 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.*;
+import com.petsup.api.service.dto.UsuarioClienteDto;
 import jakarta.persistence.*;
+import org.springframework.mail.MailException;
+import org.springframework.mail.MailSender;
+import org.springframework.mail.SimpleMailMessage;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -36,6 +40,9 @@ public class UsuarioCliente extends Usuario /*implements ClienteObserver*/ {
 
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
+
+//    private MailSender mailSender;
+//    private SimpleMailMessage templateMessage;
 
     public Integer getId() {
         return id;
@@ -101,8 +108,16 @@ public class UsuarioCliente extends Usuario /*implements ClienteObserver*/ {
         this.inscritos = inscritos;
     }
 
+//    public void setMailSender(MailSender mailSender) {
+//        this.mailSender = mailSender;
+//    }
+//
+//    public void setTemplateMessage(SimpleMailMessage templateMessage) {
+//        this.templateMessage = templateMessage;
+//    }
+
 //    @Override
-//    public void atualiza(String emailRemetente, String emailDestinatario) {
+//    public void atualiza(UsuarioClienteDto usuarioClienteDto) {
 //        // Recipient's email ID needs to be mentioned.
 //        // String to = "fromaddress@gmail.com";
 //
@@ -159,6 +174,20 @@ public class UsuarioCliente extends Usuario /*implements ClienteObserver*/ {
 //            System.out.println("Sent message successfully....");
 //        } catch (MessagingException mex) {
 //            mex.printStackTrace();
+//        }
+//        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
+//        msg.setTo(usuarioClienteDto.getEmail());
+//        msg.setText(
+//                "Dear " + order.getCustomer().getFirstName()
+//                        + order.getCustomer().getLastName()
+//                        + ", thank you for placing order. Your order number is "
+//                        + order.getOrderNumber());
+//        try{
+//            this.mailSender.send(msg);
+//        }
+//        catch (MailException ex) {
+//            // simply log it and go on...
+//            System.err.println(ex.getMessage());
 //        }
 //    }
 }
