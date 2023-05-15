@@ -6,7 +6,11 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 public class UsuarioClienteStub {
-    UsuarioCliente usuarioClienteStub = new UsuarioCliente();
+    public UsuarioCliente usuarioClienteStub = new UsuarioCliente();
+
+    public UsuarioCliente getUsuarioClienteStub() {
+        return usuarioClienteStub;
+    }
 
     public void setUsuarioClienteStub(UsuarioCliente usuarioClienteStub) {
         this.usuarioClienteStub = usuarioClienteStub;
