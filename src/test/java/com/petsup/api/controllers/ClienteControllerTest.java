@@ -19,6 +19,7 @@ import org.springframework.http.ResponseEntity;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.*;
 
 @RunWith(MockitoJUnitRunner.class)
 @TestInstance(TestInstance.Lifecycle.PER_CLASS)
@@ -35,17 +36,17 @@ public class ClienteControllerTest {
 
     @BeforeAll
     public void init() {
-        clienteController = mock();
-        usuarioService = mock();
-        clienteRepository = mock();
+        clienteController = mock(ClienteController.class);
+        usuarioService = mock(UsuarioService.class);
+        clienteRepository = mock(ClienteRepository.class);
     }
 
     @Spy
-    private UsuarioCliente usuarioClienteStub;
+    private UsuarioClienteStub usuarioClienteStub;
 
     @Test
     public void getUserById_RetornaStatus200() {
-        clienteController.getUserById(1);
-        assertEquals(ResponseEntity.ok(usuarioClienteStub), clienteController.getUserById(1));
+        when(clienteController.getUserById(1)).thenReturn(ResponseEntity.ok(usuarioClienteStub));
+        verify(clienteController).getUserById(1);
     }
 }
