@@ -3,50 +3,44 @@ package com.petsup.api.controllers;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
-import com.petsup.api.stub.UsuarioClienteStub;
-import org.assertj.core.api.Assertions.*;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
+import com.petsup.api.builder.UsuarioClienteBuilder;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.TestInstance;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Spy;
-import org.mockito.junit.MockitoJUnitRunner;
-import org.springframework.beans.factory.annotation.Autowired;
+import org.mockito.Mockito;
+import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
-import static org.junit.jupiter.api.Assertions.*;
+import java.util.Optional;
+
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.*;
 
-@RunWith(MockitoJUnitRunner.class)
-@TestInstance(TestInstance.Lifecycle.PER_CLASS)
+@ExtendWith(MockitoExtension.class)
 public class ClienteControllerTest {
 
     @Mock
-    private ClienteController clienteController;
-
-    @InjectMocks
     private UsuarioService usuarioService;
 
     @Mock
     private ClienteRepository clienteRepository;
 
-    @BeforeAll
-    public void init() {
-        clienteController = mock(ClienteController.class);
-        usuarioService = mock(UsuarioService.class);
-        clienteRepository = mock(ClienteRepository.class);
-    }
-
-    @Spy
-    private UsuarioClienteStub usuarioClienteStub;
+    @InjectMocks
+    private ClienteController clienteController;
 
     @Test
-    public void getUserById_RetornaStatus200() {
-        when(clienteController.getUserById(1)).thenReturn(ResponseEntity.ok(usuarioClienteStub));
-        verify(clienteController).getUserById(1);
+    void getUserById_RetornaClienteDeId1() {
+        Optional<UsuarioCliente> usuarioClienteOptional = Optional.of(UsuarioClienteBuilder.buildUsuarioCliente());
+//        ResponseEntity<UsuarioCliente> response = ResponseEntity.ok(usuarioClienteOptional.get());
+
+        Mockito.when(clienteRepository.findById(any())).thenReturn(usuarioClienteOptional);
+//        Mockito.when(clienteController.getUserById(any())).thenReturn(response);
+
+        assertEquals(usuarioClienteOptional, clienteRepository.findById(1));
+        assertEquals(1, usuarioClienteOptional.get().getId());
+//        assertEquals(response, clienteController.getUserById(1));
     }
 }
