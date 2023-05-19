@@ -1,6 +1,7 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.usuario.UsuarioCliente;
+import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
 import com.petsup.api.builder.UsuarioClienteBuilder;
@@ -14,6 +15,7 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
 import java.util.Optional;
+import java.util.List;
 
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
@@ -42,5 +44,11 @@ public class ClienteControllerTest {
         assertEquals(usuarioClienteOptional, clienteRepository.findById(1));
         assertEquals(1, usuarioClienteOptional.get().getId());
 //        assertEquals(response, clienteController.getUserById(1));
+    }
+
+    @Test
+    void getClientes_RetornaListaVazia() {
+        List<UsuarioCliente> lista;
+        List<UsuarioClienteDto> listaDto;
     }
 }
