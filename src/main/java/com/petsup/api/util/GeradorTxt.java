@@ -18,7 +18,8 @@ import java.util.List;
 
 public class GeradorTxt {
 
-    public static void gravaRegistro(String registro, String nomeArq) {
+    //Adiciona linha ao arquivo sem criar um arquivo novo
+    public static ResponseEntity<Void> gravaRegistro(String registro, String nomeArq) {
         BufferedWriter saida = null;
 
         // try-catch para abrir o arquivo
@@ -27,6 +28,7 @@ public class GeradorTxt {
         }
         catch (IOException erro) {
             System.out.println("Erro ao abrir o arquivo");
+            ResponseEntity.status(400).build();
         }
 
         // try-catch para gravar o registro e finalizar
@@ -36,12 +38,14 @@ public class GeradorTxt {
         }
         catch (IOException erro) {
             System.out.println("Erro ao gravar no arquivo");
+            return ResponseEntity.status(400).build();
         }
+        return ResponseEntity.status(200).build();
     }
 
-    public static void gravaArquivoTxt(ListaObj<Agendamento> lista) {
-        String nomeArq = "Agendamento.txt";
+    public static ResponseEntity<Void> gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;
+        String nomeArq = "Agendamento.txt";
         Path diretorioBase;
 
         if(System.getProperty("os.name").contains("Windows")){
@@ -84,6 +88,7 @@ public class GeradorTxt {
         String trailer = "01";
         trailer += String.format("%010d",contaRegistroDado);
         gravaRegistro(trailer, nomeArq);
+        return ResponseEntity.status(200).build();
     }
 
     public static ResponseEntity<byte[]> buscaArquivoTxt() {
