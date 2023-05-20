@@ -1,6 +1,5 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.notificacao.Mail;
 import com.petsup.api.entities.usuario.ClienteObserver;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
