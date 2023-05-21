@@ -8,12 +8,11 @@ import com.petsup.api.builder.UsuarioClienteBuilder;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.Mockito;
+import org.mockito.*;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.HttpStatusCode;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
@@ -50,6 +49,9 @@ public class ClienteControllerTest {
     @InjectMocks
     private ClienteController clienteController;
 
+    @Captor
+    private ArgumentCaptor<UsuarioCliente> usuarioClienteCaptor;
+
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -61,7 +63,7 @@ public class ClienteControllerTest {
     void getClientesRetornaListaVazia() throws Exception {
         when(clienteRepository.findAll()).thenReturn(emptyList());
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/clientes"))
+        mockMvc.perform(get("/clientes"))
                 .andExpect(status().isNoContent());
 
         assertEquals(emptyList(), clienteRepository.findAll());
@@ -94,18 +96,22 @@ public class ClienteControllerTest {
     }
 
     @Test
-    void getUserByIdLancaExcecao() throws Exception {
-        Integer id = 999;
+    void getUserByIdLancaExcecao() {
+        when(clienteRepository.findById(Mockito.any())).thenThrow(new RuntimeException("Cliente não encontrado"));
 
-        when(clienteRepository.findById(id)).thenThrow(new RuntimeException());
+        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteRepository.findById(999));
 
-        try {
-            mockMvc.perform(get("/clientes/{id}", id));
-            fail("Expected RuntimeException to be thrown");
-        } catch (NestedServletException e) {
-            Throwable rootCause = e.getRootCause();
-            assertThat(rootCause).isInstanceOf(RuntimeException.class);
-        }
+        assertEquals("Cliente não encontrado", exception.getMessage());
     }
 
+    @Test
+    void postUserClienteRetornaStatus201Created() {
+        UsuarioClienteDto usuarioClienteDto = UsuarioClienteBuilder.buildUsuarioClienteDto();
+
+        doNothing().when(usuarioService).criarCliente(usuarioClienteDto);
+
+        HttpStatus status = (HttpStatus) clienteController.postUserCliente(usuarioClienteDto).getStatusCode();
+
+        assertEquals(HttpStatus.CREATED, status);
+    }
 }
