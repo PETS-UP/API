@@ -17,6 +17,11 @@ public class UsuarioMapper {
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setTelefone(usuarioCriacaoDto.getTelefone());
         usuario.setCpf(usuarioCriacaoDto.getCpf());
+        usuario.setEstado(usuarioCriacaoDto.getEstado());
+        usuario.setCidade(usuarioCriacaoDto.getCidade());
+        usuario.setBairro(usuarioCriacaoDto.getBairro());
+        usuario.setRua(usuarioCriacaoDto.getRua());
+        usuario.setNumero(usuarioCriacaoDto.getNumero());
 
         return usuario;
     }
@@ -32,6 +37,11 @@ public class UsuarioMapper {
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
+        usuario.setEstado(usuarioCriacaoDto.getEstado());
+        usuario.setCidade(usuarioCriacaoDto.getCidade());
+        usuario.setBairro(usuarioCriacaoDto.getBairro());
+        usuario.setRua(usuarioCriacaoDto.getRua());
+        usuario.setNumero(usuarioCriacaoDto.getNumero());
 
         return usuario;
     }
