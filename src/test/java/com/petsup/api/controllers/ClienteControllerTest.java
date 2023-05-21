@@ -19,16 +19,24 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
+import org.springframework.web.util.NestedServletException;
 
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Optional;
 import java.util.List;
 
+import static java.util.Collections.emptyList;
+import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.*;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.springframework.http.RequestEntity.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 
 @ExtendWith(MockitoExtension.class)
 public class ClienteControllerTest {
@@ -50,14 +58,35 @@ public class ClienteControllerTest {
     }
 
     @Test
-    void getUserById_RetornaClienteDeId1() throws Exception {
+    void getClientesRetornaListaVazia() throws Exception {
+        when(clienteRepository.findAll()).thenReturn(emptyList());
 
+        mockMvc.perform(MockMvcRequestBuilders.get("/clientes"))
+                .andExpect(status().isNoContent());
+
+        assertEquals(emptyList(), clienteRepository.findAll());
+    }
+
+    @Test
+    void getClientesRetornaListaDeTamanho3() throws Exception {
+        List<UsuarioCliente> lista = UsuarioClienteBuilder.buildListaUsuarioCliente();
+
+        when(clienteRepository.findAll()).thenReturn(lista);
+
+        mockMvc.perform(get("/clientes"))
+                .andExpect(status().isOk());
+
+        assertEquals(3, clienteRepository.findAll().size());
+    }
+
+    @Test
+    void getUserByIdRetornaClienteDeId1() throws Exception {
         Integer id = 1;
         UsuarioCliente usuarioCliente = UsuarioClienteBuilder.buildUsuarioCliente();
 
         when(clienteRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioCliente));
 
-        mockMvc.perform(MockMvcRequestBuilders.get("/clientes/{id}", id))
+        mockMvc.perform(get("/clientes/{id}", id))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(usuarioCliente.getId()));
 
@@ -65,8 +94,18 @@ public class ClienteControllerTest {
     }
 
     @Test
-    void getClientes_RetornaListaVazia() {
-        List<UsuarioCliente> lista;
-        List<UsuarioClienteDto> listaDto;
+    void getUserByIdLancaExcecao() throws Exception {
+        Integer id = 999;
+
+        when(clienteRepository.findById(id)).thenThrow(new RuntimeException());
+
+        try {
+            mockMvc.perform(get("/clientes/{id}", id));
+            fail("Expected RuntimeException to be thrown");
+        } catch (NestedServletException e) {
+            Throwable rootCause = e.getRootCause();
+            assertThat(rootCause).isInstanceOf(RuntimeException.class);
+        }
     }
+
 }

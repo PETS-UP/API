@@ -3,6 +3,8 @@ package com.petsup.api.builder;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 
 import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UsuarioClienteBuilder {
     public static UsuarioCliente buildUsuarioCliente() {
@@ -21,5 +23,20 @@ public class UsuarioClienteBuilder {
         usuarioCliente.setNumero("595");
 
         return usuarioCliente;
+    }
+
+    public static List<UsuarioCliente> buildListaUsuarioCliente() {
+        List<UsuarioCliente> lista = new ArrayList<>();
+        UsuarioCliente cliente1 = buildUsuarioCliente();
+        UsuarioCliente cliente2 = buildUsuarioCliente();
+        UsuarioCliente cliente3 = buildUsuarioCliente();
+        cliente2.setId(2);
+        cliente3.setId(3);
+
+        lista.add(cliente1);
+        lista.add(cliente2);
+        lista.add(cliente3);
+
+        return lista;
     }
 }
