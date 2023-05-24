@@ -1,6 +1,7 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.usuario.UsuarioCliente;
+import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
@@ -49,9 +50,6 @@ public class ClienteControllerTest {
     @InjectMocks
     private ClienteController clienteController;
 
-    @Captor
-    private ArgumentCaptor<UsuarioCliente> usuarioClienteCaptor;
-
     private MockMvc mockMvc;
 
     @BeforeEach
@@ -97,7 +95,7 @@ public class ClienteControllerTest {
 
     @Test
     void getUserByIdLancaExcecao() {
-        when(clienteRepository.findById(Mockito.any())).thenThrow(new RuntimeException("Cliente não encontrado"));
+        when(clienteRepository.findById(any())).thenThrow(new RuntimeException("Cliente não encontrado"));
 
         RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteRepository.findById(999));
 
@@ -113,5 +111,46 @@ public class ClienteControllerTest {
         HttpStatus status = (HttpStatus) clienteController.postUserCliente(usuarioClienteDto).getStatusCode();
 
         assertEquals(HttpStatus.CREATED, status);
+    }
+
+    @Test
+    void deleteByIdRetornaStatus204NoContent() {
+        doNothing().when(clienteRepository).deleteById(any());
+
+        HttpStatus status = (HttpStatus) clienteController.deleteById(1).getStatusCode();
+
+        assertEquals(HttpStatus.NO_CONTENT, status);
+    }
+
+    @Test
+    void deleteByIdLancaExcecao() {
+        RuntimeException exception = new RuntimeException("Cliente não encontrado");
+
+        when(clienteController.deleteById(999)).thenThrow(exception);
+
+        assertThrows(RuntimeException.class,
+                () -> clienteController.deleteById(999));
+        assertEquals("Cliente não encontrado", exception.getMessage());
+    }
+
+    @Test
+    void loginRetornaStatus200OkEClienteEsperado() {
+        ClienteTokenDto clienteEsperado = UsuarioClienteBuilder.buildClienteTokenDto();
+
+        when(usuarioService.autenticarCliente(any()))
+                .thenReturn(UsuarioClienteBuilder.buildClienteTokenDto());
+
+        ClienteTokenDto cliente = clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getBody();
+
+        assertEquals(HttpStatus.OK, clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getStatusCode());
+        assertEquals(clienteEsperado.getClienteId(), cliente.getClienteId());
+        assertEquals(clienteEsperado.getNome(), cliente.getNome());
+        assertEquals(clienteEsperado.getEmail(), cliente.getEmail());
+        assertEquals(clienteEsperado.getToken(), cliente.getToken());
+    }
+
+    @Test
+    void loginLancaExcecao() {
+
     }
 }

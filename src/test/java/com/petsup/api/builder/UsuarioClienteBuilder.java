@@ -1,6 +1,8 @@
 package com.petsup.api.builder;
 
 import com.petsup.api.entities.usuario.UsuarioCliente;
+import com.petsup.api.service.autentication.dto.ClienteLoginDto;
+import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 
 import java.time.LocalDate;
@@ -56,5 +58,23 @@ public class UsuarioClienteBuilder {
         usuarioClienteDto.setNumero("595");
 
         return usuarioClienteDto;
+    }
+
+    public static ClienteLoginDto buildClienteLoginDto() {
+        ClienteLoginDto clienteLoginDto = new ClienteLoginDto();
+        clienteLoginDto.setEmail("ana@gmail.com");
+        clienteLoginDto.setSenha("#Teste12");
+
+        return clienteLoginDto;
+    }
+
+    public static ClienteTokenDto buildClienteTokenDto() {
+        ClienteTokenDto clienteTokenDto = new ClienteTokenDto();
+        clienteTokenDto.setUserId(1);
+        clienteTokenDto.setNome("Ana Beatriz");
+        clienteTokenDto.setEmail("ana@gmail.com");
+        clienteTokenDto.setToken("token");
+
+        return clienteTokenDto;
     }
 }
