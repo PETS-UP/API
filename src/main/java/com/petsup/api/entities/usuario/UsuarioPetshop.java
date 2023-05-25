@@ -4,12 +4,13 @@ import com.petsup.api.entities.*;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import jakarta.persistence.*;
+import org.springframework.mail.javamail.JavaMailSender;
 
 import java.util.List;
 
 @Entity
 @Table(name = "Petshop")
-public class UsuarioPetshop extends Usuario {
+public class UsuarioPetshop extends Usuario implements ClienteObserver{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -108,7 +109,12 @@ public class UsuarioPetshop extends Usuario {
         inscritos.remove(listener);
     }
 
-    public void notifica(String email, double preco){
-        inscritos.forEach(listener -> listener.atualiza(email, preco));
+    // Observer
+    @Override
+    public void atualiza(JavaMailSender enviador, String remetente, String destinatario, double preco) {
+        for (ClientePetshopSubscriber assinante : inscritos) {
+            assinante.notifica(enviador, remetente, destinatario, preco); // Chamada do método de envio de emails
+                                                                          // do observador (subscriber)
+        }
     }
 }

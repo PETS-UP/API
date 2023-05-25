@@ -20,10 +20,10 @@ public abstract class UsuarioDto {
     @NotBlank
     @Schema(description = "Senha do usuário", example = "12345678")
     private String senha;
-    @NotBlank
+
     @Schema(description = "CEP do usuário", example = "01001-000")
     private String cep;
-    @Pattern(regexp = "(\\(?\\d{2}\\)?\\s)?(\\d{4,5}\\-\\d{4})" ,
+    @Pattern(regexp = "^\\d{2}9\\d{8}$" ,
             message = "Indique um telefone válido")
     @Schema(description = "Telefone do usuário", example = "99999-9999")
     private String telefone;
