@@ -24,6 +24,8 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -60,6 +62,9 @@ public class PetshopController {
 
     @Autowired
     private ClientePetshopSubscriberRepository clientePetshopSubscriberRepository;
+
+    @Autowired
+    private JavaMailSender enviador;
 
     //Crud inicio
     @PostMapping
@@ -115,6 +120,7 @@ public class PetshopController {
         return ResponseEntity.status(200).body(updateUser);
     }
 
+    // Método para atualizar preços fica na controller
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/preco")
@@ -133,13 +139,16 @@ public class PetshopController {
 
         Servico servico = servicoOptional.get();
         UsuarioPetshop petshop = petshopOptional.get();
-        ClientePetshopSubscriber cps;
 
+        // Observer
         if (servico.getPreco() > servicoAtt.getPreco()){
             for (int i = 0; i < petshop.getInscritos().size(); i++){
-            petshop.notifica(petshop.getInscritos().get(i).getFkCliente().getEmail(), servicoAtt.getPreco());
+                petshop.atualiza(enviador, petshop.getInscritos().get(i).getFkCliente().getEmail(),
+                    petshop.getEmail(), servicoAtt.getPreco()); // Chamada do método de atualização na
+                                                                // entidade observada (publisher)
             }
         }
+        // Observer
 
         servico.setPreco(servicoAtt.getPreco());
         servicoRepository.save(servico);
