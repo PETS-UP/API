@@ -148,9 +148,4 @@ public class ClienteControllerTest {
         assertEquals(clienteEsperado.getEmail(), cliente.getEmail());
         assertEquals(clienteEsperado.getToken(), cliente.getToken());
     }
-
-    @Test
-    void loginLancaExcecao() {
-
-    }
 }

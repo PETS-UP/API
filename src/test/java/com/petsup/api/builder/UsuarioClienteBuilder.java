@@ -18,7 +18,7 @@ public class UsuarioClienteBuilder {
         usuarioCliente.setSenha("#Teste12");
         usuarioCliente.setDataNasc(LocalDate.of(2000, 1, 1));
         usuarioCliente.setCpf("12345678901");
-        usuarioCliente.setCep("1414001");
+        usuarioCliente.setCep("01414001");
         usuarioCliente.setEstado("SP");
         usuarioCliente.setCidade("São Paulo");
         usuarioCliente.setBairro("Cerqueira César");
@@ -50,7 +50,7 @@ public class UsuarioClienteBuilder {
         usuarioClienteDto.setSenha("#Teste12");
         usuarioClienteDto.setDataNasc(LocalDate.of(2000, 1, 1));
         usuarioClienteDto.setCpf("12345678901");
-        usuarioClienteDto.setCep("1414001");
+        usuarioClienteDto.setCep("01414001");
         usuarioClienteDto.setEstado("SP");
         usuarioClienteDto.setCidade("São Paulo");
         usuarioClienteDto.setBairro("Cerqueira César");
