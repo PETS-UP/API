@@ -120,8 +120,7 @@ public class UsuarioService extends TimerTask {
 
     public void gravarAvaliacoes(){
         for (int i = 0; i < filaAvaliacao.getTamanho(); i++){
-            AvaliacaoPetshop avl = filaAvaliacao.poll();
-            avaliacaoRepository.save(avl);
+            avaliacaoRepository.save(filaAvaliacao.poll());
         }
     }
 }
