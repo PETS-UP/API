@@ -15,7 +15,7 @@ public class ApiApplication {
 		Timer timer = new Timer();
 		UsuarioService usuarioService = new UsuarioService();
 
-		timer.schedule(usuarioService.gravarAvaliacoes(), 0, 86400000);
+		timer.schedule(usuarioService, 0, 86400000);
 	}
 
 }
