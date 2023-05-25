@@ -1,12 +1,11 @@
 package com.petsup.api.service;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
+import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
-import com.petsup.api.repositories.ClienteRepository;
-import com.petsup.api.repositories.PetshopRepository;
-import com.petsup.api.repositories.UsuarioRepository;
+import com.petsup.api.repositories.*;
 import com.petsup.api.service.autentication.dto.ClienteLoginDto;
 import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
@@ -14,6 +13,7 @@ import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.util.FilaObj;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,8 +23,12 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.TimerTask;
+
 @Service
-public class UsuarioService {
+public class UsuarioService extends TimerTask {
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     @Autowired
     private UsuarioRepository usuarioRepository;
@@ -34,6 +38,9 @@ public class UsuarioService {
     private PetshopRepository petshopRepository;
 
     @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
+
+    @Autowired
     private PasswordEncoder passwordEncoder;
 
     @Autowired
@@ -41,6 +48,8 @@ public class UsuarioService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    FilaObj<AvaliacaoPetshop> filaAvaliacao = new FilaObj(1000);
 
     public void criarCliente(UsuarioClienteDto usuarioDto){
         final Usuario novoUsuario = UsuarioMapper.ofCliente(usuarioDto);
@@ -98,5 +107,21 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
+    }
+    public AvaliacaoPetshop avaliarPetshop(AvaliacaoPetshop avl){
+        filaAvaliacao.insert(avl);
+        return avl;
+    }
+
+    @Override
+    public void run() {
+        gravarAvaliacoes();
+    }
+
+    public void gravarAvaliacoes(){
+        for (int i = 0; i < filaAvaliacao.getTamanho(); i++){
+            AvaliacaoPetshop avl = filaAvaliacao.poll();
+            avaliacaoRepository.save(avl);
+        }
     }
 }

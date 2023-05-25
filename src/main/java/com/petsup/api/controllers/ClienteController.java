@@ -1,5 +1,6 @@
 package com.petsup.api.controllers;
 
+import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
@@ -69,5 +70,11 @@ public class ClienteController {
     public ResponseEntity<Void> deleteById(@PathVariable Integer id){
         this.clienteRepository.deleteById(id);
         return ResponseEntity.status(204).build();
+    }
+
+    @PostMapping("/avaliar")
+    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl){
+        this.usuarioService.avaliarPetshop(avl);
+        return ResponseEntity.status(201).build();
     }
 }

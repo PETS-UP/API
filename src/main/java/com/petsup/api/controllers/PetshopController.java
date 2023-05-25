@@ -2,7 +2,7 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ClientePetshopSubscriber;
-import com.petsup.api.entities.ListaObj;
+import com.petsup.api.util.ListaObj;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
@@ -24,16 +24,10 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
 
