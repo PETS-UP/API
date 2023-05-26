@@ -1,14 +1,10 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.builder.UsuarioClienteBuilder;
 import com.petsup.api.builder.UsuarioPetshopBuilder;
-import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
-import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
-import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;

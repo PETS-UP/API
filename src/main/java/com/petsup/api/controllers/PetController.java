@@ -67,4 +67,12 @@ public class PetController {
         return ResponseEntity.status(404).build();
     }
 
+    @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @GetMapping("/{id}")
+    public ResponseEntity<PetDto> getPetById(@PathVariable Integer id) {
+        return ResponseEntity.ok(PetMapper.ofPetDto(petRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Pet não encontrado"))
+        ));
+    }
 }
