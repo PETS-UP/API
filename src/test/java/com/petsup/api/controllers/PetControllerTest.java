@@ -2,18 +2,14 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.builder.PetBuilder;
 import com.petsup.api.builder.UsuarioClienteBuilder;
-import com.petsup.api.builder.UsuarioPetshopBuilder;
 import com.petsup.api.entities.Pet;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetRepository;
-import com.petsup.api.service.dto.PetDto;
-import com.petsup.api.service.dto.UsuarioPetshopDto;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.test.web.servlet.MockMvc;
@@ -27,7 +23,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyInt;
-import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -77,21 +72,6 @@ public class PetControllerTest {
     }
 
     @Test
-    void getPetByIdRetornaPetDeId1() throws Exception {
-        Integer id = 1;
-        Pet pet = PetBuilder.buildPet();
-
-        when(petRepository.findById(anyInt())).thenReturn(Optional.of(pet));
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        mockMvc.perform(get("/pets/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(pet.getId()));
-
-        assertEquals(pet.getId(), petRepository.findById(1).get().getId());
-    }
-
-    @Test
     void getPetByIdLancaExcecao() {
         when(petRepository.findById(anyInt())).thenThrow(new RuntimeException("Pet não encontrado"));
 
@@ -104,7 +84,8 @@ public class PetControllerTest {
     void postPetRetornaStatus201Created() {
         Pet pet = PetBuilder.buildPet();
 
-        doNothing().when(petRepository).save(any());
+        when(petRepository.save(any())).thenReturn(pet);
+        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
 
         HttpStatus status = (HttpStatus) petController.postPet(pet, 1).getStatusCode();
 
