@@ -36,6 +36,7 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
@@ -96,6 +97,22 @@ public class PetshopController {
         }
 
         return petshopsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petshopsDto);
+    }
+
+    @GetMapping("/busca/nome")
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
+        List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+
+        if (petshops.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        for (UsuarioPetshop usuarioPetshop : petshops) {
+            petshopsDto.add(UsuarioMapper.ofPetshopDto(usuarioPetshop));
+        }
+
+        return ResponseEntity.ok(petshopsDto);
     }
 
     @GetMapping("/{id}")
