@@ -1,47 +1,47 @@
 package com.petsup.api.util;
 
-public class FilaObj <T> {
-    // Atributos
+
+public class FilaObj<T>{
+    // 01) Atributos
     private int tamanho;
     private T[] fila;
 
-    // Construtor
+    // 02) Construtor
     public FilaObj(int capacidade) {
-        fila = (T[]) new Object[capacidade];
-        tamanho = 0;
+        this.tamanho = 0;
+        this.fila = (T[]) new Object[capacidade];
     }
 
-    // Métodos
 
-    /* Método isEmpty() - retorna true se a fila está vazia e false caso contrário */
+
+    // 03) Método isEmpty() - retorna true se a fila está vazia e false caso contrário
     public boolean isEmpty() {
-        return tamanho == 0;
+        if(tamanho>0){
+            return false;
+        }return true;
     }
 
-    /* Método isFull() - retorna true se a fila está cheia e false caso contrário */
+    // 04) Método isFull() - retorna true se a fila está cheia e false caso contrário
     public boolean isFull() {
-        return tamanho == fila.length;
+        if(tamanho < fila.length){
+            return false;
+        }return true;
     }
 
-    /* Método insert - recebe um elemento e insere esse elemento na fila
-                       no índice tamanho, e incrementa tamanho
-                       Retornar IllegalStateException caso a fila esteja cheia
-     */
+    // 05) Método insert - recebe um elemento e insere esse elemento no inicio da fila
+
     public void insert(T info) {
-        if (isFull()) {
-            throw new IllegalStateException("Fila cheia!");
-        }
-        else {
+        if(isFull()){
+            throw new IllegalStateException();
+        }else{
             fila[tamanho++] = info;
         }
-
     }
 
-    /* Método peek - retorna o primeiro elemento da fila, sem removê-lo */
+    // 06) Método peek - retorna o primeiro elemento da fila, sem removê-lo
     public T peek() {
         return fila[0];
     }
-
     /* Método poll - remove e retorna o primeiro elemento da fila, se a fila não estiver
        vazia. Quando um elemento é removido, a fila "anda", e tamanho é decrementado
      */
@@ -80,5 +80,4 @@ public class FilaObj <T> {
     public int getTamanho(){
         return tamanho;
     }
-
 }
