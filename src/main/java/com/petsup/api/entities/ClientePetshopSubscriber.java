@@ -1,21 +1,12 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.usuario.ClienteObserver;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
-import com.petsup.api.service.dto.UsuarioClienteDto;
-import jakarta.persistence.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.Properties;
 
 @Entity
 public class ClientePetshopSubscriber /*implements ClienteObserver*/ {
@@ -53,6 +44,7 @@ public class ClientePetshopSubscriber /*implements ClienteObserver*/ {
     }
 
     // Observer
+
     public void notifica(JavaMailSender enviador, String emailPetshop, String emailCliente, double preco) {
 
         SimpleMailMessage email = new SimpleMailMessage();
