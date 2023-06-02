@@ -16,6 +16,8 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
 //    List<Agendamento> findByAgendamentos (Usuario usuario);
     Optional<UsuarioPetshop> findByEmail(String email);
 
+    List<UsuarioPetshop> findAllByNomeLike(String nome);
+
     //Necessário criar uma forma de padronizar os preços (Como no ifood)
     @Query("SELECT * FROM usuarioPetshop p ORDER BY (GET AVG(p.preco) FROM usuarioPetshop p) asc")
     List<UsuarioPetshop> ordenarPorPreco();
