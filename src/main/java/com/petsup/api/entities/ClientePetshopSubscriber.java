@@ -1,24 +1,15 @@
 package com.petsup.api.entities;
 
-import com.petsup.api.entities.notificacao.Mail;
-import com.petsup.api.entities.usuario.ClienteObserver;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
-import com.petsup.api.service.dto.UsuarioClienteDto;
-import jakarta.persistence.*;
-import org.springframework.context.annotation.Bean;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.ManyToOne;
 import org.springframework.mail.SimpleMailMessage;
-
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
-import java.util.List;
-import java.util.Properties;
+import org.springframework.mail.javamail.JavaMailSender;
 
 @Entity
-public class ClientePetshopSubscriber implements ClienteObserver {
+public class ClientePetshopSubscriber /*implements ClienteObserver*/ {
 
     @Id
     private int id;
@@ -53,89 +44,19 @@ public class ClientePetshopSubscriber implements ClienteObserver {
     }
 
     // Observer
-//    public void inscricao(UsuarioCliente listener){
-//        fkPetshops.getInscritos().add(listener);
-//    }
-//
-//    public void desinscricao(UsuarioCliente listener){
-//        fkCliente.remove(listener);
-//    }
-//
-//    public void notifica(String emailRemetente, String emailDestinatario, String host){
-//        fkCliente.forEach(listener -> listener.atualiza(emailRemetente, emailDestinatario));
-//    }
 
-    @Override
-    public void atualiza(String email, double preco) {
-        // Recipient's email ID needs to be mentioned.
-        // String to = "fromaddress@gmail.com";
+    public void notifica(JavaMailSender enviador, String emailPetshop, String emailCliente, double preco) {
 
-        // Sender's email ID needs to be mentioned
-        // String from = "toaddress@gmail.com";
+        SimpleMailMessage email = new SimpleMailMessage();
 
-        // Assuming you are sending email from through gmails smtp
-//        String host = "smtp.gmail.com";
-//
-//        // Get system properties
-//        Properties properties = System.getProperties();
-//
-//        // Setup mail server
-//        properties.put("mail.smtp.host", host);
-//        properties.put("mail.smtp.port", "465");
-//        properties.put("mail.smtp.ssl.enable", "true");
-//        properties.put("mail.smtp.auth", "true");
-//
-//        // Get the Session object.// and pass username and password
-//        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-//
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//
-//                return new PasswordAuthentication(emailRemetente, "*******");
-//
-//            }
-//
-//        });
-//
-//        // Used to debug SMTP issues
-//        session.setDebug(true);
-//
-//        try {
-//            // Create a default MimeMessage object.
-//            MimeMessage message = new MimeMessage(session);
-//
-//            // Set From: header field of the header.
-//            message.setFrom(new InternetAddress(emailRemetente));
-//
-//            // Set To: header field of the header.
-//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailDestinatario));
-//
-//            // Set Subject: header field
-//            message.setSubject("This is the Subject Line!");
-//
-//            // Send the actual HTML message.
-//            message.setContent(
-//                    "<h1>Nova promoção!</h1>",
-//                    "text/html");
-//
-//            System.out.println("sending...");
-//            // Send message
-//            Transport.send(message);
-//            System.out.println("Sent message successfully....");
-//        } catch (MessagingException mex) {
-//            mex.printStackTrace();
-//        }
-        Mail instMail = new Mail();
+        email.setFrom(emailPetshop);
+        email.setTo(emailCliente);
+        email.setSubject("Desconto");
+        email.setText("Novo preço" + preco);
 
-        SimpleMailMessage msg = new SimpleMailMessage(instMail.getTemplateMessage());
-        msg.setTo(email);
-        msg.setText(
-                 "Novo preço: " + preco);
-        try{
-            instMail.getMailSender().send(msg);
-        }
-        catch (MailException ex) {
-            // simply log it and go on...
-            System.err.println(ex.getMessage());
-        }
+        enviador.send(email);
+
+        System.out.println("Mensagem enviada!");
+
     }
 }

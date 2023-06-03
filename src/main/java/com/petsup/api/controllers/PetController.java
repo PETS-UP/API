@@ -6,6 +6,7 @@ import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetRepository;
 import com.petsup.api.service.dto.PetDto;
 import com.petsup.api.service.dto.PetMapper;
+import com.petsup.api.util.PilhaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -29,6 +30,27 @@ public class PetController {
 
     @Autowired
     private ClienteRepository clienteRepository;
+
+    private PilhaObj<String> pilhaObj = new PilhaObj<String>(5);
+
+    @PostMapping("/adicionar-pilha")
+    public ResponseEntity<Void> adicionarNaPilha(String obj){
+        pilhaObj.push(obj);
+        return ResponseEntity.ok().build();
+    }
+
+    @GetMapping("/pop-pilha")
+    public ResponseEntity<String> getInfosAndPop(){
+        return ResponseEntity.ok().body(pilhaObj.pop());
+    }
+
+    @PostMapping("limpa-pilha")
+    public ResponseEntity<Void> limparPilha(){
+        for (int i = 0; i < pilhaObj.getTopo(); i++) {
+            pilhaObj.pop();
+        }
+        return ResponseEntity.ok().build();
+    }
 
     @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
@@ -67,4 +89,12 @@ public class PetController {
         return ResponseEntity.status(404).build();
     }
 
+    @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @GetMapping("/{id}")
+    public ResponseEntity<PetDto> getPetById(@PathVariable Integer id) {
+        return ResponseEntity.ok(PetMapper.ofPetDto(petRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Pet não encontrado"))
+        ));
+    }
 }

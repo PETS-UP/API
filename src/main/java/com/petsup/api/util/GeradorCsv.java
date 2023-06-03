@@ -1,17 +1,13 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.ListaObj;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
 import java.nio.file.Path;
-import java.time.LocalDate;
 import java.util.Formatter;
 import java.util.FormatterClosedException;
-import java.util.NoSuchElementException;
-import java.util.Scanner;
 
 public class GeradorCsv {
 

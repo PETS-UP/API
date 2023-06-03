@@ -1,18 +1,10 @@
 package com.petsup.api.entities.usuario;
 
 import com.petsup.api.entities.*;
-import com.petsup.api.service.dto.UsuarioClienteDto;
 import jakarta.persistence.*;
-import org.springframework.mail.MailException;
-import org.springframework.mail.MailSender;
-import org.springframework.mail.SimpleMailMessage;
 
-import javax.mail.*;
-import javax.mail.internet.InternetAddress;
-import javax.mail.internet.MimeMessage;
 import java.time.LocalDate;
 import java.util.List;
-import java.util.Properties;
 
 @Entity
 @Table(name = "Cliente")
