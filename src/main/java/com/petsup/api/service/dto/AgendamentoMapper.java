@@ -7,7 +7,6 @@ public class AgendamentoMapper {
     public static AgendamentoDto ofAgendamentoDto(Agendamento agendamento) {
         AgendamentoDto agendamentoDto = new AgendamentoDto();
 
-        agendamentoDto.setId(agendamento.getId());
         agendamentoDto.setDataHora(agendamento.getDataHora());
         agendamentoDto.setNomeCliente(agendamento.getFkCliente().getNome());
         agendamentoDto.setEmailCliente(agendamento.getFkCliente().getEmail());
