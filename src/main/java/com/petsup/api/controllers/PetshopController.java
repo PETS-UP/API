@@ -9,9 +9,11 @@ import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
-import com.petsup.api.service.dto.*;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
+import com.petsup.api.service.dto.AgendamentoDto;
+import com.petsup.api.service.dto.ServicoDto;
+import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
@@ -29,7 +31,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 import java.util.*;
+import java.util.stream.Collectors;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
@@ -92,6 +98,22 @@ public class PetshopController {
         return petshopsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petshopsDto);
     }
 
+    @GetMapping("/busca/nome")
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
+        List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+
+        if (petshops.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        for (UsuarioPetshop usuarioPetshop : petshops) {
+            petshopsDto.add(UsuarioMapper.ofPetshopDto(usuarioPetshop));
+        }
+
+        return ResponseEntity.ok(petshopsDto);
+    }
+
     @GetMapping("/{id}")
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
@@ -109,7 +131,7 @@ public class PetshopController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario){
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario) {
         UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
         return ResponseEntity.status(200).body(updateUser);
     }
@@ -119,13 +141,13 @@ public class PetshopController {
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/preco")
     public ResponseEntity<ServicoDto> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
-                                               @RequestParam Integer idPetshop) {
+                                                  @RequestParam Integer idPetshop) {
         Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
         Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
         //Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
         //        clientePetshopSubscriberRepository.findByFkPetshopId(idPetshop);
 
-        if (servicoOptional.isEmpty()){
+        if (servicoOptional.isEmpty()) {
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
             );
@@ -135,11 +157,11 @@ public class PetshopController {
         UsuarioPetshop petshop = petshopOptional.get();
 
         // Observer
-        if (servico.getPreco() > servicoAtt.getPreco()){
-            for (int i = 0; i < petshop.getInscritos().size(); i++){
+        if (servico.getPreco() > servicoAtt.getPreco()) {
+            for (int i = 0; i < petshop.getInscritos().size(); i++) {
                 petshop.atualiza(enviador, petshop.getInscritos().get(i).getFkCliente().getEmail(),
-                    petshop.getEmail(), servicoAtt.getPreco()); // Chamada do método de atualização na
-                                                                // entidade observada (publisher)
+                        petshop.getEmail(), servicoAtt.getPreco()); // Chamada do método de atualização na
+                // entidade observada (publisher)
             }
         }
         // Observer
@@ -181,20 +203,20 @@ public class PetshopController {
 
     @GetMapping("/download/csv/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
-    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id){
+    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id) {
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
-            //Transfere elementos de list para agendamentos
-            for (int i = 0; i < list.size(); i++) {
-                agendamentos.adiciona(list.get(i));
-            }
+        //Transfere elementos de list para agendamentos
+        for (int i = 0; i < list.size(); i++) {
+            agendamentos.adiciona(list.get(i));
+        }
         GeradorCsv.gravaArquivoCsv(agendamentos);
         return GeradorCsv.buscaArquivoCsv();
     }
 
     @GetMapping("/download/txt/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
-    public ResponseEntity<byte[]> downloadTxt(@PathVariable int id){
+    public ResponseEntity<byte[]> downloadTxt(@PathVariable int id) {
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
         //Transfere elementos de list para agendamentos

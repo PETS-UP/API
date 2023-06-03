@@ -108,6 +108,17 @@ public class UsuarioService extends TimerTask {
 
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
     }
+  
+    public UsuarioClienteDto atualizarClientePorId(UsuarioClienteDto usuarioClienteDto, Integer id) {
+        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
+
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteDto, usuarioCliente);
+        clienteRepository.save(usuarioAtt);
+        return UsuarioMapper.ofClienteDto(usuarioAtt);
+    }
+
     public AvaliacaoPetshop avaliarPetshop(AvaliacaoPetshop avl){
         filaAvaliacao.insert(avl);
         return avl;

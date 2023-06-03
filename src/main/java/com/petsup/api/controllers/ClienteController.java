@@ -1,6 +1,7 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.AvaliacaoPetshop;
+import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.service.UsuarioService;
@@ -18,6 +19,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
@@ -60,8 +62,10 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioCliente> getUserById(@PathVariable Integer id){
-        return ResponseEntity.of(this.clienteRepository.findById(id));
+    public ResponseEntity<UsuarioCliente> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(this.clienteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        ));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
@@ -76,5 +80,15 @@ public class ClienteController {
     public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl){
         this.usuarioService.avaliarPetshop(avl);
         return ResponseEntity.status(201).build();
+    }
+  
+    @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @PatchMapping("/{id}")
+    public ResponseEntity<UsuarioClienteDto> updateById(
+            @RequestBody @Valid UsuarioClienteDto usuarioDto,
+            @PathVariable Integer id
+    ) {
+        return ResponseEntity.ok(usuarioService.atualizarClientePorId(usuarioDto, id));
     }
 }
