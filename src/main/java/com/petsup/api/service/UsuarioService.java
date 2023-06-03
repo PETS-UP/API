@@ -23,6 +23,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.util.Optional;
+
 @Service
 public class UsuarioService {
 
@@ -98,5 +100,15 @@ public class UsuarioService {
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
+    }
+
+    public UsuarioClienteDto atualizarClientePorId(UsuarioClienteDto usuarioClienteDto, Integer id) {
+        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
+
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteDto, usuarioCliente);
+        clienteRepository.save(usuarioAtt);
+        return UsuarioMapper.ofClienteDto(usuarioAtt);
     }
 }

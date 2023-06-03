@@ -17,6 +17,11 @@ public class UsuarioMapper {
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setTelefone(usuarioCriacaoDto.getTelefone());
         usuario.setCpf(usuarioCriacaoDto.getCpf());
+        usuario.setEstado(usuarioCriacaoDto.getEstado());
+        usuario.setCidade(usuarioCriacaoDto.getCidade());
+        usuario.setBairro(usuarioCriacaoDto.getBairro());
+        usuario.setRua(usuarioCriacaoDto.getRua());
+        usuario.setNumero(usuarioCriacaoDto.getNumero());
 
         return usuario;
     }
@@ -32,6 +37,11 @@ public class UsuarioMapper {
         usuario.setCep(usuarioCriacaoDto.getCep());
         usuario.setCnpj(usuarioCriacaoDto.getCnpj());
         usuario.setRazaoSocial(usuarioCriacaoDto.getRazaoSocial());
+        usuario.setEstado(usuarioCriacaoDto.getEstado());
+        usuario.setCidade(usuarioCriacaoDto.getCidade());
+        usuario.setBairro(usuarioCriacaoDto.getBairro());
+        usuario.setRua(usuarioCriacaoDto.getRua());
+        usuario.setNumero(usuarioCriacaoDto.getNumero());
 
         return usuario;
     }
@@ -90,5 +100,24 @@ public class UsuarioMapper {
         usuarioPetshopDto.setNumero(usuarioPetshop.getNumero());
 
         return usuarioPetshopDto;
+    }
+
+    public static UsuarioCliente ofCliente(UsuarioClienteDto usuarioAtualizacaoDto, UsuarioCliente usuarioCliente) {
+        UsuarioCliente usuario = new UsuarioCliente();
+
+        usuario.setId(usuarioCliente.getId());
+        usuario.setNome(usuarioAtualizacaoDto.getNome());
+        usuario.setEmail(usuarioAtualizacaoDto.getEmail());
+        usuario.setSenha(usuarioCliente.getSenha());
+        usuario.setCep(usuarioAtualizacaoDto.getCep());
+        usuario.setTelefone(usuarioAtualizacaoDto.getTelefone());
+        usuario.setCpf(usuarioAtualizacaoDto.getCpf());
+        usuario.setEstado(usuarioAtualizacaoDto.getEstado());
+        usuario.setCidade(usuarioAtualizacaoDto.getCidade());
+        usuario.setBairro(usuarioAtualizacaoDto.getBairro());
+        usuario.setRua(usuarioAtualizacaoDto.getRua());
+        usuario.setNumero(usuarioCliente.getNumero());
+
+        return usuario;
     }
 }

@@ -66,4 +66,13 @@ public class ServicoController {
         }
         return ResponseEntity.status(404).build();
     }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o serviço a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @GetMapping("/{id}")
+    public ResponseEntity<ServicoDto> getServicoById(@PathVariable Integer id) {
+        return ResponseEntity.ok(ServicoMapper.ofServicoDto(servicoRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Serviço não encontrado."))
+        ));
+    }
 }

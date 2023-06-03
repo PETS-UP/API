@@ -8,6 +8,7 @@ import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
+import com.petsup.api.service.dto.PetMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -125,5 +126,14 @@ public class AgendamentoController {
                     : ResponseEntity.status(200).body(agendamentoDtos);
         }
         return ResponseEntity.status(404).build();
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @GetMapping("{id}")
+    public ResponseEntity<AgendamentoDto> getAgendamentoById(@PathVariable Integer id) {
+        return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoDto(agendamentoRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Agendamento não encontrado"))
+        ));
     }
 }
