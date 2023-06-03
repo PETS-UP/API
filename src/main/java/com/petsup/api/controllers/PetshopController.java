@@ -2,7 +2,7 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ClientePetshopSubscriber;
-import com.petsup.api.entities.ListaObj;
+import com.petsup.api.util.ListaObj;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;

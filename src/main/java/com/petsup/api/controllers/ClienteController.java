@@ -1,5 +1,6 @@
 package com.petsup.api.controllers;
 
+import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
@@ -75,6 +76,12 @@ public class ClienteController {
         return ResponseEntity.status(204).build();
     }
 
+    @PostMapping("/avaliar")
+    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl){
+        this.usuarioService.avaliarPetshop(avl);
+        return ResponseEntity.status(201).build();
+    }
+  
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @PatchMapping("/{id}")

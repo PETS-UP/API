@@ -1,11 +1,6 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.ListaObj;
-import com.petsup.api.entities.enums.Especie;
-import com.petsup.api.entities.enums.NomeServico;
-import com.petsup.api.entities.enums.Raca;
-import com.petsup.api.service.dto.AgendamentoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -13,8 +8,6 @@ import java.io.*;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.ArrayList;
-import java.util.List;
 
 public class GeradorTxt {
 
