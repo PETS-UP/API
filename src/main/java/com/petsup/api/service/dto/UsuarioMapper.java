@@ -101,4 +101,23 @@ public class UsuarioMapper {
 
         return usuarioPetshopDto;
     }
+
+    public static UsuarioCliente ofCliente(UsuarioClienteDto usuarioAtualizacaoDto, UsuarioCliente usuarioCliente) {
+        UsuarioCliente usuario = new UsuarioCliente();
+
+        usuario.setId(usuarioCliente.getId());
+        usuario.setNome(usuarioAtualizacaoDto.getNome());
+        usuario.setEmail(usuarioAtualizacaoDto.getEmail());
+        usuario.setSenha(usuarioCliente.getSenha());
+        usuario.setCep(usuarioAtualizacaoDto.getCep());
+        usuario.setTelefone(usuarioAtualizacaoDto.getTelefone());
+        usuario.setCpf(usuarioAtualizacaoDto.getCpf());
+        usuario.setEstado(usuarioAtualizacaoDto.getEstado());
+        usuario.setCidade(usuarioAtualizacaoDto.getCidade());
+        usuario.setBairro(usuarioAtualizacaoDto.getBairro());
+        usuario.setRua(usuarioAtualizacaoDto.getRua());
+        usuario.setNumero(usuarioCliente.getNumero());
+
+        return usuario;
+    }
 }

@@ -1,7 +1,6 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.ListaObj;
 import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
 

@@ -1,4 +1,4 @@
-package com.petsup.api.entities;
+package com.petsup.api.util;
 
 public class ListaObj <T>{
     // Atributos
