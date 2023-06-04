@@ -134,8 +134,7 @@ public class GeradorTxt {
         // try-catch para abrir o arquivo
         try {
             entrada = new BufferedReader(new FileReader(nomeArq));
-        }
-        catch (IOException erro) {
+        } catch (IOException erro) {
             System.out.println("Erro na abertura do arquivo");
             return ResponseEntity.status(400).build();
         }
@@ -145,54 +144,50 @@ public class GeradorTxt {
             registro = entrada.readLine(); // le o primeiro registro do arquivo
 
             while (registro != null) {
-                tipoRegistro = registro.substring(0,2);     // obtem os 2 primeiros caracteres do registro
+                tipoRegistro = registro.substring(0, 2);     // obtem os 2 primeiros caracteres do registro
                 // substring - primeiro argumento é onde começa a substring dentro da string
                 // e o segundo argumento é onde termina a substring + 1
                 // Verifica se o tipoRegistro é um header, ou um trailer, ou um registro de dados
                 if (tipoRegistro.equals("00")) {
                     System.out.println("é um registro de header");
-                    System.out.println("Tipo de arquivo: " + registro.substring(2,12));
+                    System.out.println("Tipo de arquivo: " + registro.substring(2, 12));
                     System.out.println("Data hora de gravação: " + registro.substring(13, 31));
-                    System.out.println("Versão do documento de layout: " + registro.substring(32,33));
-                }
-                else if (tipoRegistro.equals("01")) {
+                    System.out.println("Versão do documento de layout: " + registro.substring(32, 33));
+                } else if (tipoRegistro.equals("01")) {
                     System.out.println("é um registro de trailer");
-                    qtdRegDadoGravado = Integer.parseInt(registro.substring(2,6));
+                    qtdRegDadoGravado = Integer.parseInt(registro.substring(2, 6));
                     if (contaRegDadoLido != qtdRegDadoGravado) {
                         System.out.println("Quantidade de registros lidos não bate com a quantidade declarada");
                         return ResponseEntity.status(400).build();
                     }
-                }
-                else if (tipoRegistro.equals("02")) {
+                } else if (tipoRegistro.equals("02")) {
                     System.out.println("é um registro de dados");
                     //AINDA FORMATAR
                     //O arquivo não deve ter ID, fazer as contas para tal
-                    id = Integer.parseInt(registro.substring(2,6).trim());
-                    dataHora = registro.substring(7,25);
-                    nomeCliente = registro.substring(26,75).trim();
-                    emailCliente = registro.substring(76,125).trim();
-                    nomePet = registro.substring(126,176);
-                    especie = registro.substring(176,183);
-                    raca = registro.substring(184,233);
-                    sexo = registro.substring(234,234);
-                    servico = registro.substring(236,263);
-                    preco = Double.valueOf(registro.substring(255,262).replace(',','.'));
+                    id = Integer.parseInt(registro.substring(2, 6).trim());
+                    dataHora = registro.substring(7, 25);
+                    nomeCliente = registro.substring(26, 75).trim();
+                    emailCliente = registro.substring(76, 125).trim();
+                    nomePet = registro.substring(126, 176);
+                    especie = registro.substring(176, 183);
+                    raca = registro.substring(184, 233);
+                    sexo = registro.substring(234, 234);
+                    servico = registro.substring(236, 263);
+                    preco = Double.valueOf(registro.substring(255, 262).replace(',', '.'));
 
                     // para importar esse dado para o banco de dados
                     // repository.save(a);
 
                     // contabiliza que leu mais um registro de dados
                     contaRegDadoLido++;
-                }
-                else {
+                } else {
                     System.out.println("tipo de registro inválido");
                 }
                 // le o proximo registro do arquivo
                 registro = entrada.readLine();
             }
             entrada.close();
-        }
-        catch (IOException erro) {
+        } catch (IOException erro) {
             System.out.println("Erro ao ler o arquivo");
         }
 
@@ -201,10 +196,9 @@ public class GeradorTxt {
 //        for (Aluno a : listaLida) {
 //            System.out.println(a);
 //        }
-        return null;
-
+      
         // Para importar a lista toda para o banco de dados:
         // repository.saveAll(listaLida);
-
+        return null;
     }
 }
