@@ -120,4 +120,26 @@ public class UsuarioMapper {
 
         return usuario;
     }
+
+    public static UsuarioCliente ofCliente(UsuarioClienteLocalizacaoDto usuarioClienteLocalizacaoDto,
+                                           UsuarioCliente usuarioCliente){
+        UsuarioCliente usuario = new UsuarioCliente();
+
+        usuario.setId(usuarioCliente.getId());
+        usuario.setNome(usuarioCliente.getNome());
+        usuario.setEmail(usuarioCliente.getEmail());
+        usuario.setSenha(usuarioCliente.getSenha());
+        usuario.setCep(usuarioCliente.getCep());
+        usuario.setTelefone(usuarioCliente.getTelefone());
+        usuario.setCpf(usuarioCliente.getCpf());
+        usuario.setEstado(usuarioCliente.getEstado());
+        usuario.setCidade(usuarioCliente.getCidade());
+        usuario.setBairro(usuarioCliente.getBairro());
+        usuario.setRua(usuarioCliente.getRua());
+        usuario.setNumero(usuarioCliente.getNumero());
+        usuario.setLatitude(usuarioClienteLocalizacaoDto.getLatitude());
+        usuario.setLongitude(usuarioClienteLocalizacaoDto.getLongitude());
+
+        return usuario;
+    }
 }
