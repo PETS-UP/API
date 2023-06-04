@@ -112,7 +112,6 @@ public class UsuarioPetshop extends Usuario implements ClienteObserver{
 
     // Observer
     @Override
-    @Async
     public void atualiza(JavaMailSender enviador, String remetente, String destinatario, double preco) {
         for (ClientePetshopSubscriber assinante : inscritos) {
             assinante.notifica(enviador, remetente, destinatario, preco); // Chamada do método de envio de emails
