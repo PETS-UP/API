@@ -1,7 +1,6 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.ListaObj;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -9,6 +8,8 @@ import java.io.*;
 import java.nio.file.Path;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.util.List;
 
 import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 
@@ -196,10 +197,11 @@ public class GeradorTxt {
         }
 
         // Vamos exibir a lista lida
-        System.out.println("\nLista contendo os dados lidos do arquivo:");
-        for (Aluno a : listaLida) {
-            System.out.println(a);
-        }
+//        System.out.println("\nLista contendo os dados lidos do arquivo:");
+//        for (Aluno a : listaLida) {
+//            System.out.println(a);
+//        }
+        return null;
 
         // Para importar a lista toda para o banco de dados:
         // repository.saveAll(listaLida);
