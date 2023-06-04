@@ -192,10 +192,11 @@ public class GeradorTxt {
         }
 
         // Vamos exibir a lista lida
-        System.out.println("\nLista contendo os dados lidos do arquivo:");
+//        System.out.println("\nLista contendo os dados lidos do arquivo:");
 //        for (Aluno a : listaLida) {
 //            System.out.println(a);
 //        }
+      
         // Para importar a lista toda para o banco de dados:
         // repository.saveAll(listaLida);
         return null;
