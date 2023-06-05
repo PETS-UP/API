@@ -27,6 +27,11 @@ public class UsuarioCliente extends Usuario /*implements ClienteObserver*/ {
 
     private String cpf;
 
+    private double latitude;
+
+    private double longitude;
+
+
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Pet> pets;
 
@@ -58,6 +63,22 @@ public class UsuarioCliente extends Usuario /*implements ClienteObserver*/ {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public double getLatitude() {
+        return latitude;
+    }
+
+    public void setLatitude(double latitude) {
+        this.latitude = latitude;
+    }
+
+    public double getLongitude() {
+        return longitude;
+    }
+
+    public void setLongitude(double longitude) {
+        this.longitude = longitude;
     }
 
     public List<AvaliacaoPetshop> getAvaliacoes() {

@@ -8,6 +8,7 @@ import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.autentication.dto.ClienteLoginDto;
 import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.dto.UsuarioClienteDto;
+import com.petsup.api.service.dto.UsuarioClienteLocalizacaoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -90,5 +91,18 @@ public class ClienteController {
             @PathVariable Integer id
     ) {
         return ResponseEntity.ok(usuarioService.atualizarClientePorId(usuarioDto, id));
+    }
+
+    @PatchMapping("/latitude-longitude/{id}")
+    public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer id,
+                                                       @RequestBody UsuarioClienteLocalizacaoDto usuarioClienteLocalizacaoDto){
+        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
+
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteLocalizacaoDto, usuarioCliente);
+        clienteRepository.save(usuarioAtt);
+
+        return ResponseEntity.noContent().build();
     }
 }
