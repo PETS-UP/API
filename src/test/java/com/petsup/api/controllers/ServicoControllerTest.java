@@ -1,10 +1,7 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.builder.PetBuilder;
 import com.petsup.api.builder.ServicoBuilder;
-import com.petsup.api.builder.UsuarioClienteBuilder;
 import com.petsup.api.builder.UsuarioPetshopBuilder;
-import com.petsup.api.entities.Pet;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.ServicoRepository;
@@ -52,26 +49,26 @@ public class ServicoControllerTest {
 
     @Test
     void getServicosByIdPetshopRetornaListaVazia() throws Exception {
-        when(servicoRepository.findByFkPetshopId(anyInt())).thenReturn(emptyList());
+        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(emptyList());
         when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
 
         mockMvc.perform(get("/servicos").param("idPetshop", "1"))
                 .andExpect(status().isNoContent());
 
-        assertEquals(emptyList(), servicoRepository.findByFkPetshopId(1));
+        assertEquals(emptyList(), servicoRepository.findAllByFkPetshopId(1));
     }
 
     @Test
     void getServicosByIdPetshopRetornaListaDeTamanho3() throws Exception {
         List<Servico> lista = ServicoBuilder.buildListaServico();
 
-        when(servicoRepository.findByFkPetshopId(anyInt())).thenReturn(lista);
+        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(lista);
         when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
 
         mockMvc.perform(get("/servicos").param("idPetshop", "1"))
                 .andExpect(status().isOk());
 
-        assertEquals(3, servicoRepository.findByFkPetshopId(1).size());
+        assertEquals(3, servicoRepository.findAllByFkPetshopId(1).size());
     }
 
     @Test

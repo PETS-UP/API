@@ -6,6 +6,7 @@ import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.repositories.ServicoRepository;
 import com.petsup.api.service.dto.ServicoDto;
 import com.petsup.api.service.dto.ServicoMapper;
+import com.petsup.api.service.dto.ServicoRespostaDto;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -52,15 +53,11 @@ public class ServicoController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado")
     @GetMapping
-    public ResponseEntity<List<ServicoDto>> getServicosByIdPetshop(@RequestParam Integer idPetshop) {
+    public ResponseEntity<List<ServicoRespostaDto>> getServicosByIdPetshop(@RequestParam Integer idPetshop) {
 
         if (petshopRepository.findById(idPetshop).isPresent()) {
-            List<Servico> servicos = servicoRepository.findByFkPetshopId(idPetshop);
-            List<ServicoDto> servicosDto = new ArrayList<>();
-
-            for (Servico servico : servicos) {
-                servicosDto.add(ServicoMapper.ofServicoDto(servico));
-            }
+            List<Servico> servicos = servicoRepository.findAllByFkPetshopId(idPetshop);
+            List<ServicoRespostaDto> servicosDto = ServicoMapper.ofListaServicoRespostaDto(servicos);
 
             return servicosDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(servicosDto);
         }
@@ -70,8 +67,8 @@ public class ServicoController {
     @ApiResponse(responseCode = "200", description = "Retorna o serviço a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<ServicoDto> getServicoById(@PathVariable Integer id) {
-        return ResponseEntity.ok(ServicoMapper.ofServicoDto(servicoRepository.findById(id).orElseThrow(
+    public ResponseEntity<ServicoRespostaDto> getServicoById(@PathVariable Integer id) {
+        return ResponseEntity.ok(ServicoMapper.ofServicoRespostaDto(servicoRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Serviço não encontrado."))
         ));
     }
