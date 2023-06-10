@@ -119,7 +119,20 @@
             <version>12.2.0.jre11</version>
         </dependency>
 
+        <!--Maps API-->
+        <dependency>
+            <groupId>com.google.maps</groupId>
+            <artifactId>google-maps-services</artifactId>
+            <version>0.15.0</version>
+        </dependency>
+
+        <!--Processamento de JSON-->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+        </dependency>
     </dependencies>
+
     <dependencyManagement>
         <dependencies>
             <dependency>

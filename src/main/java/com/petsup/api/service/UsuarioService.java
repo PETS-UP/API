@@ -15,6 +15,7 @@ import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.FilaObj;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,7 +27,7 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.TimerTask;
 
 @Service
-public class UsuarioService extends TimerTask {
+public class UsuarioService {
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
@@ -124,12 +125,9 @@ public class UsuarioService extends TimerTask {
         return avl;
     }
 
-    @Override
-    public void run() {
-        gravarAvaliacoes();
-    }
-
+    @Scheduled(cron = "* 5/5 * * * *")
     public void gravarAvaliacoes(){
+//        System.out.println("TESTE");
         for (int i = 0; i < filaAvaliacao.getTamanho(); i++){
             avaliacaoRepository.save(filaAvaliacao.poll());
         }
