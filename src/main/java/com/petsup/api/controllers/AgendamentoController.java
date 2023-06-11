@@ -8,6 +8,7 @@ import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.*;
 import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
+import com.petsup.api.service.dto.AgendamentoRespostaDto;
 import com.petsup.api.service.dto.PetMapper;
 import com.petsup.api.util.ListaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -97,15 +98,11 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
     @GetMapping("/petshop")
-    public ResponseEntity<List<AgendamentoDto>> getAgendamentosByIdPetshop(@RequestParam Integer idPetshop) {
+    public ResponseEntity<List<AgendamentoRespostaDto>> getAgendamentosByIdPetshop(@RequestParam Integer idPetshop) {
 
         if (petshopRepository.findById(idPetshop).isPresent()) {
             List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
-            List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
-
-            for (Agendamento agendamento : agendamentos) {
-                agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(agendamento));
-            }
+            List<AgendamentoRespostaDto> agendamentoDtos = AgendamentoMapper.ofListaAgendamentoRespostaDto(agendamentos);
 
             return agendamentoDtos.isEmpty() ? ResponseEntity.status(204).build()
                     : ResponseEntity.status(200).body(agendamentoDtos);
@@ -117,15 +114,11 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha agendamentos.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
     @GetMapping("/cliente")
-    public ResponseEntity<List<AgendamentoDto>> getAgendamentosByIdCliente(@RequestParam Integer idCliente) {
+    public ResponseEntity<List<AgendamentoRespostaDto>> getAgendamentosByIdCliente(@RequestParam Integer idCliente) {
 
         if (clienteRepository.findById(idCliente).isPresent()) {
             List<Agendamento> agendamentos = agendamentoRepository.findByFkClienteId(idCliente);
-            List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
-
-            for (Agendamento agendamento : agendamentos) {
-                agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(agendamento));
-            }
+            List<AgendamentoRespostaDto> agendamentoDtos = AgendamentoMapper.ofListaAgendamentoRespostaDto(agendamentos);
 
             return agendamentoDtos.isEmpty() ? ResponseEntity.status(204).build()
                     : ResponseEntity.status(200).body(agendamentoDtos);
@@ -149,9 +142,10 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @GetMapping("/{id}")
-    public ResponseEntity<AgendamentoDto> getAgendamentoById(@PathVariable Integer id) {
-        return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoDto(agendamentoRepository.findById(id).orElseThrow(
+
+    @GetMapping("{id}")
+    public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
+        return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Agendamento não encontrado"))
         ));
     }
