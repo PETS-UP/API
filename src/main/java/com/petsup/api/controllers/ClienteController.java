@@ -80,6 +80,13 @@ public class ClienteController {
         ));
     }
 
+    @GetMapping("busca-email/{email}")
+    public ResponseEntity<UsuarioCliente> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(this.clienteRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        ));
+    }
+
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @DeleteMapping
