@@ -122,6 +122,16 @@ public class PetshopController {
         return ResponseEntity.of(this.petshopRepository.findById(id));
     }
 
+    @GetMapping("busca-email/{email}")
+    @ApiResponse(responseCode = "204", description =
+            "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
+    public ResponseEntity<UsuarioPetshop> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(this.petshopRepository.findByEmail(email).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        ));
+    }
+
     @DeleteMapping
     @ApiResponse(responseCode = "204", description = "Petshop deletado.")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
@@ -287,17 +297,4 @@ public class PetshopController {
         return ResponseEntity.status(200).body(listaLocal);
     }
 
-    @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
-    @GetMapping("report/agendamento/{usuario}")
-    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
-
-        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
-        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
-        Optional<AgendamentoDto> agendamentoDtoOptional = pesquisaBinaria(listaLocal, dataHora);
-
-        if (agendamentoDtoOptional.isPresent()) {
-            return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
-        }
-        return ResponseEntity.status(404).build();
-    }
 }

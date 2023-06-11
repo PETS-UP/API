@@ -10,6 +10,7 @@ import com.petsup.api.service.dto.AgendamentoDto;
 import com.petsup.api.service.dto.AgendamentoMapper;
 import com.petsup.api.service.dto.AgendamentoRespostaDto;
 import com.petsup.api.service.dto.PetMapper;
+import com.petsup.api.util.ListaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -19,9 +20,13 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
+import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
 
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
@@ -121,8 +126,23 @@ public class AgendamentoController {
         return ResponseEntity.status(404).build();
     }
 
+    @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
+    @GetMapping("report/agendamento/{usuario}")
+    public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
+
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+        Optional<AgendamentoDto> agendamentoDtoOptional = pesquisaBinaria(listaLocal, dataHora);
+
+        if (agendamentoDtoOptional.isPresent()) {
+            return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
+        }
+        return ResponseEntity.status(404).build();
+    }
+
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+
     @GetMapping("{id}")
     public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
         return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoRepository.findById(id).orElseThrow(
