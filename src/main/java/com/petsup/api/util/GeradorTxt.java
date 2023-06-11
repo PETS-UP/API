@@ -1,6 +1,10 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.enums.Especie;
+import com.petsup.api.entities.enums.NomeServico;
+import com.petsup.api.entities.enums.Raca;
+import com.petsup.api.service.dto.AgendamentoDto;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -118,19 +122,17 @@ public class GeradorTxt {
 
     }
 
-    public static ResponseEntity<Void> leArquivoTxt(String nomeArq) {
+    public static ResponseEntity<List> leArquivoTxt(String nomeArq) {
         BufferedReader entrada = null;
         String registro, tipoRegistro;
         String nomeCliente, emailCliente, nomePetshop, nomePet, especie, raca, sexo, servico, dataHora;
-        Integer id;
         Double preco;
-        int qtdFalta;
         int contaRegDadoLido = 0;
         int qtdRegDadoGravado;
 
         nomeArq += ".txt";
 
-        List<Agendamento> listaLida = new ArrayList<>();
+        List<AgendamentoDto> listaLida = new ArrayList<>();
         // try-catch para abrir o arquivo
         try {
             entrada = new BufferedReader(new FileReader(nomeArq));
@@ -151,9 +153,9 @@ public class GeradorTxt {
                 if (tipoRegistro.equals("00")) {
                     System.out.println("é um registro de header");
                     System.out.println("Tipo de arquivo: " + registro.substring(2, 12));
-                    System.out.println("Data hora de gravação: " + registro.substring(13, 31));
-                    System.out.println("Versão do documento de layout: " + registro.substring(32, 33));
-                } else if (tipoRegistro.equals("01")) {
+                }
+                else if (tipoRegistro.equals("01")) {
+
                     System.out.println("é um registro de trailer");
                     qtdRegDadoGravado = Integer.parseInt(registro.substring(2, 6));
                     if (contaRegDadoLido != qtdRegDadoGravado) {
@@ -164,16 +166,31 @@ public class GeradorTxt {
                     System.out.println("é um registro de dados");
                     //AINDA FORMATAR
                     //O arquivo não deve ter ID, fazer as contas para tal
-                    id = Integer.parseInt(registro.substring(2, 6).trim());
-                    dataHora = registro.substring(7, 25);
-                    nomeCliente = registro.substring(26, 75).trim();
-                    emailCliente = registro.substring(76, 125).trim();
-                    nomePet = registro.substring(126, 176);
-                    especie = registro.substring(176, 183);
-                    raca = registro.substring(184, 233);
-                    sexo = registro.substring(234, 234);
-                    servico = registro.substring(236, 263);
-                    preco = Double.valueOf(registro.substring(255, 262).replace(',', '.'));
+                    dataHora = registro.substring(2,20);
+                    nomeCliente = registro.substring(26,75).trim();
+                    emailCliente = registro.substring(76,125).trim();
+                    nomePetshop = registro.substring(121, 170).trim();
+                    nomePet = registro.substring(171,220).trim();
+                    especie = registro.substring(221,228).trim();
+                    raca = registro.substring(229, 278);
+                    sexo = registro.substring(280,299);
+                    servico = registro.substring(300,308).trim();
+                    preco = Double.valueOf(registro.substring(255,262).replace(',','.'));
+                    AgendamentoDto a = new AgendamentoDto();
+
+                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
+                    a.setDataHora(LocalDateTime.parse(dataHora, formatter));
+                    a.setNomeCliente(nomeCliente);
+                    a.setEmailCliente(emailCliente);
+                    a.setNomePetshop(nomePetshop);
+                    a.setNomePet(nomePet);
+                    a.setEspecie(Especie.valueOf(especie));
+                    a.setRaca(Raca.valueOf(raca));
+                    a.setSexo(sexo);
+                    a.setServico(NomeServico.valueOf(servico));
+                    a.setPreco(preco);
+
+                    listaLida.add(a);
 
                     // para importar esse dado para o banco de dados
                     // repository.save(a);
@@ -189,16 +206,11 @@ public class GeradorTxt {
             entrada.close();
         } catch (IOException erro) {
             System.out.println("Erro ao ler o arquivo");
+            return ResponseEntity.status(400).build();
         }
-
-        // Vamos exibir a lista lida
-//        System.out.println("\nLista contendo os dados lidos do arquivo:");
-//        for (Aluno a : listaLida) {
-//            System.out.println(a);
-//        }
       
         // Para importar a lista toda para o banco de dados:
         // repository.saveAll(listaLida);
-        return null;
+        return ResponseEntity.status(200).body(listaLida);
     }
 }
