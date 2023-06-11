@@ -6,6 +6,7 @@ import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetRepository;
 import com.petsup.api.service.dto.PetDto;
 import com.petsup.api.service.dto.PetMapper;
+import com.petsup.api.service.dto.PetRespostaDto;
 import com.petsup.api.util.PilhaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -74,15 +75,11 @@ public class PetController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha pets cadastrados.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     @GetMapping
-    public ResponseEntity<List<PetDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
+    public ResponseEntity<List<PetRespostaDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
 
         if (clienteRepository.findById(idCliente).isPresent()) {
             List<Pet> pets = petRepository.findByFkClienteId(idCliente);
-            List<PetDto> petsDto = new ArrayList<>();
-
-            for (Pet pet : pets) {
-                petsDto.add(PetMapper.ofPetDto(pet));
-            }
+            List<PetRespostaDto> petsDto = PetMapper.ofListaPetRespostaDto(pets);
 
             return petsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petsDto);
         }
@@ -92,8 +89,8 @@ public class PetController {
     @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<PetDto> getPetById(@PathVariable Integer id) {
-        return ResponseEntity.ok(PetMapper.ofPetDto(petRepository.findById(id).orElseThrow(
+    public ResponseEntity<PetRespostaDto> getPetById(@PathVariable Integer id) {
+        return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Pet não encontrado"))
         ));
     }
