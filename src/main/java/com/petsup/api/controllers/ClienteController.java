@@ -21,6 +21,7 @@ import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -127,24 +128,40 @@ public class ClienteController {
         );
 
         // Conversao reversa (lat/long -> endereco)
-        GeocodingResult[] results = geocodingService.reverseGeocode(usuarioCliente.getLatitude(),
-                                                                    usuarioCliente.getLongitude());
+//        GeocodingResult[] results = geocodingService.reverseGeocode(usuarioCliente.getLatitude(),
+//                                                                    usuarioCliente.getLongitude());
+//
+//        if (results.length == 0) {
+//            return ResponseEntity.noContent().build();
+//        }
+//
+//        for (GeocodingResult result : results) {
+//            System.out.println(geocodingService.extrairBairro(result)) ;
+//            // Faça o que for necessário com o bairro (neighborhood) obtido
+//        }
+//
+//        for (GeocodingResult result : results) {
+//            bairro = geocodingService.extrairBairro(result);
+//            // Faça o que for necessário com o bairro (neighborhood) obtido
+//        }
+//        List<UsuarioPetshop> petshops = petshopRepository.findAllByBairro(bairro);
+//        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+//        for (int i = 0; i < petshops.size(); i++){
+//        petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+//        }
 
-        if (results.length == 0) {
-            return ResponseEntity.noContent().build();
-        }
+//        return ResponseEntity.ok().body(petshopsDto);
+        return ResponseEntity.ok().build();
 
-        for (GeocodingResult result : results) {
-            bairro = geocodingService.extrairBairro(result);
+    }
+
+    @Scheduled(cron = "5/5 * * * * *")
+    public void aaa(){
+        String results = geocodingService.reverseGeocode(7.193871,
+                -4.925752);
+//        for (String result : results) {
+            System.out.println(results);
             // Faça o que for necessário com o bairro (neighborhood) obtido
-        }
-        List<UsuarioPetshop> petshops = petshopRepository.findAllByBairro(bairro);
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
-        for (int i = 0; i < petshops.size(); i++){
-        petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
-        }
-
-        return ResponseEntity.ok().body(petshopsDto);
-
+        //}
     }
 }
