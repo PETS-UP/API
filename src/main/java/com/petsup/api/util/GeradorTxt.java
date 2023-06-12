@@ -6,6 +6,7 @@ import com.petsup.api.entities.enums.NomeServico;
 import com.petsup.api.entities.enums.Raca;
 import com.petsup.api.service.dto.AgendamentoDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
@@ -122,7 +123,7 @@ public class GeradorTxt {
 
     }
 
-    public static ResponseEntity<List> leArquivoTxt(String nomeArq) {
+    public static ResponseEntity<List<AgendamentoDto>> leArquivoTxt(MultipartFile nomeArq) {
         BufferedReader entrada = null;
         String registro, tipoRegistro;
         String nomeCliente, emailCliente, nomePetshop, nomePet, especie, raca, sexo, servico, dataHora;
@@ -130,12 +131,11 @@ public class GeradorTxt {
         int contaRegDadoLido = 0;
         int qtdRegDadoGravado;
 
-        nomeArq += ".txt";
 
         List<AgendamentoDto> listaLida = new ArrayList<>();
         // try-catch para abrir o arquivo
         try {
-            entrada = new BufferedReader(new FileReader(nomeArq));
+            entrada = new BufferedReader(new FileReader(nomeArq.getName()));
         } catch (IOException erro) {
             System.out.println("Erro na abertura do arquivo");
             return ResponseEntity.status(400).build();
