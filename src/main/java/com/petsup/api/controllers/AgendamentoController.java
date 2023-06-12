@@ -156,9 +156,10 @@ public class AgendamentoController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<List<Void>> uploadMultipleAgendamento(@RequestParam("arquivo") MultipartFile file){
+    public ResponseEntity<Void> uploadMultipleAgendamento(@RequestParam("arquivo") MultipartFile file){
         Path diretorioBase;
         List<AgendamentoDto> listaTxt;
+        List<Agendamento> listaAgendamentos = new ArrayList<>();
         if(file.isEmpty()){
             return ResponseEntity.status(400).build();
         }
@@ -170,17 +171,19 @@ public class AgendamentoController {
             newAg.setFkPet(petRepository.filterPet(clienteRepository.findByEmail(elemento.getEmailCliente()).get().getId(), elemento.getNomePet()));
             newAg.setFkPetshop(petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1));
             List listaServicos = petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1).getServicos();
-            Servico servico;
+            Servico servico = null;
             for (int i = 0; i < listaServicos.size(); i++) {
                 if(listaServicos.get(i).equals(elemento.getServico())){
                     servico = (Servico) listaServicos.get(i);
                     break;
                 }
             }
-            if(servico.getId())
             newAg.setFkServico(servico);
+
+            listaAgendamentos.add(newAg);
+            agendamentoRepository.save(newAg);
         }
 
-
+        return ResponseEntity.status(201).build();
     }
 }
