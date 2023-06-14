@@ -47,7 +47,7 @@ public class GeradorCsv {
                 Agendamento a = list.getElemento(i);
                 saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
-                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(), a.getFkPet().getRaca().toString(),
+                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(), null,
                         a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
             }
         } catch (FormatterClosedException fc) {

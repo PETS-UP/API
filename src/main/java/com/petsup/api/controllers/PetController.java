@@ -1,6 +1,7 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Pet;
+import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetRepository;
@@ -32,7 +33,7 @@ public class PetController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    private PilhaObj<String> pilhaObj = new PilhaObj<String>(5);
+    private PilhaObj<String> pilhaObj = new PilhaObj<String>(3);
 
     @PostMapping("/adicionar-pilha")
     public ResponseEntity<Void> adicionarNaPilha(String obj){
@@ -45,12 +46,34 @@ public class PetController {
         return ResponseEntity.ok().body(pilhaObj.pop());
     }
 
-    @PostMapping("limpa-pilha")
+    @PostMapping("/limpa-pilha")
     public ResponseEntity<Void> limparPilha(){
         for (int i = 0; i < pilhaObj.getTopo(); i++) {
             pilhaObj.pop();
         }
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cadastrar-pilha")
+    public ResponseEntity<Void> postPilha(@RequestParam Integer idCliente){
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        if (clienteOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+        String nome = pilhaObj.pop();
+        String sexo = pilhaObj.pop();
+        Especie especie = Especie.valueOf(pilhaObj.pop());
+
+        Pet pet = new Pet();
+        pet.setNome(nome);
+        pet.setSexo(sexo);
+        pet.setEspecie(especie);
+
+        petRepository.save(pet);
+        return ResponseEntity.status(201).build();
     }
 
     @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
@@ -93,5 +116,14 @@ public class PetController {
         return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Pet não encontrado"))
         ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarById(@PathVariable Integer id){
+        if(petRepository.findById(id).isPresent()){
+            petRepository.deleteById(id);
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 }

@@ -16,7 +16,6 @@ public class AgendamentoMapper {
         agendamentoDto.setNomePetshop(agendamento.getFkPetshop().getNome());
         agendamentoDto.setNomePet(agendamento.getFkPet().getNome());
         agendamentoDto.setEspecie(agendamento.getFkPet().getEspecie());
-        agendamentoDto.setRaca(agendamento.getFkPet().getRaca());
         agendamentoDto.setSexo(agendamento.getFkPet().getSexo());
         agendamentoDto.setServico(agendamento.getFkServico().getNome());
         agendamentoDto.setPreco(agendamento.getFkServico().getPreco());
@@ -33,7 +32,6 @@ public class AgendamentoMapper {
         agendamentoRespostaDto.setNomePetshop(agendamento.getFkPetshop().getNome());
         agendamentoRespostaDto.setNomePet(agendamento.getFkPet().getNome());
         agendamentoRespostaDto.setEspecie(agendamento.getFkPet().getEspecie().toString());
-        agendamentoRespostaDto.setRaca(agendamento.getFkPet().getRaca().toString());
         agendamentoRespostaDto.setSexo(agendamento.getFkPet().getSexo());
         agendamentoRespostaDto.setServico(agendamento.getFkServico().getNome().toString());
         agendamentoRespostaDto.setPreco(agendamento.getFkServico().getPreco().toString());
