@@ -119,8 +119,8 @@ public class ClienteController {
                 () -> new RuntimeException("Cliente não encontrado")
         );
 
-//        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, usuarioCliente);
-//        clienteRepository.save(usuarioAtt);
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, usuarioCliente);
+        clienteRepository.save(usuarioAtt);
 
         return ResponseEntity.noContent().build();
     }
