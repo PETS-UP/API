@@ -13,10 +13,7 @@ public class PetMapper {
 
         petDto.setNome(pet.getNome());
         petDto.setSexo(pet.getSexo());
-        petDto.setDataNasc(pet.getDataNasc());
-        petDto.setCastrado(pet.getCastrado());
         petDto.setEspecie(pet.getEspecie());
-        petDto.setRaca(pet.getRaca());
 
         return petDto;
     }
@@ -26,9 +23,7 @@ public class PetMapper {
 
         petRespostaDto.setNome(pet.getNome());
         petRespostaDto.setSexo(pet.getSexo());
-        petRespostaDto.setDataNasc(pet.getDataNasc().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         petRespostaDto.setEspecie(pet.getEspecie().toString());
-        petRespostaDto.setRaca(pet.getRaca().toString());
 
         return petRespostaDto;
     }
