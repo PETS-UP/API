@@ -8,8 +8,10 @@ import jakarta.validation.constraints.NotNull;
 
 public class ServicoDto {
 
+    private int id;
+
     @NotNull
-    private NomeServico nome;
+    private String nome;
 
     @NotNull
     @DecimalMin("0.0")
@@ -19,11 +21,20 @@ public class ServicoDto {
     @Column(length = 300)
     private String descricao;
 
-    public NomeServico getNome() {
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
+
+
+    public String getNome() {
         return nome;
     }
 
-    public void setNome(NomeServico nome) {
+    public void setNome(String nome) {
         this.nome = nome;
     }
 

@@ -10,7 +10,8 @@ public class ServicoMapper {
     public static ServicoDto ofServicoDto(Servico servico) {
         ServicoDto servicoDto = new ServicoDto();
 
-        servicoDto.setNome(servico.getNome());
+        servicoDto.setId(servico.getId());
+        servicoDto.setNome(servico.getNome().toString());
         servicoDto.setPreco(servico.getPreco());
         servicoDto.setDescricao(servico.getDescricao());
 
