@@ -24,19 +24,6 @@ public class GeocodingService {
     private String googleMapsApiKey;
 
     public String reverseGeocode(double latitude, double longitude) {
-//        GeoApiContext context = new GeoApiContext.Builder()
-//                .apiKey(googleMapsApiKey)
-//                .build();
-//
-//        try {
-//            GeocodingResult[] result = GeocodingApi.reverseGeocode(context, new com.google.maps.model.LatLng
-//                                                                  (latitude, longitude)).await();
-//            return result;
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//
-//        return null;
 
         String urlString = "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
                 latitude + "," + longitude + "&key=" + googleMapsApiKey;

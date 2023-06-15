@@ -35,8 +35,8 @@ public class PetController {
 
     private PilhaObj<String> pilhaObj = new PilhaObj<String>(3);
 
-    @PostMapping("/adicionar-pilha")
-    public ResponseEntity<Void> adicionarNaPilha(String obj){
+    @PostMapping("/adicionar-pilha/{obj}")
+    public ResponseEntity<Void> adicionarNaPilha(@PathVariable String obj){
         pilhaObj.push(obj);
         return ResponseEntity.ok().build();
     }
@@ -48,9 +48,9 @@ public class PetController {
 
     @PostMapping("/limpa-pilha")
     public ResponseEntity<Void> limparPilha(){
-        for (int i = 0; i < pilhaObj.getTopo(); i++) {
-            pilhaObj.pop();
-        }
+            while(!pilhaObj.isEmpty()){
+                pilhaObj.pop();
+            }
         return ResponseEntity.ok().build();
     }
 
@@ -58,19 +58,26 @@ public class PetController {
     public ResponseEntity<Void> postPilha(@RequestParam Integer idCliente){
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
 
+        UsuarioCliente usuarioCliente = clienteOptional.get();
+
         if (clienteOptional.isEmpty()){
             throw new ResponseStatusException(
                     HttpStatus.NOT_FOUND
             );
         }
+
+        System.out.println(pilhaObj.peek());
         String nome = pilhaObj.pop();
+        System.out.println(pilhaObj.peek());
         String sexo = pilhaObj.pop();
+        System.out.println(pilhaObj.peek());
         Especie especie = Especie.valueOf(pilhaObj.pop());
 
         Pet pet = new Pet();
         pet.setNome(nome);
         pet.setSexo(sexo);
         pet.setEspecie(especie);
+        pet.setFkCliente(usuarioCliente);
 
         petRepository.save(pet);
         return ResponseEntity.status(201).build();
