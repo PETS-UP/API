@@ -20,6 +20,7 @@ public class ServicoMapper {
     public static ServicoRespostaDto ofServicoRespostaDto(Servico servico) {
         ServicoRespostaDto servicoRespostaDto = new ServicoRespostaDto();
 
+        servicoRespostaDto.setId(servico.getId());
         servicoRespostaDto.setNome(servico.getNome().toString());
         servicoRespostaDto.setPreco(String.format("R$%.2f", servico.getPreco()));
         servicoRespostaDto.setDescricao(servico.getDescricao());
