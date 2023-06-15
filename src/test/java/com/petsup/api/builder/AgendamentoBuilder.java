@@ -25,7 +25,6 @@ public class AgendamentoBuilder {
 
     public static AgendamentoDto buildAgendamentoDto() {
         AgendamentoDto agendamentoDto = new AgendamentoDto();
-        agendamentoDto.setId(1);
         agendamentoDto.setDataHora(LocalDateTime.of(2022, 1, 1, 12, 0));
         agendamentoDto.setNomeCliente("Ana Beatriz");
         agendamentoDto.setEmailCliente("ana@gmail.com");

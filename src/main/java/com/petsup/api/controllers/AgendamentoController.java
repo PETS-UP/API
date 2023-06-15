@@ -11,6 +11,7 @@ import com.petsup.api.service.dto.AgendamentoMapper;
 import com.petsup.api.service.dto.AgendamentoRespostaDto;
 import com.petsup.api.service.dto.PetMapper;
 import com.petsup.api.util.ListaObj;
+import com.petsup.api.util.GeradorTxt;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -18,12 +19,17 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
-
 import java.time.LocalDateTime;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Path;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
@@ -146,11 +152,42 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-
     @GetMapping("/{id}")
     public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
         return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Agendamento não encontrado"))
         ));
     }
+
+//    @PostMapping("/upload")
+//    public ResponseEntity<Void> uploadMultipleAgendamento(@RequestParam("arquivo") MultipartFile file){
+//        Path diretorioBase;
+//        List<AgendamentoDto> listaTxt;
+//        List<Agendamento> listaAgendamentos = new ArrayList<>();
+//        if(file.isEmpty()){
+//            return ResponseEntity.status(400).build();
+//        }
+//        listaTxt =  (List<AgendamentoDto>) GeradorTxt.leArquivoTxt(file);
+//        for (AgendamentoDto elemento: listaTxt) {
+//            Agendamento newAg = new Agendamento();
+//            newAg.setDataHora(elemento.getDataHora());
+//            newAg.setFkCliente(clienteRepository.findByEmail(elemento.getEmailCliente()).get());
+//            newAg.setFkPet(petRepository.filterPet(clienteRepository.findByEmail(elemento.getEmailCliente()).get().getId(), elemento.getNomePet()));
+//            newAg.setFkPetshop(petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1));
+//            List listaServicos = petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1).getServicos();
+//            Servico servico = null;
+//            for (int i = 0; i < listaServicos.size(); i++) {
+//                if(listaServicos.get(i).equals(elemento.getServico())){
+//                    servico = (Servico) listaServicos.get(i);
+//                    break;
+//                }
+//            }
+//            newAg.setFkServico(servico);
+//
+//            listaAgendamentos.add(newAg);
+//            agendamentoRepository.save(newAg);
+//        }
+//
+//        return ResponseEntity.status(201).build();
+//    }
 }
