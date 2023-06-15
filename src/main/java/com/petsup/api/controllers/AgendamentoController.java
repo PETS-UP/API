@@ -37,6 +37,7 @@ import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
 @RequestMapping("/agendamentos")
+@CrossOrigin(origins = "http://127.0.0.1:5173")
 public class AgendamentoController {
 
     @Autowired

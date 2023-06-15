@@ -19,14 +19,8 @@ public class Pet {
     private String nome;
 
     private String sexo;
-
-    private LocalDate dataNasc;
-
-    private Integer castrado;
-
+    @Enumerated(EnumType.STRING)
     private Especie especie;
-
-    private Raca raca;
 
     @OneToMany(mappedBy = "fkPet", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
@@ -59,36 +53,12 @@ public class Pet {
         this.sexo = sexo;
     }
 
-    public LocalDate getDataNasc() {
-        return dataNasc;
-    }
-
-    public void setDataNasc(LocalDate dataNasc) {
-        this.dataNasc = dataNasc;
-    }
-
-    public Integer getCastrado() {
-        return castrado;
-    }
-
-    public void setCastrado(Integer castrado) {
-        this.castrado = castrado;
-    }
-
     public Especie getEspecie() {
         return especie;
     }
 
     public void setEspecie(Especie especie) {
         this.especie = especie;
-    }
-
-    public Raca getRaca() {
-        return raca;
-    }
-
-    public void setRaca(Raca raca) {
-        this.raca = raca;
     }
 
     public UsuarioCliente getFkCliente() {

@@ -15,19 +15,7 @@ public class PetDto {
     private String sexo;
 
     @NotNull
-    @PastOrPresent
-    private LocalDate dataNasc;
-
-    @Min(0)
-    @Max(1)
-    @NotNull
-    private Integer castrado;
-
-    @NotNull
     private Especie especie;
-
-    @NotNull
-    private Raca raca;
 
     public String getNome() {
         return nome;
@@ -45,36 +33,12 @@ public class PetDto {
         this.sexo = sexo;
     }
 
-    public LocalDate getDataNasc() {
-        return dataNasc;
-    }
-
-    public void setDataNasc(LocalDate dataNasc) {
-        this.dataNasc = dataNasc;
-    }
-
-    public Integer getCastrado() {
-        return castrado;
-    }
-
-    public void setCastrado(Integer castrado) {
-        this.castrado = castrado;
-    }
-
     public Especie getEspecie() {
         return especie;
     }
 
     public void setEspecie(Especie especie) {
         this.especie = especie;
-    }
-
-    public Raca getRaca() {
-        return raca;
-    }
-
-    public void setRaca(Raca raca) {
-        this.raca = raca;
     }
 
 }
