@@ -26,6 +26,7 @@ public class AgendamentoMapper {
     public static AgendamentoRespostaDto ofAgendamentoRespostaDto(Agendamento agendamento) {
         AgendamentoRespostaDto agendamentoRespostaDto = new AgendamentoRespostaDto();
 
+        agendamentoRespostaDto.setId(agendamento.getId());
         agendamentoRespostaDto.setDataHora(agendamento.getDataHora().format(DateTimeFormatter.ofPattern("dd/MM/yyyy hh:mm:ss")));
         agendamentoRespostaDto.setNomeCliente(agendamento.getFkCliente().getNome());
         agendamentoRespostaDto.setEmailCliente(agendamento.getFkCliente().getEmail());
