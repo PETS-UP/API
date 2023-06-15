@@ -2,6 +2,8 @@ package com.petsup.api.service.dto;
 
 public class AgendamentoRespostaDto {
 
+    private Integer id;
+
     private String dataHora;
 
     private String nomeCliente;
@@ -24,6 +26,14 @@ public class AgendamentoRespostaDto {
 
     public String getDataHora() {
         return dataHora;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public void setDataHora(String dataHora) {
