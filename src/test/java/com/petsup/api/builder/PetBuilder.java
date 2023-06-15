@@ -18,10 +18,7 @@ public class PetBuilder {
         pet.setId(1);
         pet.setNome("Fluffy");
         pet.setSexo("M");
-        pet.setDataNasc(LocalDate.of(2020, 1, 1));
-        pet.setCastrado(0);
         pet.setEspecie(Especie.CACHORRO);
-        pet.setRaca(Raca.LABRADOR);
         pet.setAgendamentos(emptyList());
         pet.setFkCliente(UsuarioClienteBuilder.buildUsuarioCliente());
 
@@ -47,10 +44,7 @@ public class PetBuilder {
         PetDto petDto = new PetDto();
         petDto.setNome("Fluffy");
         petDto.setSexo("M");
-        petDto.setDataNasc(LocalDate.of(2020, 1, 1));
-        petDto.setCastrado(0);
         petDto.setEspecie(Especie.CACHORRO);
-        petDto.setRaca(Raca.LABRADOR);
 
         return petDto;
     }
