@@ -88,6 +88,7 @@ public class UsuarioMapper {
     public static UsuarioPetshopDto ofPetshopDto(UsuarioPetshop usuarioPetshop) {
         UsuarioPetshopDto usuarioPetshopDto = new UsuarioPetshopDto();
 
+        usuarioPetshopDto.setId(usuarioPetshopDto.getId());
         usuarioPetshopDto.setNome(usuarioPetshop.getNome());
         usuarioPetshopDto.setEmail(usuarioPetshop.getEmail());
         usuarioPetshopDto.setTelefone(usuarioPetshop.getTelefone());

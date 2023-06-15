@@ -52,13 +52,15 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "201", description = "Serviço cadastrado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Entidade não encontrada.")
     @PostMapping
-    public ResponseEntity<Void> postAgendamento(@RequestBody @Valid Agendamento agendamento,
+    public ResponseEntity<Void> postAgendamento(@RequestParam LocalDateTime dataHora,
                                                 @RequestParam Integer idCliente, @RequestParam Integer idPetshop,
                                                 @RequestParam Integer idPet, @RequestParam Integer idServico) {
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
         Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
         Optional<Pet> petOptional = petRepository.findById(idPet);
         Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
+
+        Agendamento agendamento = new Agendamento();
 
         if (clienteOptional.isEmpty()){
             throw new ResponseStatusException(
@@ -91,6 +93,7 @@ public class AgendamentoController {
         agendamento.setFkPetshop(petshop);
         agendamento.setFkPet(pet);
         agendamento.setFkServico(servico);
+        agendamento.setDataHora(dataHora);
         agendamentoRepository.save(agendamento);
         return ResponseEntity.status(201).build();
     }
