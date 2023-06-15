@@ -1,11 +1,20 @@
 package com.petsup.api.service.dto;
 
 public class PetRespostaDto {
+    private int id;
     private String nome;
     private String sexo;
     private String dataNasc;
     private String especie;
     private String raca;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
