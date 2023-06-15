@@ -15,6 +15,7 @@ import com.petsup.api.service.dto.UsuarioClienteDto;
 import com.petsup.api.service.dto.UsuarioClienteLocalizacaoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.util.DetalhesEndereco;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -80,7 +81,7 @@ public class ClienteController {
         ));
     }
 
-    @GetMapping("busca-email/{email}")
+    @GetMapping("/busca-email/{email}")
     public ResponseEntity<UsuarioCliente> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(this.clienteRepository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
@@ -111,23 +112,21 @@ public class ClienteController {
         return ResponseEntity.ok(usuarioService.atualizarClientePorId(usuarioDto, id));
     }
 
-    @PatchMapping("/latitude-longitude/{id}")
+    @PatchMapping("/latitude-longitude/{id}/{latitude}/{longitude}")
     public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer id,
-                                                       @RequestBody UsuarioClienteLocalizacaoDto usuarioClienteLocalizacaoDto) {
+                                                       @PathVariable double latitude, @PathVariable double longitude) {
         UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
         );
 
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteLocalizacaoDto, usuarioCliente);
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, usuarioCliente);
         clienteRepository.save(usuarioAtt);
 
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/petshops-proximos")
-    public ResponseEntity<List<UsuarioPetshopDto>> retornaPetshopsNoBairroDoCliente(@PathVariable Integer id,
-                                                                                    @RequestBody UsuarioClienteLocalizacaoDto
-                                                                                             usuarioClienteLocalizacaoDto) {
+    @GetMapping("/petshops-proximos/{id}")
+    public ResponseEntity<List<UsuarioPetshopDto>> retornaPetshopsNoBairroDoCliente(@PathVariable Integer id) {
         String bairro = "";
 
         UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
@@ -135,40 +134,38 @@ public class ClienteController {
         );
 
         // Conversao reversa (lat/long -> endereco)
-//        GeocodingResult[] results = geocodingService.reverseGeocode(usuarioCliente.getLatitude(),
-//                                                                    usuarioCliente.getLongitude());
-//
-//        if (results.length == 0) {
-//            return ResponseEntity.noContent().build();
-//        }
-//
-//        for (GeocodingResult result : results) {
-//            System.out.println(geocodingService.extrairBairro(result)) ;
-//            // Faça o que for necessário com o bairro (neighborhood) obtido
-//        }
-//
-//        for (GeocodingResult result : results) {
-//            bairro = geocodingService.extrairBairro(result);
-//            // Faça o que for necessário com o bairro (neighborhood) obtido
-//        }
-//        List<UsuarioPetshop> petshops = petshopRepository.findAllByBairro(bairro);
-//        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
-//        for (int i = 0; i < petshops.size(); i++){
-//        petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
-//        }
+        String results = geocodingService.reverseGeocode(usuarioCliente.getLatitude(),
+                                                                    usuarioCliente.getLongitude());
 
-//        return ResponseEntity.ok().body(petshopsDto);
-        return ResponseEntity.ok().build();
+        if (results.isBlank()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        System.out.println(results);
+
+        DetalhesEndereco detalhesEndereco = geocodingService.extrairBairroCidade(results);
+
+        System.out.println(detalhesEndereco.getNeighborhood() + detalhesEndereco.getCity());
+
+        List<UsuarioPetshop> petshops = petshopRepository.findAllByBairroAndCidade(detalhesEndereco.getNeighborhood(),
+                detalhesEndereco.getCity());
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+        for (int i = 0; i < petshops.size(); i++){
+        petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+        }
+
+        return ResponseEntity.ok().body(petshopsDto);
+        //return ResponseEntity.ok().build();
 
     }
 
-//    @Scheduled(cron = "5/5 * * * * *")
-//    public void aaa(){
-//        String results = geocodingService.reverseGeocode(7.193871,
-//                -4.925752);
-////        for (String result : results) {
-//            System.out.println(results);
-//            // Faça o que for necessário com o bairro (neighborhood) obtido
-//        //}
-//    }
+    @Scheduled(cron = "5/5 * * * * *")
+    public void aaa(){
+        String results = geocodingService.reverseGeocode(7.193871,
+                -4.925752);
+//        for (String result : results) {
+        geocodingService.extrairBairroCidade(results);
+            // Faça o que for necessário com o bairro (neighborhood) obtido
+        //}
+    }
 }

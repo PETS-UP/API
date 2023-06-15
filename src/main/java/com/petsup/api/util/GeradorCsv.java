@@ -26,9 +26,12 @@ public class GeradorCsv {
 
         if(System.getProperty("os.name").contains("Windows")){
             diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
+            System.out.println(diretorioBase);
         }else{
             diretorioBase = Path.of(System.getProperty("user.dir") + "/arquivos");
+            System.out.println(diretorioBase);
         }
+
 
         if(!diretorioBase.toFile().exists()){
             diretorioBase.toFile().mkdir();
@@ -45,9 +48,9 @@ public class GeradorCsv {
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
+                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
-                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(), a.getFkPet().getRaca().toString(),
+                        a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(),
                         a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
             }
         } catch (FormatterClosedException fc) {

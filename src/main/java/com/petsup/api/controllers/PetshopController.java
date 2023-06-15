@@ -122,7 +122,7 @@ public class PetshopController {
         return ResponseEntity.of(this.petshopRepository.findById(id));
     }
 
-    @GetMapping("busca-email/{email}")
+    @GetMapping("/busca-email/{email}")
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")

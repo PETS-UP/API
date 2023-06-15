@@ -121,7 +121,7 @@ public class UsuarioMapper {
         return usuario;
     }
 
-    public static UsuarioCliente ofCliente(UsuarioClienteLocalizacaoDto usuarioClienteLocalizacaoDto,
+    public static UsuarioCliente ofCliente(double latitude, double longitude,
                                            UsuarioCliente usuarioCliente){
         UsuarioCliente usuario = new UsuarioCliente();
 
@@ -137,8 +137,8 @@ public class UsuarioMapper {
         usuario.setBairro(usuarioCliente.getBairro());
         usuario.setRua(usuarioCliente.getRua());
         usuario.setNumero(usuarioCliente.getNumero());
-        usuario.setLatitude(usuarioClienteLocalizacaoDto.getLatitude());
-        usuario.setLongitude(usuarioClienteLocalizacaoDto.getLongitude());
+        usuario.setLatitude(latitude);
+        usuario.setLongitude(longitude);
 
         return usuario;
     }
