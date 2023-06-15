@@ -51,9 +51,11 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/petshops/login/**"),
             new AntPathRequestMatcher("/petshops/login"),
             new AntPathRequestMatcher("/petshops"),
+            new AntPathRequestMatcher("/petshops/busca-email/{email}"),
             new AntPathRequestMatcher("/clientes/login/**"),
             new AntPathRequestMatcher("/clientes/login"),
             new AntPathRequestMatcher("/clientes"),
+            new AntPathRequestMatcher("/clientes/busca-email/{email}"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**")
     };
@@ -121,7 +123,8 @@ public class SecurityConfiguracao {
                         HttpMethod.GET.name(),
                         HttpMethod.POST.name(),
                         HttpMethod.PUT.name(),
-                        HttpMethod.DELETE.name())
+                        HttpMethod.DELETE.name(),
+                        HttpMethod.PATCH.name())
         );
 
         configuration.setAllowedHeaders(Arrays.asList(HttpHeaders.CONTENT_TYPE, HttpHeaders.AUTHORIZATION));

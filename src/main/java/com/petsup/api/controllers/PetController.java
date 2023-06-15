@@ -1,11 +1,13 @@
 package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Pet;
+import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetRepository;
 import com.petsup.api.service.dto.PetDto;
 import com.petsup.api.service.dto.PetMapper;
+import com.petsup.api.service.dto.PetRespostaDto;
 import com.petsup.api.util.PilhaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -31,10 +33,10 @@ public class PetController {
     @Autowired
     private ClienteRepository clienteRepository;
 
-    private PilhaObj<String> pilhaObj = new PilhaObj<String>(5);
+    private PilhaObj<String> pilhaObj = new PilhaObj<String>(3);
 
-    @PostMapping("/adicionar-pilha")
-    public ResponseEntity<Void> adicionarNaPilha(String obj){
+    @PostMapping("/adicionar-pilha/{obj}")
+    public ResponseEntity<Void> adicionarNaPilha(@PathVariable String obj){
         pilhaObj.push(obj);
         return ResponseEntity.ok().build();
     }
@@ -44,12 +46,41 @@ public class PetController {
         return ResponseEntity.ok().body(pilhaObj.pop());
     }
 
-    @PostMapping("limpa-pilha")
+    @PostMapping("/limpa-pilha")
     public ResponseEntity<Void> limparPilha(){
-        for (int i = 0; i < pilhaObj.getTopo(); i++) {
-            pilhaObj.pop();
-        }
+            while(!pilhaObj.isEmpty()){
+                pilhaObj.pop();
+            }
         return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/cadastrar-pilha")
+    public ResponseEntity<Void> postPilha(@RequestParam Integer idCliente){
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        UsuarioCliente usuarioCliente = clienteOptional.get();
+
+        if (clienteOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        System.out.println(pilhaObj.peek());
+        String nome = pilhaObj.pop();
+        System.out.println(pilhaObj.peek());
+        String sexo = pilhaObj.pop();
+        System.out.println(pilhaObj.peek());
+        Especie especie = Especie.valueOf(pilhaObj.pop());
+
+        Pet pet = new Pet();
+        pet.setNome(nome);
+        pet.setSexo(sexo);
+        pet.setEspecie(especie);
+        pet.setFkCliente(usuarioCliente);
+
+        petRepository.save(pet);
+        return ResponseEntity.status(201).build();
     }
 
     @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
@@ -74,15 +105,11 @@ public class PetController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha pets cadastrados.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
     @GetMapping
-    public ResponseEntity<List<PetDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
+    public ResponseEntity<List<PetRespostaDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
 
         if (clienteRepository.findById(idCliente).isPresent()) {
             List<Pet> pets = petRepository.findByFkClienteId(idCliente);
-            List<PetDto> petsDto = new ArrayList<>();
-
-            for (Pet pet : pets) {
-                petsDto.add(PetMapper.ofPetDto(pet));
-            }
+            List<PetRespostaDto> petsDto = PetMapper.ofListaPetRespostaDto(pets);
 
             return petsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petsDto);
         }
@@ -92,9 +119,18 @@ public class PetController {
     @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<PetDto> getPetById(@PathVariable Integer id) {
-        return ResponseEntity.ok(PetMapper.ofPetDto(petRepository.findById(id).orElseThrow(
+    public ResponseEntity<PetRespostaDto> getPetById(@PathVariable Integer id) {
+        return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Pet não encontrado"))
         ));
+    }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<Void> deletarById(@PathVariable Integer id){
+        if(petRepository.findById(id).isPresent()){
+            petRepository.deleteById(id);
+            return ResponseEntity.status(204).build();
+        }
+        return ResponseEntity.status(404).build();
     }
 }

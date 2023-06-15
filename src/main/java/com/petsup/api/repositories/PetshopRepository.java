@@ -3,6 +3,7 @@ package com.petsup.api.repositories;
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.service.autentication.dto.PetshopDeatlhesDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -28,4 +29,6 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
 
     @Query("SELECT u FROM UsuarioPetshop u LEFT JOIN u.avaliacoes a GROUP BY u.id ORDER BY AVG(a.nota) DESC")
     List<UsuarioPetshop> ordenarPorAvaliacao();
+
+    List<UsuarioPetshop> findAllByBairroAndCidade(String bairro, String cidade);
 }
