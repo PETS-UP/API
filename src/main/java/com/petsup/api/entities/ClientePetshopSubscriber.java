@@ -51,8 +51,11 @@ public class ClientePetshopSubscriber /*implements ClienteObserver*/ {
 
         email.setFrom(emailPetshop);
         email.setTo(emailCliente);
-        email.setSubject("Desconto");
-        email.setText("Novo preço" + preco);
+        email.setSubject("Atualização de Preço");
+        email.setText(String.format("Olá, %s, temos uma novidade pra você!\n\n" +
+                "A %s está com novos preços, que tal dar uma conferida?\n\n" +
+                "Corre pra aproveitar a promoção!",
+                fkCliente.getNome(), fkPetshop.getNome()));
 
         enviador.send(email);
 
