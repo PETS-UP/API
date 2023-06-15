@@ -16,8 +16,6 @@ public class AgendamentoRespostaDto {
 
     private String especie;
 
-    private String raca;
-
     private String sexo;
 
     private String servico;
@@ -78,14 +76,6 @@ public class AgendamentoRespostaDto {
 
     public void setEspecie(String especie) {
         this.especie = especie;
-    }
-
-    public String getRaca() {
-        return raca;
-    }
-
-    public void setRaca(String raca) {
-        this.raca = raca;
     }
 
     public String getSexo() {
