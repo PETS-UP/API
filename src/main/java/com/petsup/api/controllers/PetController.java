@@ -8,7 +8,9 @@ import com.petsup.api.repositories.PetRepository;
 import com.petsup.api.service.dto.PetDto;
 import com.petsup.api.service.dto.PetMapper;
 import com.petsup.api.service.dto.PetRespostaDto;
+import com.petsup.api.util.GeradorTxt;
 import com.petsup.api.util.PilhaObj;
+import io.jsonwebtoken.io.IOException;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
@@ -16,6 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
@@ -123,6 +126,27 @@ public class PetController {
         return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Pet não encontrado"))
         ));
+    }
+
+    @PostMapping("/upload")
+    public ResponseEntity<Void> uploadByTxt(@RequestParam("arquivo") MultipartFile arquivo, Integer idCliente){
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        if (clienteOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        try{
+            List<Pet> pets = GeradorTxt.leArquivoTxt(arquivo).getBody();
+            for (int i = 0; i < pets.size(); i++) {
+                postPet(pets.get(i), idCliente);
+            }
+            return ResponseEntity.ok().build();
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
     }
 
     @DeleteMapping("/{id}")
