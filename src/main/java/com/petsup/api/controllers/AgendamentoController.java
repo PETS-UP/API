@@ -131,7 +131,7 @@ public class AgendamentoController {
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
-    @GetMapping("report/agendamento/{usuario}")
+    @GetMapping("/report/agendamento/{usuario}")
     public ResponseEntity<AgendamentoDto> encontrarAgendamentoPorData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
@@ -147,7 +147,7 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
 
-    @GetMapping("{id}")
+    @GetMapping("/{id}")
     public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
         return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Agendamento não encontrado"))

@@ -10,6 +10,8 @@ import jakarta.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 public class AgendamentoDto {
+
+    private int id;
     @NotNull
     @Future
     private LocalDateTime dataHora;
@@ -31,6 +33,14 @@ public class AgendamentoDto {
     private NomeServico servico;
 
     private Double preco;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public LocalDateTime getDataHora() {
         return dataHora;
