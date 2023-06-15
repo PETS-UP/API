@@ -1,11 +1,13 @@
 package com.petsup.api.util;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.Pet;
 import com.petsup.api.entities.enums.Especie;
 import com.petsup.api.entities.enums.NomeServico;
 import com.petsup.api.entities.enums.Raca;
 import com.petsup.api.service.dto.AgendamentoDto;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 
@@ -122,19 +124,19 @@ public class GeradorTxt {
 
     }
 
-    public static ResponseEntity<List<AgendamentoDto>> leArquivoTxt(MultipartFile nomeArq) {
+    public static ResponseEntity<List<Pet>> leArquivoTxt(@RequestParam("file") MultipartFile arquivo) {
         BufferedReader entrada = null;
         String registro, tipoRegistro;
-        String nomeCliente, emailCliente, nomePetshop, nomePet, especie, raca, sexo, servico, dataHora;
-        Double preco;
+        String nome, especie, sexo;
         int contaRegDadoLido = 0;
         int qtdRegDadoGravado;
 
 
-        List<AgendamentoDto> listaLida = new ArrayList<>();
+        List<Pet> listaLida = new ArrayList<>();
         // try-catch para abrir o arquivo
         try {
-            entrada = new BufferedReader(new FileReader(nomeArq.getName()));
+            InputStream inputStream = arquivo.getInputStream();
+            entrada = new BufferedReader(new InputStreamReader(inputStream));
         } catch (IOException erro) {
             System.out.println("Erro na abertura do arquivo");
             return ResponseEntity.status(400).build();
@@ -151,48 +153,31 @@ public class GeradorTxt {
                 // Verifica se o tipoRegistro é um header, ou um trailer, ou um registro de dados
                 if (tipoRegistro.equals("00")) {
                     System.out.println("é um registro de header");
-                    System.out.println("Tipo de arquivo: " + registro.substring(2, 12));
+                    System.out.println("Tipo de arquivo: " + registro.substring(2, 5));
                 }
                 else if (tipoRegistro.equals("01")) {
 
                     System.out.println("é um registro de trailer");
-                    qtdRegDadoGravado = Integer.parseInt(registro.substring(2, 6));
+                    qtdRegDadoGravado = Integer.parseInt(registro.substring(2, 7));
                     if (contaRegDadoLido != qtdRegDadoGravado) {
                         System.out.println("Quantidade de registros lidos não bate com a quantidade declarada");
+                        System.out.println(qtdRegDadoGravado);
+                        System.out.println(contaRegDadoLido);
                         return ResponseEntity.status(400).build();
                     }
                 } else if (tipoRegistro.equals("02")) {
                     System.out.println("é um registro de dados");
-                    //AINDA FORMATAR
-                    //O arquivo não deve ter ID, fazer as contas para tal
-                    dataHora = registro.substring(2,20);
-                    nomeCliente = registro.substring(26,75).trim();
-                    emailCliente = registro.substring(76,125).trim();
-                    nomePetshop = registro.substring(121, 170).trim();
-                    nomePet = registro.substring(171,220).trim();
-                    especie = registro.substring(221,228).trim();
-                    raca = registro.substring(229, 278);
-                    sexo = registro.substring(280,299);
-                    servico = registro.substring(300,308).trim();
-                    preco = Double.valueOf(registro.substring(255,262).replace(',','.'));
-                    AgendamentoDto a = new AgendamentoDto();
+                    nome = registro.substring(2, 26).trim();
+                    especie = registro.substring(27, 35).trim().toUpperCase();
+                    sexo = registro.substring(36,36).trim();
 
-                    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss");
-                    a.setDataHora(LocalDateTime.parse(dataHora, formatter));
-                    a.setNomeCliente(nomeCliente);
-                    a.setEmailCliente(emailCliente);
-                    a.setNomePetshop(nomePetshop);
-                    a.setNomePet(nomePet);
-                    a.setEspecie(Especie.valueOf(especie));
-                    a.setRaca(Raca.valueOf(raca));
-                    a.setSexo(sexo);
-                    a.setServico(NomeServico.valueOf(servico));
-                    a.setPreco(preco);
+                    Pet p = new Pet();
 
-                    listaLida.add(a);
+                    p.setEspecie(Especie.valueOf(especie));
+                    p.setNome(nome);
+                    p.setSexo(sexo);
 
-                    // para importar esse dado para o banco de dados
-                    // repository.save(a);
+                    listaLida.add(p);
 
                     // contabiliza que leu mais um registro de dados
                     contaRegDadoLido++;
@@ -210,6 +195,8 @@ public class GeradorTxt {
       
         // Para importar a lista toda para o banco de dados:
         // repository.saveAll(listaLida);
+        System.out.println("Leu o arquivo OK");
+        System.out.println(listaLida);
         return ResponseEntity.status(200).body(listaLida);
     }
 }

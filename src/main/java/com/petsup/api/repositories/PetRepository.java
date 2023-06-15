@@ -11,6 +11,6 @@ import java.util.List;
 public interface PetRepository extends JpaRepository<Pet, Integer> {
 
     List<Pet> findByFkClienteId(int fkCliente);
-    @Query("SELECT p FROM Pet p JOIN p.cliente c WHERE c.id = :clienteId AND p.nome = :nomePet")
-    Pet filterPet (int fkCliente, String nomePet);
+//    @Query("SELECT p FROM Pet p JOIN p.cliente c WHERE c.id = :clienteId AND p.nome = :nomePet")
+//    Pet filterPet (int fkCliente, String nomePet);
 }
