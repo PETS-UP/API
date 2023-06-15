@@ -24,7 +24,7 @@ public class ServicoBuilder {
 
     public static ServicoDto buildServicoDto() {
         ServicoDto servicoDto = new ServicoDto();
-        servicoDto.setNome(NomeServico.BANHO);
+        servicoDto.setNome(NomeServico.BANHO.toString());
         servicoDto.setPreco(14.90);
         servicoDto.setDescricao("Banho teste");
 
