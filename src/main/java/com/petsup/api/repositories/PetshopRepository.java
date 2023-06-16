@@ -30,7 +30,5 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
     @Query("SELECT u FROM UsuarioPetshop u LEFT JOIN u.avaliacoes a GROUP BY u.id ORDER BY AVG(a.nota) DESC")
     List<UsuarioPetshop> ordenarPorAvaliacao();
 
-    List<UsuarioPetshop> findAllByOrderByAvgAvaliacao();
-
     List<UsuarioPetshop> findAllByBairroAndCidade(String bairro, String cidade);
 }
