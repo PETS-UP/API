@@ -2,6 +2,7 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ClientePetshopSubscriber;
+import com.petsup.api.service.dto.*;
 import com.petsup.api.util.ListaObj;
 import com.petsup.api.entities.Servico;
 import com.petsup.api.entities.usuario.Usuario;
@@ -11,10 +12,6 @@ import com.petsup.api.repositories.*;
 import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
-import com.petsup.api.service.dto.AgendamentoDto;
-import com.petsup.api.service.dto.ServicoDto;
-import com.petsup.api.service.dto.UsuarioMapper;
-import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -295,6 +292,12 @@ public class PetshopController {
         ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
 
         return ResponseEntity.status(200).body(listaLocal);
+    }
+
+    @GetMapping("/dashboard/{id}")
+    public ResponseEntity<Integer> dadosDashboardAgendamentosDia(@PathVariable Integer usuario){
+
+        return null;
     }
 
 }
