@@ -16,6 +16,7 @@ import com.petsup.api.service.dto.UsuarioClienteLocalizacaoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.DetalhesEndereco;
+import com.petsup.api.util.PetshopAvaliacao;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
@@ -96,8 +98,18 @@ public class ClienteController {
         return ResponseEntity.status(204).build();
     }
 
-    @PostMapping("/avaliar")
-    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl) {
+    @PostMapping("/avaliar/{idCliente}/{idPetshop}")
+    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl,
+                                                          @PathVariable int idCliente, @PathVariable int idPetshop) {
+
+
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+        UsuarioCliente cliente = clienteOptional.get();
+        UsuarioPetshop petshop = petshopOptional.get();
+        avl.setFkPetshop(petshop);
+        avl.setFkCliente(cliente);
+
         this.usuarioService.avaliarPetshop(avl);
         return ResponseEntity.status(201).build();
     }
@@ -158,6 +170,38 @@ public class ClienteController {
         //return ResponseEntity.ok().build();
 
     }
+
+    @GetMapping("/ordenar-media-avaliacao")
+    public ResponseEntity<List<PetshopAvaliacao>> getPetshopsPorMedia(){
+        List<PetshopAvaliacao> avaliacoes = petshopRepository.ordenarMediaAvaliacao();
+
+        if (avaliacoes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+//        avaliacoes.get(0).getFkPetshop()
+//        for (int i = 0;){
+//
+//        }
+
+        return ResponseEntity.ok().body(avaliacoes);
+    }
+
+    @GetMapping("/ordenar-media-preco")
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsPorMenorPreco(){
+        List<UsuarioPetshop> petshops = petshopRepository.ordenarPorPreco();
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+
+        if (petshops.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        for (int i = 0; i < petshops.size(); i++){
+            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+        }
+
+        return ResponseEntity.ok().body(petshopsDto);
+    }
+
 
     @Scheduled(cron = "5/5 * * * * *")
     public void aaa(){
