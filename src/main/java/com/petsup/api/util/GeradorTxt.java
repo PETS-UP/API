@@ -168,8 +168,8 @@ public class GeradorTxt {
                 } else if (tipoRegistro.equals("02")) {
                     System.out.println("é um registro de dados");
                     nome = registro.substring(2, 26).trim();
-                    especie = registro.substring(27, 35).trim().toUpperCase();
-                    sexo = registro.substring(36,36).trim();
+                    especie = registro.substring(26, 35).trim().toUpperCase();
+                    sexo = registro.substring(35,36).trim();
 
                     Pet p = new Pet();
 
