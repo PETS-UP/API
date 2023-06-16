@@ -11,6 +11,6 @@ import java.util.List;
 //    PetshopRepository petshopRepository;
 //    @Override
 //    public List<UsuarioPetshop> ordenar(){
-//        return this.petshopRepository.ordenarPorAvaliacao();
+//        return this.petshopRepository.findAllByOrderByAvgAvaliacao();
 //    }
 //}
