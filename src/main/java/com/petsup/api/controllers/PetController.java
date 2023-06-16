@@ -129,7 +129,7 @@ public class PetController {
     }
 
     @PostMapping("/upload")
-    public ResponseEntity<Void> uploadByTxt(@RequestParam("arquivo") MultipartFile arquivo, Integer idCliente){
+    public ResponseEntity<Void> uploadByTxt(@RequestParam("arquivo") MultipartFile arquivo, @RequestParam Integer idCliente){
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
 
         if (clienteOptional.isEmpty()){
