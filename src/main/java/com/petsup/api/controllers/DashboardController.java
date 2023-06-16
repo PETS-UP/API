@@ -16,10 +16,10 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("/ultima-semana")
-    public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana() {
-        return ResponseEntity.ok(dashboardService.getAgendamentosUltimaSemana());
-    }
+//    @GetMapping("/ultima-semana")
+//    public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana() {
+//        return ResponseEntity.ok(dashboardService.getAgendamentosUltimaSemana());
+//    }
 
 //    @GetMapping("ultimo-mes")
 //    public ResponseEntity<Integer>
