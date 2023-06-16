@@ -11,6 +11,6 @@ public class FiltroAvaliacao implements FiltroStrategy{
     PetshopRepository petshopRepository;
     @Override
     public List<UsuarioPetshop> ordenar(){
-        return this.petshopRepository.ordenarPorAvaliacao();
+        return this.petshopRepository.findAllByOrderByAvgAvaliacao();
     }
 }

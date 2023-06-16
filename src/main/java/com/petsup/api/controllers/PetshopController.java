@@ -294,10 +294,4 @@ public class PetshopController {
         return ResponseEntity.status(200).body(listaLocal);
     }
 
-    @GetMapping("/dashboard/{id}")
-    public ResponseEntity<Integer> dadosDashboardAgendamentosDia(@PathVariable Integer usuario){
-
-        return null;
-    }
-
 }
