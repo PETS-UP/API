@@ -5,6 +5,7 @@ import com.petsup.api.repositories.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -25,8 +26,8 @@ public class DashboardService {
         for (int i = 1; i < 8; i++) {
             Long toLong = (long) i;
             List<Agendamento> aux =
-            agendamentos.stream().filter(agendamento -> agendamento.getDataHora().isEqual(LocalDateTime.now().minusDays(toLong)))
-                    .collect(Collectors.toList());
+            agendamentos.stream().filter(agendamento -> agendamento.getDataHora().toLocalDate().isEqual(LocalDate.now()
+                            .minusDays(toLong))).collect(Collectors.toList());
             qtdAgendamentos.add(aux.size());
         }
 
