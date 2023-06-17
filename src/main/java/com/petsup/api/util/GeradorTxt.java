@@ -45,15 +45,17 @@ public class GeradorTxt {
         }
     }
 
-    public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
+    public static File gravaArquivoTxt(ListaObj<Agendamento> lista, String nomeArq) {
         int contaRegistroDado = 0;
-        String nomeArq = "Agendamento";
+//        String nomeArq = "Agendamento";
         File file = null;
         try{
             file = File.createTempFile(nomeArq, ".txt");
         }catch (IOException e){
             throw new RuntimeException(e);
         }
+
+        System.out.println(file);
 
         // Monta o registro de header
         String header = "00AGENDAMENTO";
