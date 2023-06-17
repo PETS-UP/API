@@ -1,5 +1,7 @@
 package com.petsup.api.controllers;
 
+import com.petsup.api.entities.Agendamento;
+import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -8,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @RestController
@@ -16,6 +19,9 @@ public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;
+
+    @Autowired
+    private AgendamentoRepository agendamentoRepository;
 
     @GetMapping("/ultima-semana")
     public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana(@PathVariable Integer idPetshop) {
@@ -34,6 +40,11 @@ public class DashboardController {
 
     @GetMapping("/renda-ultimos-meses")
     public ResponseEntity<List<String>> getRendaUltimosMeses(@PathVariable Integer idPetshop){
+
+
+
+
+
         return null;
     }
 

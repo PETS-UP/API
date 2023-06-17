@@ -78,6 +78,17 @@ public class DashboardService {
     }
 
     public List<String> getAgendamentosUltimosMeses(int idPetshop) {
+        List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
+                idPetshop, LocalDateTime.now().minusMonths(5L), LocalDateTime.now().minusMonths(1L)
+        );
+
+        for (int i = 0; i < 5; i++) {
+            Long toLong = (long) i;
+            List<Agendamento> aux = agendamentos.stream().filter(agendamento -> agendamento.getDataHora()
+                    .toLocalDate().isEqual(LocalDate.now()
+                            .minusMonths(toLong))).collect(Collectors.toList());
+        }
+
         return null;
     }
 }

@@ -115,8 +115,10 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.of(this.petshopRepository.findById(id));
+    public ResponseEntity<UsuarioPetshopDto> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(UsuarioMapper.ofPetshopDto(petshopRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Pet shop não encontrado"))
+        ));
     }
 
     @GetMapping("/busca-email/{email}")
