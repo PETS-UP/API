@@ -76,4 +76,8 @@ public class DashboardService {
 
         return output.replaceFirst("\\b\\p{L}", output.substring(0, 1).toUpperCase());
     }
+
+    public List<String> getAgendamentosUltimosMeses(int idPetshop) {
+        return null;
+    }
 }

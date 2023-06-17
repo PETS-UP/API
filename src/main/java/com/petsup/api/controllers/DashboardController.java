@@ -11,25 +11,30 @@ import org.springframework.web.bind.annotation.RestController;
 import java.util.List;
 
 @RestController
-@RequestMapping("/dashboard")
+@RequestMapping("/dashboard/{idPetshop}")
 public class DashboardController {
 
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("/ultima-semana/{idPetshop}")
+    @GetMapping("/ultima-semana")
     public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana(@PathVariable Integer idPetshop) {
         return ResponseEntity.ok(dashboardService.getAgendamentosUltimaSemana(idPetshop));
     }
 
-    @GetMapping("/dia-mais-movimentado/{idPetshop}")
+    @GetMapping("/dia-mais-movimentado")
     public ResponseEntity<String> getDiaMaisMovimentado(@PathVariable Integer idPetshop){
         return ResponseEntity.ok(dashboardService.getDiaMaisMovimentado(idPetshop));
     }
 
-    @GetMapping("/dia-menos-movimentado/{idPetshop}")
+    @GetMapping("/dia-menos-movimentado")
     public ResponseEntity<String> getDiaMenosMovimentado(@PathVariable Integer idPetshop){
         return ResponseEntity.ok(dashboardService.getDiaMenosMovimentado(idPetshop));
+    }
+
+    @GetMapping("/renda-ultimos-meses")
+    public ResponseEntity<List<String>> getRendaUltimosMeses(@PathVariable Integer idPetshop){
+        return null;
     }
 
 //    @GetMapping("ultimo-mes")
