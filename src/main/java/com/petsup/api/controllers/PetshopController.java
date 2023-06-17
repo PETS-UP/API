@@ -117,7 +117,7 @@ public class PetshopController {
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
     public ResponseEntity<UsuarioPetshopDto> getUserById(@PathVariable Integer id) {
         return ResponseEntity.ok().body(UsuarioMapper.ofPetshopDto(petshopRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Pet shop não encontrado"))
+                () -> new RuntimeException("Petshop não encontrado"))
         ));
     }
 

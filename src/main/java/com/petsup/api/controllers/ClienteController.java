@@ -203,13 +203,13 @@ public class ClienteController {
     }
 
 
-    @Scheduled(cron = "5/5 * * * * *")
-    public void aaa(){
-        String results = geocodingService.reverseGeocode(7.193871,
-                -4.925752);
-//        for (String result : results) {
-        geocodingService.extrairBairroCidade(results);
-            // Faça o que for necessário com o bairro (neighborhood) obtido
-        //}
-    }
+//    @Scheduled(cron = "5/5 * * * * *")
+//    public void aaa(){
+//        String results = geocodingService.reverseGeocode(7.193871,
+//                -4.925752);
+////        for (String result : results) {
+//        geocodingService.extrairBairroCidade(results);
+//            // Faça o que for necessário com o bairro (neighborhood) obtido
+//        //}
+//    }
 }

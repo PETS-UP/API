@@ -1,6 +1,7 @@
 package com.petsup.api.service;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.Servico;
 import com.petsup.api.repositories.AgendamentoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -77,17 +78,32 @@ public class DashboardService {
         return output.replaceFirst("\\b\\p{L}", output.substring(0, 1).toUpperCase());
     }
 
-    public List<String> getAgendamentosUltimosMeses(int idPetshop) {
+    public List<Double> getAgendamentosUltimosMeses(int idPetshop) {
         List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
-                idPetshop, LocalDateTime.now().minusMonths(5L), LocalDateTime.now().minusMonths(1L)
+                idPetshop, LocalDateTime.now().withDayOfMonth(1).minusMonths(5L),
+                LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).minusMonths(1L)
         );
 
-        for (int i = 0; i < 5; i++) {
+        List<Double> valorServicoAgendamentosPorMes = new ArrayList<>();
+
+        for (int i = 1; i < 6; i++) {
             Long toLong = (long) i;
-            List<Agendamento> aux = agendamentos.stream().filter(agendamento -> agendamento.getDataHora()
-                    .toLocalDate().isEqual(LocalDate.now()
-                            .minusMonths(toLong))).collect(Collectors.toList());
+            Double somaValorServico = agendamentos.stream().filter(agendamento -> agendamento.getDataHora()
+                    .toLocalDate().isAfter(LocalDate.now()
+                            .minusMonths(toLong)))
+                    .mapToDouble(agendamento -> agendamento.getFkServico().getPreco())
+                    .reduce(0.0, Double::sum);
+            valorServicoAgendamentosPorMes.add(somaValorServico);
         }
+
+        return valorServicoAgendamentosPorMes;
+    }
+
+    public Double getRendaEsteMes(int idPetshop){
+        List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
+                idPetshop, LocalDateTime.now().withDayOfMonth(1).minusMonths(5L),
+                LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).minusMonths(1L)
+        );
 
         return null;
     }

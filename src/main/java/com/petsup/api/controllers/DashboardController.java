@@ -39,13 +39,13 @@ public class DashboardController {
     }
 
     @GetMapping("/renda-ultimos-meses")
-    public ResponseEntity<List<String>> getRendaUltimosMeses(@PathVariable Integer idPetshop){
+    public ResponseEntity<List<Double>> getRendaUltimosMeses(@PathVariable Integer idPetshop){
+        return ResponseEntity.ok(dashboardService.getAgendamentosUltimosMeses(idPetshop));
+    }
 
-
-
-
-
-        return null;
+    @GetMapping("/renda-este-mes")
+    public ResponseEntity<Double> getRendaEsteMes(@PathVariable Integer idPetshop){
+        return ResponseEntity.ok(dashboardService.getRendaEsteMes(idPetshop));
     }
 
 //    @GetMapping("ultimo-mes")
