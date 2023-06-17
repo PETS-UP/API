@@ -26,6 +26,11 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getDiaMaisMovimentado());
     }
 
+    @GetMapping("/dia-menos-movimentado")
+    public ResponseEntity<String> getDiaMenosMovimentado(){
+        return ResponseEntity.ok(dashboardService.getDiaMenosMovimentado());
+    }
+
 //    @GetMapping("ultimo-mes")
 //    public ResponseEntity<Integer>
 //
