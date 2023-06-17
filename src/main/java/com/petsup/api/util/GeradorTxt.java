@@ -23,7 +23,7 @@ import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 public class GeradorTxt {
 
     //Adiciona linha ao arquivo sem criar um arquivo novo
-    public static ResponseEntity<Void> gravaRegistro(String registro, String nomeArq) {
+    public static void gravaRegistro(String registro, String nomeArq) {
         BufferedWriter saida = null;
 
         // try-catch para abrir o arquivo
@@ -42,24 +42,17 @@ public class GeradorTxt {
         }
         catch (IOException erro) {
             System.out.println("Erro ao gravar no arquivo");
-            return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.status(200).build();
     }
 
-    public static ResponseEntity<Void> gravaArquivoTxt(ListaObj<Agendamento> lista) {
+    public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;
-        String nomeArq = "Agendamento.txt";
-        Path diretorioBase;
-
-        if(System.getProperty("os.name").contains("Windows")){
-            diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
-        }else{
-            diretorioBase = Path.of(System.getProperty("user.dir") + "/arquivos");
-        }
-
-        if(!diretorioBase.toFile().exists()){
-            diretorioBase.toFile().mkdir();
+        String nomeArq = "Agendamento";
+        File file = null;
+        try{
+            file = File.createTempFile(nomeArq, ".txt");
+        }catch (IOException e){
+            throw new RuntimeException(e);
         }
 
         // Monta o registro de header
@@ -91,7 +84,7 @@ public class GeradorTxt {
         String trailer = "01";
         trailer += String.format("%010d",contaRegistroDado);
         gravaRegistro(trailer, nomeArq);
-        return ResponseEntity.status(200).build();
+        return file;
     }
 
     public static ResponseEntity<byte[]> buscaArquivoTxt() {

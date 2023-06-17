@@ -14,6 +14,7 @@ import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
+import io.opencensus.resource.Resource;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,12 +22,20 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.ByteArrayInputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -223,15 +232,27 @@ public class PetshopController {
 
     @GetMapping("/download/txt/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
-    public ResponseEntity<byte[]> downloadTxt(@PathVariable int id) {
+    public ResponseEntity<Resource> downloadTxt(@PathVariable int id) {
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
         //Transfere elementos de list para agendamentos
         for (int i = 0; i < list.size(); i++) {
             agendamentos.adiciona(list.get(i));
         }
-        GeradorTxt.gravaArquivoTxt(agendamentos);
-        return GeradorTxt.buscaArquivoTxt();
+        byte[] bytes;
+        try{
+            bytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(agendamentos).toPath());
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
+
+        InputStream inputStream = new ByteArrayInputStream(new String(bytes, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8));
+        Resource resource = new InputStreamResource(inputStream);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Agendamentos.txt");
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
     }
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
