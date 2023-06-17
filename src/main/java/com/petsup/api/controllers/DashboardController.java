@@ -4,6 +4,7 @@ import com.petsup.api.service.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -16,19 +17,19 @@ public class DashboardController {
     @Autowired
     private DashboardService dashboardService;
 
-    @GetMapping("/ultima-semana")
-    public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana() {
-        return ResponseEntity.ok(dashboardService.getAgendamentosUltimaSemana());
+    @GetMapping("/ultima-semana/{idPetshop}")
+    public ResponseEntity<List<Integer>> getAgendamentosUltimaSemana(@PathVariable Integer idPetshop) {
+        return ResponseEntity.ok(dashboardService.getAgendamentosUltimaSemana(idPetshop));
     }
 
-    @GetMapping("/dia-mais-movimentado")
-    public ResponseEntity<String> getDiaMaisMovimentado(){
-        return ResponseEntity.ok(dashboardService.getDiaMaisMovimentado());
+    @GetMapping("/dia-mais-movimentado/{idPetshop}")
+    public ResponseEntity<String> getDiaMaisMovimentado(@PathVariable Integer idPetshop){
+        return ResponseEntity.ok(dashboardService.getDiaMaisMovimentado(idPetshop));
     }
 
-    @GetMapping("/dia-menos-movimentado")
-    public ResponseEntity<String> getDiaMenosMovimentado(){
-        return ResponseEntity.ok(dashboardService.getDiaMenosMovimentado());
+    @GetMapping("/dia-menos-movimentado/{idPetshop}")
+    public ResponseEntity<String> getDiaMenosMovimentado(@PathVariable Integer idPetshop){
+        return ResponseEntity.ok(dashboardService.getDiaMenosMovimentado(idPetshop));
     }
 
 //    @GetMapping("ultimo-mes")

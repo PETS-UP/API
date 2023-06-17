@@ -20,9 +20,9 @@ public class DashboardService {
     @Autowired
     private AgendamentoRepository agendamentoRepository;
 
-    public List<Integer> getAgendamentosUltimaSemana() {
-        List<Agendamento> agendamentos = agendamentoRepository.findAllByDataHoraBetween(
-                LocalDateTime.now().minusDays(6L), LocalDateTime.now()
+    public List<Integer> getAgendamentosUltimaSemana(int idPetshop) {
+        List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
+                idPetshop, LocalDateTime.now().minusDays(6L), LocalDateTime.now()
         );
         List<Integer> qtdAgendamentos = new ArrayList<>();
 
@@ -39,8 +39,8 @@ public class DashboardService {
         return qtdAgendamentos;
     }
 
-    public String getDiaMaisMovimentado() {
-        List<Integer> qtdAgendamentos = getAgendamentosUltimaSemana();
+    public String getDiaMaisMovimentado(int idPetshop) {
+        List<Integer> qtdAgendamentos = getAgendamentosUltimaSemana(idPetshop);
         int diaMaisMovimentado = 0;
         int valorCount = 0;
 
@@ -58,8 +58,8 @@ public class DashboardService {
         return output.replaceFirst("\\b\\p{L}", output.substring(0, 1).toUpperCase());
     }
 
-    public String getDiaMenosMovimentado() {
-        List<Integer> qtdAgendamentos = getAgendamentosUltimaSemana();
+    public String getDiaMenosMovimentado(int idPetshop) {
+        List<Integer> qtdAgendamentos = getAgendamentosUltimaSemana(idPetshop);
         int diaMenosMovimentado = 0;
         int valorCount = 999;
 
