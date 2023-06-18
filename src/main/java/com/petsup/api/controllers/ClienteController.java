@@ -197,6 +197,7 @@ public class ClienteController {
 
         for (int i = 0; i < petshops.size(); i++){
             petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+            System.out.println(petshopsDto.get(i).getNome());
         }
 
         return ResponseEntity.ok().body(petshopsDto);
