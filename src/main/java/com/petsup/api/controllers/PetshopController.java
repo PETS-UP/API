@@ -14,6 +14,8 @@ import com.petsup.api.service.autentication.dto.PetshopLoginDto;
 import com.petsup.api.service.autentication.dto.PetshopTokenDto;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -21,12 +23,18 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.InputStreamResource;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -201,19 +209,38 @@ public class PetshopController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/report/arquivo/txt/{id}")
-    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
-    public ResponseEntity<Void> gerarReportTxt(@PathVariable int id) {
-        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
-
-        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
-
-        for (int i = 0; i < as.size(); i++) {
-            listaLocal.adiciona(as.get(i));
-        }
-        GeradorTxt.gravaArquivoTxt(listaLocal);
-        return ResponseEntity.status(201).build();
-    }
+//    @GetMapping("/report/arquivo/txt/{id}")
+//    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
+//    public ResponseEntity<Resource> gerarReportTxt(@PathVariable int id) {
+//        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
+////
+//        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+////
+//        for (int i = 0; i < as.size(); i++) {
+//            listaLocal.adiciona(as.get(i));
+//        }
+////        GeradorTxt.gravaArquivoTxt(listaLocal);
+////        return ResponseEntity.status(201).build();
+//
+//            String nomeArq = "agendamentos";
+//            byte[] encodedBytes;
+//            try {
+//                encodedBytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(listaLocal, nomeArq).toPath());
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
+//
+//            InputStream inputStream = new ByteArrayInputStream( new String(encodedBytes, StandardCharsets.UTF_8)
+//                    .getBytes(StandardCharsets.UTF_8));
+//
+//            Resource resource = new InputStreamResource(inputStream);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", nomeArq);
+//
+//            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+//        }
 
     @GetMapping("/download/csv/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
@@ -230,15 +257,25 @@ public class PetshopController {
 
     @GetMapping("/download/txt/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
-    public ResponseEntity<byte[]> downloadTxt(@PathVariable int id) {
+    public ResponseEntity<Resource> downloadTxt(@PathVariable int id) throws FileNotFoundException {
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
         //Transfere elementos de list para agendamentos
         for (int i = 0; i < list.size(); i++) {
             agendamentos.adiciona(list.get(i));
         }
-        GeradorTxt.gravaArquivoTxt(agendamentos);
-        return GeradorTxt.buscaArquivoTxt();
+
+        File file = GeradorTxt.gravaArquivoTxt(agendamentos);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agendamentos.txt");
+
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")

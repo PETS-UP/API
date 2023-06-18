@@ -23,7 +23,7 @@ import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 public class GeradorTxt {
 
     //Adiciona linha ao arquivo sem criar um arquivo novo
-    public static ResponseEntity<Void> gravaRegistro(String registro, String nomeArq) {
+    public static String gravaRegistro(String registro, String nomeArq) {
         BufferedWriter saida = null;
 
         // try-catch para abrir o arquivo
@@ -42,36 +42,37 @@ public class GeradorTxt {
         }
         catch (IOException erro) {
             System.out.println("Erro ao gravar no arquivo");
-            return ResponseEntity.status(400).build();
         }
-        return ResponseEntity.status(200).build();
+        return registro;
     }
 
-    public static ResponseEntity<Void> gravaArquivoTxt(ListaObj<Agendamento> lista) {
+    public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;
-        String nomeArq = "Agendamento.txt";
-        Path diretorioBase;
-
-        if(System.getProperty("os.name").contains("Windows")){
-            diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
-        }else{
-            diretorioBase = Path.of(System.getProperty("user.dir") + "/arquivos");
+        BufferedWriter saida = null;
+        String nomeArq = "Agendamento";
+        File file = null;
+        try{
+            file = File.createTempFile(nomeArq, ".txt");
+        }catch (IOException e){
+            throw new RuntimeException(e);
         }
 
-        if(!diretorioBase.toFile().exists()){
-            diretorioBase.toFile().mkdir();
-        }
+        System.out.println(file);
 
         // Monta o registro de header
         String header = "00AGENDAMENTO";
         header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         header += "01";
-
-        // Grava o registro de header
-        gravaRegistro(header, nomeArq);
+        try (FileWriter writer = new FileWriter(file, true)) {
+            String contentHeader = header;
+            writer.write(contentHeader);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+        }  catch (IOException e) {
+            System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+        }
 
         // Monta e grava os registros de dados ou registros de corpo
-        String corpo;
+        String corpo = null;
         for (int i = 0; i < lista.getTamanho(); i++) {
             corpo = "02";
             corpo += String.format("%05d",lista.getElemento(i).getId());
@@ -83,15 +84,34 @@ public class GeradorTxt {
             corpo += String.format("%-1.1s",lista.getElemento(i).getFkPet().getSexo());
             corpo += String.format("%-20.20s",lista.getElemento(i).getFkServico().getNome());
             corpo += String.format("%08.2f",lista.getElemento(i).getFkServico().getPreco());
-            gravaRegistro(corpo, nomeArq);
             contaRegistroDado++;
+            try (FileWriter writer = new FileWriter(file, true)) {
+                String contentBody = corpo;
+                writer.write(contentBody);
+                writer.write(System.lineSeparator()); // Adicionar quebra de linha
+            }catch (IOException e) {
+                System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+            }
         }
+
 
         // Monta e grava o registro de trailer
         String trailer = "01";
         trailer += String.format("%010d",contaRegistroDado);
-        gravaRegistro(trailer, nomeArq);
-        return ResponseEntity.status(200).build();
+        try (FileWriter writer = new FileWriter(file, true)) {
+
+            String contentTrailer = trailer;
+
+
+            writer.write(contentTrailer);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+
+
+            System.out.println("Conteúdo adicionado com sucesso.");
+        } catch (IOException e) {
+            System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+        }
+        return file;
     }
 
     public static ResponseEntity<byte[]> buscaArquivoTxt() {
