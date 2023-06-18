@@ -124,9 +124,9 @@ public class DashboardService {
         int countBanhoTosa = 0;
 
         for (int i = 0; i < agendamentos.size(); i++) {
-            if (agendamentos.get(i).getFkServico().getNome().equals("Banho")){
+            if (agendamentos.get(i).getFkServico().getNome().toString().equals("BANHO")){
                 countBanho ++;
-            } else if (agendamentos.get(i).getFkServico().getNome().equals("Tosa")) {
+            } else if (agendamentos.get(i).getFkServico().getNome().toString().equals("TOSA")) {
                 countTosa ++;
             } else {
                 countBanhoTosa++;

@@ -19,14 +19,14 @@ VALUES
 INSERT INTO servico
 (fk_petshop, nome, preco, descricao)
 VALUES
-(2, 1, 34.90, 'Banho completo e perfume ao final do processo'),
-(2, 2, 74.90, 'Corte de pelos a seco'),
-(2, 0, 99.90, 'Tosa e lavagem completa do pet com direito a perfume e acessórios'),
-(3, 1, 29.90, 'Para o bem-estar do seu melhor amigo!'),
-(3, 2, 54.90, 'Pets também merecem um novo corte de cabelo'),
-(3, 0, 69.90, 'Serviço completo para o seu pet'),
-(4, 1, 32.90, 'Banho com sabão espumante'),
-(4, 2, 44.90, 'Tosa com profissionais de primeira');
+(2, 0, 34.90, 'Banho completo e perfume ao final do processo'),
+(2, 1, 74.90, 'Corte de pelos a seco'),
+(2, 2, 99.90, 'Tosa e lavagem completa do pet com direito a perfume e acessórios'),
+(3, 0, 29.90, 'Para o bem-estar do seu melhor amigo!'),
+(3, 1, 54.90, 'Pets também merecem um novo corte de cabelo'),
+(3, 2, 69.90, 'Serviço completo para o seu pet'),
+(4, 0, 32.90, 'Banho com sabão espumante'),
+(4, 1, 44.90, 'Tosa com profissionais de primeira');
 
 INSERT INTO agendamento
 (fk_cliente, fk_petshop, fk_pet, fk_servico, data_hora)
