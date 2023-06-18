@@ -125,7 +125,7 @@ public class UsuarioService {
         return avl;
     }
 
-    @Scheduled(cron = "* 5/5 * * * *")
+    @Scheduled(cron = "5/5 * * * * *")
     public void gravarAvaliacoes(){
 //        System.out.println("TESTE");
         for (int i = 0; i < filaAvaliacao.getTamanho(); i++){

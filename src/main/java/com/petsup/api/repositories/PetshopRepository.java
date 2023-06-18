@@ -1,9 +1,12 @@
 package com.petsup.api.repositories;
 
 import com.petsup.api.entities.Agendamento;
+import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.usuario.Usuario;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.service.autentication.dto.PetshopDeatlhesDto;
+import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.util.PetshopAvaliacao;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
@@ -27,8 +30,10 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
 //    @Query("SELECT * FROM usuarioPetshop p ORDER BY p.distancia asc")
 //    List<UsuarioPetshop> ordenarPorDistancia();
 
-    @Query("SELECT u FROM UsuarioPetshop u LEFT JOIN u.avaliacoes a GROUP BY u.id ORDER BY AVG(a.nota) DESC")
-    List<UsuarioPetshop> ordenarPorAvaliacao();
+//    @Query("SELECT u FROM UsuarioPetshop u LEFT JOIN u.avaliacoes a GROUP BY u.id ORDER BY AVG(a.nota) DESC")
+//    List<UsuarioPetshop> ordenarPorAvaliacao();
 
+    @Query("select new com.petsup.api.util.PetshopAvaliacao(avg(a.nota), a.fkPetshop.razaoSocial) from AvaliacaoPetshop a group by a.fkPetshop order by avg(a.nota) desc")
+    List<PetshopAvaliacao> ordenarMediaAvaliacao();
     List<UsuarioPetshop> findAllByBairroAndCidade(String bairro, String cidade);
 }

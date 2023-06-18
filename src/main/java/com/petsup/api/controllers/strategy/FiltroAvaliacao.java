@@ -10,7 +10,7 @@ import java.util.List;
 //    @Autowired
 //    PetshopRepository petshopRepository;
 //    @Override
-//    public List<UsuarioPetshop> ordenar(){
-//        return this.petshopRepository.ordenarPorAvaliacao();
-//    }
+////    public List<UsuarioPetshop> ordenar(){
+////        return this.petshopRepository.findAllByOrderByAvgAvaliacao();
+////    }
 //}

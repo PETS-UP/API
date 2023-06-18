@@ -16,6 +16,7 @@ import com.petsup.api.service.dto.UsuarioClienteLocalizacaoDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import com.petsup.api.util.DetalhesEndereco;
+import com.petsup.api.util.PetshopAvaliacao;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -27,6 +28,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
@@ -75,17 +77,17 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioCliente> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(this.clienteRepository.findById(id).orElseThrow(
+    public ResponseEntity<UsuarioClienteDto> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
-        ));
+        )));
     }
 
     @GetMapping("/busca-email/{email}")
-    public ResponseEntity<UsuarioCliente> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(this.clienteRepository.findByEmail(email).orElseThrow(
+    public ResponseEntity<UsuarioClienteDto> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
-        ));
+        )));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
@@ -96,8 +98,18 @@ public class ClienteController {
         return ResponseEntity.status(204).build();
     }
 
-    @PostMapping("/avaliar")
-    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl) {
+    @PostMapping("/avaliar/{idCliente}/{idPetshop}")
+    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl,
+                                                          @PathVariable int idCliente, @PathVariable int idPetshop) {
+
+
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+        UsuarioCliente cliente = clienteOptional.get();
+        UsuarioPetshop petshop = petshopOptional.get();
+        avl.setFkPetshop(petshop);
+        avl.setFkCliente(cliente);
+
         this.usuarioService.avaliarPetshop(avl);
         return ResponseEntity.status(201).build();
     }
@@ -159,13 +171,46 @@ public class ClienteController {
 
     }
 
-    @Scheduled(cron = "5/5 * * * * *")
-    public void aaa(){
-        String results = geocodingService.reverseGeocode(7.193871,
-                -4.925752);
-//        for (String result : results) {
-        geocodingService.extrairBairroCidade(results);
-            // Faça o que for necessário com o bairro (neighborhood) obtido
-        //}
+    @GetMapping("/ordenar-media-avaliacao")
+    public ResponseEntity<List<PetshopAvaliacao>> getPetshopsPorMedia(){
+        List<PetshopAvaliacao> avaliacoes = petshopRepository.ordenarMediaAvaliacao();
+
+        if (avaliacoes.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+//        avaliacoes.get(0).getFkPetshop()
+//        for (int i = 0;){
+//
+//        }
+
+        return ResponseEntity.ok().body(avaliacoes);
     }
+
+    @GetMapping("/ordenar-media-preco")
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsPorMenorPreco(){
+        List<UsuarioPetshop> petshops = petshopRepository.ordenarPorPreco();
+        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+
+        if (petshops.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        for (int i = 0; i < petshops.size(); i++){
+            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+            System.out.println(petshopsDto.get(i).getNome());
+        }
+
+        return ResponseEntity.ok().body(petshopsDto);
+    }
+
+
+//    @Scheduled(cron = "5/5 * * * * *")
+//    public void aaa(){
+//        String results = geocodingService.reverseGeocode(7.193871,
+//                -4.925752);
+////        for (String result : results) {
+//        geocodingService.extrairBairroCidade(results);
+//            // Faça o que for necessário com o bairro (neighborhood) obtido
+//        //}
+//    }
 }
