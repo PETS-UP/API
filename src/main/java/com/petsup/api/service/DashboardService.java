@@ -101,10 +101,15 @@ public class DashboardService {
 
     public Double getRendaEsteMes(int idPetshop){
         List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
-                idPetshop, LocalDateTime.now().withDayOfMonth(1).minusMonths(5L),
-                LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth()).minusMonths(1L)
+                idPetshop, LocalDateTime.now().withDayOfMonth(1),
+                LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
         );
+        Double valorTotal = 0.0;
 
-        return null;
+        for (int i = 0; i < agendamentos.size(); i++) {
+            valorTotal += agendamentos.get(i).getFkServico().getPreco();
+        }
+
+        return valorTotal;
     }
 }
