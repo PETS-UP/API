@@ -73,6 +73,7 @@ public class UsuarioMapper {
 
         usuarioClienteDto.setNome(usuarioCliente.getNome());
         usuarioClienteDto.setEmail(usuarioCliente.getEmail());
+        usuarioClienteDto.setCpf(usuarioCliente.getCpf());
         usuarioClienteDto.setDataNasc(usuarioCliente.getDataNasc());
         usuarioClienteDto.setTelefone(usuarioCliente.getTelefone());
         usuarioClienteDto.setCep(usuarioCliente.getCep());
