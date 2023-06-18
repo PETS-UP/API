@@ -45,9 +45,9 @@ public class GeradorTxt {
         }
     }
 
-    public static File gravaArquivoTxt(ListaObj<Agendamento> lista, String nomeArq) {
+    public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;
-//        String nomeArq = "Agendamento";
+        String nomeArq = "Agendamento";
         File file = null;
         try{
             file = File.createTempFile(nomeArq, ".txt");

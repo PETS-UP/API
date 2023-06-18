@@ -203,78 +203,76 @@ public class PetshopController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/report/arquivo/txt/{id}")
-    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
-    public ResponseEntity<Resource> gerarReportTxt(@PathVariable int id) {
-        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
+//    @GetMapping("/report/arquivo/txt/{id}")
+//    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
+//    public ResponseEntity<Resource> gerarReportTxt(@PathVariable int id) {
+//        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
+////
+//        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+////
+//        for (int i = 0; i < as.size(); i++) {
+//            listaLocal.adiciona(as.get(i));
+//        }
+////        GeradorTxt.gravaArquivoTxt(listaLocal);
+////        return ResponseEntity.status(201).build();
 //
-        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+//            String nomeArq = "agendamentos";
+//            byte[] encodedBytes;
+//            try {
+//                encodedBytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(listaLocal, nomeArq).toPath());
+//            } catch (IOException e) {
+//                throw new RuntimeException(e);
+//            }
 //
-        for (int i = 0; i < as.size(); i++) {
-            listaLocal.adiciona(as.get(i));
+//            InputStream inputStream = new ByteArrayInputStream( new String(encodedBytes, StandardCharsets.UTF_8)
+//                    .getBytes(StandardCharsets.UTF_8));
+//
+//            Resource resource = new InputStreamResource(inputStream);
+//
+//            HttpHeaders headers = new HttpHeaders();
+//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+//            headers.setContentDispositionFormData("attachment", nomeArq);
+//
+//            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+//        }
+
+    @GetMapping("/download/csv/{id}")
+    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
+    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id) {
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+        //Transfere elementos de list para agendamentos
+        for (int i = 0; i < list.size(); i++) {
+            agendamentos.adiciona(list.get(i));
         }
-//        GeradorTxt.gravaArquivoTxt(listaLocal);
-//        return ResponseEntity.status(201).build();
+        GeradorCsv.gravaArquivoCsv(agendamentos);
+        return GeradorCsv.buscaArquivoCsv();
+    }
 
-            String nomeArq = "agendamentos";
-            byte[] encodedBytes;
-            try {
-                encodedBytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(listaLocal, nomeArq).toPath());
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
-            InputStream inputStream = new ByteArrayInputStream( new String(encodedBytes, StandardCharsets.UTF_8)
-                    .getBytes(StandardCharsets.UTF_8));
-
-            InputStreamResource inputStreamResource = new InputStreamResource(inputStream);
-
-            Resource resource = new InputStreamResource(inputStream);
-
-            HttpHeaders headers = new HttpHeaders();
-            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-            headers.setContentDispositionFormData("attachment", nomeArq);
-
-            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    @GetMapping("/download/txt/{id}")
+    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
+    public ResponseEntity<Resource> downloadTxt(@PathVariable int id) {
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+        //Transfere elementos de list para agendamentos
+        for (int i = 0; i < list.size(); i++) {
+            agendamentos.adiciona(list.get(i));
+        }
+        byte[] bytes;
+        try{
+            bytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(agendamentos).toPath());
+        }catch (IOException e){
+            throw new RuntimeException(e);
         }
 
-//    @GetMapping("/download/csv/{id}")
-//    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
-//    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id) {
-//        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
-//        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
-//        //Transfere elementos de list para agendamentos
-//        for (int i = 0; i < list.size(); i++) {
-//            agendamentos.adiciona(list.get(i));
-//        }
-//        GeradorCsv.gravaArquivoCsv(agendamentos);
-//        return GeradorCsv.buscaArquivoCsv();
-//    }
+        InputStream inputStream = new ByteArrayInputStream(new String(bytes, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8));
+        Resource resource = new InputStreamResource(inputStream);
 
-//    @GetMapping("/download/txt/{id}")
-//    @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
-//    public ResponseEntity<Resource> downloadTxt(@PathVariable int id) {
-//        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
-//        ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
-//        //Transfere elementos de list para agendamentos
-//        for (int i = 0; i < list.size(); i++) {
-//            agendamentos.adiciona(list.get(i));
-//        }
-//        byte[] bytes;
-//        try{
-//            bytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(agendamentos).toPath());
-//        }catch (IOException e){
-//            throw new RuntimeException(e);
-//        }
-//
-//        InputStream inputStream = new ByteArrayInputStream(new String(bytes, StandardCharsets.UTF_8).getBytes(StandardCharsets.UTF_8));
-//        Resource resource = new InputStreamResource(inputStream);
-//
-//        HttpHeaders headers = new HttpHeaders();
-//        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//        headers.setContentDispositionFormData("attachment", "Agendamentos.txt");
-//        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-//    }
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
+        headers.setContentDispositionFormData("attachment", "Agendamentos.txt");
+        return new ResponseEntity<>(resource, headers, HttpStatus.OK);
+    }
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
