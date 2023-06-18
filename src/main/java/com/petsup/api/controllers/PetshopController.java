@@ -267,7 +267,7 @@ public class PetshopController {
 
         File file = GeradorTxt.gravaArquivoTxt(agendamentos);
         HttpHeaders headers = new HttpHeaders();
-        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=arquivo.txt");
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agendamentos.txt");
 
         Resource resource = new FileSystemResource(file);
 

@@ -63,9 +63,13 @@ public class GeradorTxt {
         String header = "00AGENDAMENTO";
         header += LocalDateTime.now().format(DateTimeFormatter.ofPattern("dd-MM-yyyy HH:mm:ss"));
         header += "01";
-
-        // Grava o registro de header
-        gravaRegistro(header, nomeArq);
+        try (FileWriter writer = new FileWriter(file, true)) {
+            String contentHeader = header;
+            writer.write(contentHeader);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+        }  catch (IOException e) {
+            System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+        }
 
         // Monta e grava os registros de dados ou registros de corpo
         String corpo = null;
@@ -80,24 +84,25 @@ public class GeradorTxt {
             corpo += String.format("%-1.1s",lista.getElemento(i).getFkPet().getSexo());
             corpo += String.format("%-20.20s",lista.getElemento(i).getFkServico().getNome());
             corpo += String.format("%08.2f",lista.getElemento(i).getFkServico().getPreco());
-            gravaRegistro(corpo, nomeArq);
             contaRegistroDado++;
+            try (FileWriter writer = new FileWriter(file, true)) {
+                String contentBody = corpo;
+                writer.write(contentBody);
+                writer.write(System.lineSeparator()); // Adicionar quebra de linha
+            }catch (IOException e) {
+                System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+            }
         }
 
 
         // Monta e grava o registro de trailer
         String trailer = "01";
         trailer += String.format("%010d",contaRegistroDado);
-        gravaRegistro(trailer, nomeArq);
         try (FileWriter writer = new FileWriter(file, true)) {
-            String contentHeader = header;
-            String contentBody = corpo;
+
             String contentTrailer = trailer;
 
-            writer.write(contentHeader);
-            writer.write(System.lineSeparator()); // Adicionar quebra de linha
-            writer.write(contentBody);
-            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+
             writer.write(contentTrailer);
             writer.write(System.lineSeparator()); // Adicionar quebra de linha
 
