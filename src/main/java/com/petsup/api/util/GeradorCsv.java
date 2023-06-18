@@ -17,23 +17,21 @@ public class GeradorCsv {
         FileWriter arq = null;
         Boolean error = false;
         String nomeArq = "Agendamento";
-        try{
+        try {
             file = File.createTempFile(nomeArq, ".csv");
-        }catch (IOException e){
+        } catch (IOException e) {
             throw new RuntimeException(e);
         }
 
         try {
             arq = new FileWriter(nomeArq);
             saida = new Formatter(arq);
-        }
-        catch (IOException erro) {
+        } catch (IOException erro) {
             System.out.println("Erro ao abrir o arquivo");
         }
 
 
-
-        if(list.getTamanho() <= 0){
+        if (list.getTamanho() <= 0) {
             System.out.println("Lista vazia, nada a gravar");
             error = true;
         }
@@ -45,11 +43,10 @@ public class GeradorCsv {
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
                         a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(),
                         a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
-                saida.format(dados);
                 try (FileWriter writer = new FileWriter(file, true)) {
                     writer.write(dados);
                     writer.write(System.lineSeparator()); // Adicionar quebra de linha
-                }  catch (IOException e) {
+                } catch (IOException e) {
                     System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
                 }
             }
@@ -58,18 +55,17 @@ public class GeradorCsv {
             error = true;
         } finally {
             saida.close();
-
             try {
                 arq.close();
-            } catch (IOException io) {
+            } catch (IOException erro) {
                 System.out.println("Erro ao fechar o arquivo");
                 error = true;
             }
             if (error) {
                 System.out.println("Error" + error);
             }
+            return file;
         }
-        return file;
     }
 
     public static ResponseEntity<byte[]> buscaArquivoCsv() {
