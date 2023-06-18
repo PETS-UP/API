@@ -112,4 +112,35 @@ public class DashboardService {
 
         return valorTotal;
     }
+
+    public String getServicoMaisAgendadoMesAtual(int idPetshop){
+        List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
+                idPetshop, LocalDateTime.now().withDayOfMonth(1),
+                LocalDateTime.now().withDayOfMonth(LocalDate.now().lengthOfMonth())
+        );
+
+        int countBanho = 0;
+        int countTosa = 0;
+        int countBanhoTosa = 0;
+
+        for (int i = 0; i < agendamentos.size(); i++) {
+            if (agendamentos.get(i).getFkServico().getNome().equals("Banho")){
+                countBanho ++;
+            } else if (agendamentos.get(i).getFkServico().getNome().equals("Tosa")) {
+                countTosa ++;
+            } else {
+                countBanhoTosa++;
+            }
+        }
+
+        int maior = Math.max(countBanho, Math.max(countTosa, countBanhoTosa));
+
+        if (maior == countBanho) {
+            return "Banho";
+        } else if (maior == countTosa) {
+            return "Tosa";
+        } else {
+            return "Banho&Tosa";
+        }
+    }
 }

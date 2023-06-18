@@ -48,8 +48,10 @@ public class DashboardController {
         return ResponseEntity.ok(dashboardService.getRendaEsteMes(idPetshop));
     }
 
-//    @GetMapping("ultimo-mes")
-//    public ResponseEntity<Integer>
+    @GetMapping("/servico-mais-agendado")
+    public ResponseEntity<String> getServicoMaisAgendadoMesAtual(@PathVariable Integer idPetshop){
+        return ResponseEntity.ok(dashboardService.getServicoMaisAgendadoMesAtual(idPetshop));
+    }
 //
 
 }
