@@ -11,38 +11,23 @@ import java.util.FormatterClosedException;
 
 public class GeradorCsv {
 
-    public static ResponseEntity<Void> gravaArquivoCsv(ListaObj<Agendamento> list) {
-        FileWriter arq = null;
+    public static File gravaArquivoCsv(ListaObj<Agendamento> list) {
         Formatter saida = null;
+        File file = null;
+        FileWriter arq = null;
         Boolean error = false;
-        Path diretorioBase;
+        String nomeArq = "Agendamento";
+        try{
+            file = File.createTempFile(nomeArq, ".csv");
+        }catch (IOException e){
+            throw new RuntimeException(e);
+        }
 
-        String nomeArq = "Agendamento.csv";
+
 
         if(list.getTamanho() <= 0){
             System.out.println("Lista vazia, nada a gravar");
-            return ResponseEntity.status(204).build();
-        }
-
-        if(System.getProperty("os.name").contains("Windows")){
-            diretorioBase = Path.of(System.getProperty("java.io.tmpdir") + "/arquivos");
-            System.out.println(diretorioBase);
-        }else{
-            diretorioBase = Path.of(System.getProperty("user.dir") + "/arquivos");
-            System.out.println(diretorioBase);
-        }
-
-
-        if(!diretorioBase.toFile().exists()){
-            diretorioBase.toFile().mkdir();
-        }
-
-        try {
-            arq = new FileWriter(diretorioBase + "/" + nomeArq);
-            saida = new Formatter(arq);
-        } catch (IOException io) {
-            System.out.println("Erro ao abrir o arquivo");
-            return ResponseEntity.status(400).build();
+            error = true;
         }
 
         try {
@@ -66,10 +51,10 @@ public class GeradorCsv {
                 error = true;
             }
             if (error) {
-                return ResponseEntity.status(400).build();
+                System.out.println("Error" + error);
             }
         }
-        return ResponseEntity.status(200).build();
+        return null;
     }
 
     public static ResponseEntity<byte[]> buscaArquivoCsv() {

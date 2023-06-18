@@ -23,7 +23,7 @@ import static com.fasterxml.jackson.databind.type.LogicalType.DateTime;
 public class GeradorTxt {
 
     //Adiciona linha ao arquivo sem criar um arquivo novo
-    public static void gravaRegistro(String registro, String nomeArq) {
+    public static String gravaRegistro(String registro, String nomeArq) {
         BufferedWriter saida = null;
 
         // try-catch para abrir o arquivo
@@ -43,10 +43,12 @@ public class GeradorTxt {
         catch (IOException erro) {
             System.out.println("Erro ao gravar no arquivo");
         }
+        return registro;
     }
 
     public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;
+        BufferedWriter saida = null;
         String nomeArq = "Agendamento";
         File file = null;
         try{
@@ -66,7 +68,7 @@ public class GeradorTxt {
         gravaRegistro(header, nomeArq);
 
         // Monta e grava os registros de dados ou registros de corpo
-        String corpo;
+        String corpo = null;
         for (int i = 0; i < lista.getTamanho(); i++) {
             corpo = "02";
             corpo += String.format("%05d",lista.getElemento(i).getId());
@@ -82,10 +84,28 @@ public class GeradorTxt {
             contaRegistroDado++;
         }
 
+
         // Monta e grava o registro de trailer
         String trailer = "01";
         trailer += String.format("%010d",contaRegistroDado);
         gravaRegistro(trailer, nomeArq);
+        try (FileWriter writer = new FileWriter(file, true)) {
+            String contentHeader = header;
+            String contentBody = corpo;
+            String contentTrailer = trailer;
+
+            writer.write(contentHeader);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+            writer.write(contentBody);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+            writer.write(contentTrailer);
+            writer.write(System.lineSeparator()); // Adicionar quebra de linha
+
+
+            System.out.println("Conteúdo adicionado com sucesso.");
+        } catch (IOException e) {
+            System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+        }
         return file;
     }
 
