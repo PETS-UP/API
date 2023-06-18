@@ -77,17 +77,17 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
-    public ResponseEntity<UsuarioCliente> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(this.clienteRepository.findById(id).orElseThrow(
+    public ResponseEntity<UsuarioClienteDto> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findById(id).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
-        ));
+        )));
     }
 
     @GetMapping("/busca-email/{email}")
-    public ResponseEntity<UsuarioCliente> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(this.clienteRepository.findByEmail(email).orElseThrow(
+    public ResponseEntity<UsuarioClienteDto> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findByEmail(email).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
-        ));
+        )));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
