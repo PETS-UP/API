@@ -45,6 +45,8 @@ public class UsuarioMapper {
 
         return usuario;
     }
+
+
     
     public static ClienteTokenDto ofCliente(UsuarioCliente cliente, String token) {
         ClienteTokenDto usuarioTokenDto = new ClienteTokenDto();
@@ -102,6 +104,25 @@ public class UsuarioMapper {
         usuarioPetshopDto.setNumero(usuarioPetshop.getNumero());
 
         return usuarioPetshopDto;
+    }
+
+    public static UsuarioPetshop ofPetshop(UsuarioPetshopDto usuarioAtualizacaoDto, UsuarioPetshop usuarioPetshop) {
+        UsuarioPetshop usuario = new UsuarioPetshop();
+
+        usuario.setId(usuarioPetshop.getId());
+        usuario.setNome(usuarioAtualizacaoDto.getNome());
+        usuario.setEmail(usuarioAtualizacaoDto.getEmail());
+        usuario.setSenha(usuarioPetshop.getSenha());
+        usuario.setCep(usuarioAtualizacaoDto.getCep());
+        usuario.setTelefone(usuarioAtualizacaoDto.getTelefone());
+        usuario.setCnpj(usuarioAtualizacaoDto.getCnpj());
+        usuario.setEstado(usuarioAtualizacaoDto.getEstado());
+        usuario.setCidade(usuarioAtualizacaoDto.getCidade());
+        usuario.setBairro(usuarioAtualizacaoDto.getBairro());
+        usuario.setRua(usuarioAtualizacaoDto.getRua());
+        usuario.setNumero(usuarioAtualizacaoDto.getNumero());
+
+        return usuario;
     }
 
     public static UsuarioCliente ofCliente(UsuarioClienteDto usuarioAtualizacaoDto, UsuarioCliente usuarioCliente) {

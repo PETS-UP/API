@@ -140,9 +140,14 @@ public class PetshopController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario) {
-        UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
-        return ResponseEntity.status(200).body(updateUser);
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
+        UsuarioPetshop usuarioPetshop = petshopRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado"));
+
+        UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
+        petshopRepository.save(usuarioPetshopAtt);
+        System.out.println(usuarioPetshopAtt.getBairro() + usuarioPetshopAtt.getCidade());
+        return ResponseEntity.ok(usuarioPetshopAtt);
     }
 
     // Método para atualizar preços fica na controller
