@@ -23,6 +23,14 @@ public class GeradorCsv {
             throw new RuntimeException(e);
         }
 
+        try {
+            arq = new FileWriter(nomeArq);
+            saida = new Formatter(arq);
+        }
+        catch (IOException erro) {
+            System.out.println("Erro ao abrir o arquivo");
+        }
+
 
 
         if(list.getTamanho() <= 0){
@@ -33,10 +41,17 @@ public class GeradorCsv {
         try {
             for (int i = 0; i < list.getTamanho(); i++) {
                 Agendamento a = list.getElemento(i);
-                saida.format("%d;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
+                String dados = String.format("%d;%s;%s;%s;%s;%s;%s;%s;%.2f\n", a.getId(), a.getDataHora(),
                         a.getFkPet().getFkCliente().getNome(), a.getFkPet().getFkCliente().getEmail(),
                         a.getFkPet().getNome(), a.getFkPet().getEspecie().toString(),
                         a.getFkPet().getSexo(), a.getFkServico().getNome(), a.getFkServico().getPreco());
+                saida.format(dados);
+                try (FileWriter writer = new FileWriter(file, true)) {
+                    writer.write(dados);
+                    writer.write(System.lineSeparator()); // Adicionar quebra de linha
+                }  catch (IOException e) {
+                    System.out.println("Erro ao adicionar conteúdo ao arquivo: " + e.getMessage());
+                }
             }
         } catch (FormatterClosedException fc) {
             System.out.println("Erro ao gravar o arquivo");
@@ -54,7 +69,7 @@ public class GeradorCsv {
                 System.out.println("Error" + error);
             }
         }
-        return null;
+        return file;
     }
 
     public static ResponseEntity<byte[]> buscaArquivoCsv() {
