@@ -12,7 +12,7 @@ public interface AgendamentoRepository extends JpaRepository<Agendamento, Intege
 
     List<Agendamento> findByFkPetshopId(int fkPetshop);
     List<Agendamento> findByFkClienteId(int fkCliente);
-    List<Agendamento> findAllByDataHoraBetween(LocalDateTime diaAnterior, LocalDateTime diaAtual);
+    List<Agendamento> findAllByFkPetshopIdAndDataHoraBetween(int fkPetshop, LocalDateTime diaAnterior, LocalDateTime diaAtual);
 
 //    Integer findCountAgendamentoByDataHoraBetween(LocalDateTime diaAnterior, LocalDateTime diaAtual);
 //    Double findCount
