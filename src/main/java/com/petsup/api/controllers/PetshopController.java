@@ -115,8 +115,10 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshop> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.of(this.petshopRepository.findById(id));
+    public ResponseEntity<UsuarioPetshopDto> getUserById(@PathVariable Integer id) {
+        return ResponseEntity.ok().body(UsuarioMapper.ofPetshopDto(petshopRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado"))
+        ));
     }
 
     @GetMapping("/busca-email/{email}")
@@ -138,9 +140,14 @@ public class PetshopController {
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshop usuario) {
-        UsuarioPetshop updateUser = this.petshopRepository.save(usuario);
-        return ResponseEntity.status(200).body(updateUser);
+    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
+        UsuarioPetshop usuarioPetshop = petshopRepository.findById(id).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado"));
+
+        UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
+        petshopRepository.save(usuarioPetshopAtt);
+        System.out.println(usuarioPetshopAtt.getBairro() + usuarioPetshopAtt.getCidade());
+        return ResponseEntity.ok(usuarioPetshopAtt);
     }
 
     // Método para atualizar preços fica na controller
