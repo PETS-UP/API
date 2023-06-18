@@ -57,7 +57,7 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/clientes"),
             new AntPathRequestMatcher("/clientes/busca-email/{email}"),
             new AntPathRequestMatcher("/h2-console/**"),
-            new AntPathRequestMatcher("/**") //LEMBRAR DE MUDAR ISSO
+            new AntPathRequestMatcher("/error/**")
     };
 
     @Bean
