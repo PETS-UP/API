@@ -4,6 +4,7 @@ import com.google.maps.model.GeocodingResult;
 import com.petsup.api.entities.AvaliacaoPetshop;
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.repositories.AvaliacaoRepository;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.PetshopRepository;
 import com.petsup.api.service.GeocodingService;
@@ -44,6 +45,9 @@ public class ClienteController {
 
     @Autowired
     private GeocodingService geocodingService;
+
+    @Autowired
+    private AvaliacaoRepository avaliacaoRepository;
 
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso.")
     @PostMapping
@@ -112,6 +116,26 @@ public class ClienteController {
 
         this.usuarioService.avaliarPetshop(avl);
         return ResponseEntity.status(201).build();
+    }
+
+    @GetMapping("/avaliacoes{idCliente}/{idPetshop}")
+    public ResponseEntity<AvaliacaoPetshop> retornaAvaliacaoCliente(@PathVariable int idCliente,
+                                                                    @PathVariable int idPetshop){
+        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
+        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado")
+        );
+
+        Optional<AvaliacaoPetshop> avaliacaoPetshop = avaliacaoRepository
+                .findByFkClienteAndFkPetshop(idCliente, idPetshop);
+
+        if (avaliacaoPetshop.isEmpty()){
+            throw new RuntimeException("Este usuário não avaliou este petshop");
+        }
+
+        return ResponseEntity.ok(avaliacaoPetshop.get());
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
