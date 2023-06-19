@@ -72,15 +72,6 @@ VALUES
 INSERT INTO avaliacao
 (fk_cliente, fk_petshop, nota)
 VALUES
-(5, 2, 4.7),
-(5, 2, 4.2),
-(5, 2, 4.0),
-(5, 2, 3.8),
-(5, 2, 4.5);
-
-INSERT INTO avaliacao
-(fk_cliente, fk_petshop, nota)
-VALUES
 (5, 2, 5.0),
 (5, 2, 5.0),
 (5, 2, 4.0),
