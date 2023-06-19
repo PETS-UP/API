@@ -244,15 +244,25 @@ public class PetshopController {
 
     @GetMapping("/download/csv/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
-    public ResponseEntity<byte[]> downloadCsv(@PathVariable int id) {
+    public ResponseEntity<Resource> downloadCsv(@PathVariable int id) {
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
         //Transfere elementos de list para agendamentos
         for (int i = 0; i < list.size(); i++) {
             agendamentos.adiciona(list.get(i));
         }
-        GeradorCsv.gravaArquivoCsv(agendamentos);
-        return GeradorCsv.buscaArquivoCsv();
+
+        File file = GeradorCsv.gravaArquivoCsv(agendamentos);
+        HttpHeaders headers = new HttpHeaders();
+        headers.add(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=agendamentos.csv");
+
+        Resource resource = new FileSystemResource(file);
+
+        return ResponseEntity.ok()
+                .headers(headers)
+                .contentLength(file.length())
+                .contentType(MediaType.APPLICATION_OCTET_STREAM)
+                .body(resource);
     }
 
     @GetMapping("/download/txt/{id}")
