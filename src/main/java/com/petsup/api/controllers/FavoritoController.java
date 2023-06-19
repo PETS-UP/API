@@ -55,7 +55,7 @@ public class FavoritoController {
     }
 
     @PostMapping("/{idPetshop}")
-    public ResponseEntity<Favorito> favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
+    public ResponseEntity<Void> favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
         UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
         );
@@ -71,7 +71,7 @@ public class FavoritoController {
 
         favoritoRepository.save(favorito);
 
-        return ResponseEntity.ok(favorito);
+        return ResponseEntity.ok().build();
     }
 
     @DeleteMapping("/{idPetshop}")
