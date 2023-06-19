@@ -26,6 +26,7 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Path;
 
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -147,6 +148,35 @@ public class AgendamentoController {
             return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
         }
         return ResponseEntity.status(404).build();
+    }
+
+    @GetMapping("/report/agendamentos-dia/{idPetshop}")
+    public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
+                                                                             @PathVariable Integer idPetshop){
+
+        LocalDateTime now = LocalDateTime.now();
+
+        // Define o início do dia (00:00:00)
+        LocalDateTime inicioDoDia = now.with(LocalTime.MIN);
+
+        // Define o fim do dia (23:59:59)
+        LocalDateTime fimDoDia = now.with(LocalTime.MAX);
+
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
+                idPetshop, inicioDoDia, fimDoDia
+        );
+
+        if (listaAgendamentos.isEmpty()){
+            throw new RuntimeException("Nenhum agendamento encontrado na data de hoje");
+        }
+
+        List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
+
+        for (int i = 0; i < listaAgendamentos.size(); i ++){
+            agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
+        }
+
+        return ResponseEntity.ok(agendamentoDtos);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
