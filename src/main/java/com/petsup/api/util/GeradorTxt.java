@@ -71,7 +71,7 @@ public class GeradorTxt {
         for (int i = 0; i < lista.getTamanho(); i++) {
             corpo = "02";
             corpo += String.format("%05d",lista.getElemento(i).getId());
-            corpo += String.format("%-19.19s",lista.getElemento(i).getDataHora());
+            corpo += String.format("%-16.16s",lista.getElemento(i).getDataHora());
             corpo += String.format("%-50.50s",lista.getElemento(i).getFkCliente().getNome());
             corpo += String.format("%-50.50s",lista.getElemento(i).getFkCliente().getEmail());
             corpo += String.format("%-50.50s",lista.getElemento(i).getFkPet().getNome());
