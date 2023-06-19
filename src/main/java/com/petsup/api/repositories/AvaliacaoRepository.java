@@ -8,5 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface AvaliacaoRepository extends JpaRepository<AvaliacaoPetshop, Integer> {
-    Optional<AvaliacaoPetshop> findByFkClienteAndFkPetshop(Integer idCliente, Integer idPetshop);
+    Optional<AvaliacaoPetshop> findByFkClienteIdAndFkPetshopId(Integer idCliente, Integer idPetshop);
 }

@@ -154,6 +154,14 @@ public class AgendamentoController {
     public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
                                                                              @PathVariable Integer idPetshop){
 
+        Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(idPetshop);
+
+        if (usuarioPetshopOptional.isEmpty()) {
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
         // Define o início do dia (00:00:00)
         LocalDateTime inicioDoDia = dataHora.with(LocalTime.MIN);
 
@@ -165,7 +173,7 @@ public class AgendamentoController {
         );
 
         if (listaAgendamentos.isEmpty()){
-            throw new RuntimeException("Nenhum agendamento encontrado na data de hoje");
+            return ResponseEntity.noContent().build();
         }
 
         List<AgendamentoDto> agendamentoDtos = new ArrayList<>();

@@ -148,7 +148,6 @@ public class PetshopController {
 
         UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
         petshopRepository.save(usuarioPetshopAtt);
-        System.out.println(usuarioPetshopAtt.getBairro() + usuarioPetshopAtt.getCidade());
         return ResponseEntity.ok(usuarioPetshopAtt);
     }
 
@@ -186,7 +185,7 @@ public class PetshopController {
         servico.setPreco(servicoAtt.getPreco());
         servico.setDescricao(servicoAtt.getDescricao());
         servicoRepository.save(servico);
-        return ResponseEntity.status(200).body(servicoAtt);
+        return ResponseEntity.ok(servicoAtt);
     }
 
     //Crud fim
@@ -335,13 +334,13 @@ public class PetshopController {
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
 
-        if (listaAgendamentos.size() == 0) {
-            return ResponseEntity.status(204).build();
+        if (listaAgendamentos.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
 
         ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
 
-        return ResponseEntity.status(200).body(listaLocal);
+        return ResponseEntity.ok(listaLocal);
     }
 
 }
