@@ -42,7 +42,7 @@ public class FavoritoController {
         List<UsuarioPetshopDto> petshopDeatlhesDtos = new ArrayList<>();
 
         if (favoritos.isEmpty()){
-            throw new RuntimeException("Este cliente não possui favoritos");
+            return ResponseEntity.noContent().build();
         }
 
         for (int i = 0; i < favoritos.size(); i ++){

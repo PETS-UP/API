@@ -19,6 +19,7 @@ public class GeradorCsv {
         String nomeArq = "Agendamento";
         try {
             file = File.createTempFile(nomeArq, ".csv");
+            nomeArq += ".csv";
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
