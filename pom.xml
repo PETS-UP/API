@@ -119,13 +119,6 @@
             <version>12.2.0.jre11</version>
         </dependency>
 
-        <!--DB MySQL-->
-        <dependency>
-            <groupId>mysql</groupId>
-            <artifactId>mysql-connector-java</artifactId>
-            <version>8.0.32</version>
-        </dependency>
-
         <!--Maps API-->
         <dependency>
             <groupId>com.google.maps</groupId>
