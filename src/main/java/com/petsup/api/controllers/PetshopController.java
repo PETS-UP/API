@@ -148,7 +148,6 @@ public class PetshopController {
 
         UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
         petshopRepository.save(usuarioPetshopAtt);
-        System.out.println(usuarioPetshopAtt.getBairro() + usuarioPetshopAtt.getCidade());
         return ResponseEntity.ok(usuarioPetshopAtt);
     }
 

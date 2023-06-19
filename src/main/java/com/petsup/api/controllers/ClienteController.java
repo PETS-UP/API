@@ -139,7 +139,7 @@ public class ClienteController {
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @PatchMapping("/{id}")
     public ResponseEntity<UsuarioClienteDto> updateById(
-            @RequestBody @Valid UsuarioClienteDto usuarioDto,
+            @RequestBody UsuarioClienteDto usuarioDto,
             @PathVariable Integer id
     ) {
         return ResponseEntity.ok(usuarioService.atualizarClientePorId(usuarioDto, id));
