@@ -154,13 +154,13 @@ public class AgendamentoController {
     public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
                                                                              @PathVariable Integer idPetshop){
 
-        LocalDateTime now = LocalDateTime.now();
+
 
         // Define o início do dia (00:00:00)
-        LocalDateTime inicioDoDia = now.with(LocalTime.MIN);
+        LocalDateTime inicioDoDia = dataHora.with(LocalTime.MIN);
 
         // Define o fim do dia (23:59:59)
-        LocalDateTime fimDoDia = now.with(LocalTime.MAX);
+        LocalDateTime fimDoDia = dataHora.with(LocalTime.MAX);
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
                 idPetshop, inicioDoDia, fimDoDia
