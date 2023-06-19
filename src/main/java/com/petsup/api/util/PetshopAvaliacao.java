@@ -1,19 +1,27 @@
 package com.petsup.api.util;
 
-import com.petsup.api.entities.usuario.UsuarioPetshop;
-
 public class PetshopAvaliacao {
+    private Integer id;
 
     private double media;
 
-    private String razaoSocial;
+    private String nome;
 
     public PetshopAvaliacao() {
     }
 
-    public PetshopAvaliacao(double media, String razaoSocial) {
+    public PetshopAvaliacao(Integer id, double media, String nome) {
+        this.id = id;
         this.media = media;
-        this.razaoSocial = razaoSocial;
+        this.nome = nome;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public double getMedia() {
@@ -24,11 +32,11 @@ public class PetshopAvaliacao {
         this.media = media;
     }
 
-    public String getRazaoSocial() {
-        return razaoSocial;
+    public String getNome() {
+        return nome;
     }
 
-    public void setRazaoSocial(String razaoSocial) {
-        this.razaoSocial = razaoSocial;
+    public void setNome(String nome) {
+        this.nome = nome;
     }
 }
