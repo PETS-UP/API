@@ -12,10 +12,7 @@ import com.petsup.api.service.UsuarioService;
 import com.petsup.api.service.autentication.dto.ClienteLoginDto;
 import com.petsup.api.service.autentication.dto.ClienteTokenDto;
 import com.petsup.api.service.autentication.dto.PetshopDeatlhesDto;
-import com.petsup.api.service.dto.UsuarioClienteDto;
-import com.petsup.api.service.dto.UsuarioClienteLocalizacaoDto;
-import com.petsup.api.service.dto.UsuarioMapper;
-import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.service.dto.*;
 import com.petsup.api.util.DetalhesEndereco;
 import com.petsup.api.util.PetshopAvaliacao;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -61,7 +58,7 @@ public class ClienteController {
     public ResponseEntity<ClienteTokenDto> login(@RequestBody ClienteLoginDto usuarioLoginDto) {
         ClienteTokenDto usuarioTokenDto = this.usuarioService.autenticarCliente(usuarioLoginDto);
 
-        return ResponseEntity.status(200).body(usuarioTokenDto);
+        return ResponseEntity.ok().body(usuarioTokenDto);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de clientes.")
@@ -75,7 +72,7 @@ public class ClienteController {
             usuariosDto.add(UsuarioMapper.ofClienteDto(usuario));
         }
 
-        return usuariosDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(usuariosDto);
+        return usuariosDto.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok().body(usuariosDto);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
@@ -99,7 +96,7 @@ public class ClienteController {
     @DeleteMapping
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
         this.clienteRepository.deleteById(id);
-        return ResponseEntity.status(204).build();
+        return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/avaliar/{idCliente}/{idPetshop}")
@@ -119,8 +116,8 @@ public class ClienteController {
     }
 
     @GetMapping("/avaliacao/{idCliente}/{idPetshop}")
-    public ResponseEntity<AvaliacaoPetshop> retornaAvaliacaoCliente(@PathVariable int idCliente,
-                                                                    @PathVariable int idPetshop){
+    public ResponseEntity<AvaliacaoDto> retornaAvaliacaoCliente(@PathVariable int idCliente,
+                                                                @PathVariable int idPetshop){
         UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
         );
@@ -132,10 +129,10 @@ public class ClienteController {
                 .findByFkClienteAndFkPetshop(idCliente, idPetshop);
 
         if (avaliacaoPetshop.isEmpty()){
-            throw new RuntimeException("Este usuário não avaliou este petshop");
+            return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(avaliacaoPetshop.get());
+        return ResponseEntity.ok(AvaliacaoMapper.ofAvaliacaoDto(avaliacaoPetshop.get()));
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
