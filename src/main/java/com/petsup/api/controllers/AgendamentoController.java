@@ -154,8 +154,6 @@ public class AgendamentoController {
     public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
                                                                              @PathVariable Integer idPetshop){
 
-
-
         // Define o início do dia (00:00:00)
         LocalDateTime inicioDoDia = dataHora.with(LocalTime.MIN);
 
