@@ -52,6 +52,27 @@ public class FavoritoController {
         return ResponseEntity.ok(petshopDetalhesDtos);
     }
 
+    @GetMapping("/favoritado/{idCliente}/{idPetshop}")
+    public ResponseEntity<Boolean> isFavoritado(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
+
+        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
+
+        UsuarioPetshop usuarioPetshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado")
+        );
+
+        Optional<Favorito> favoritoOptional = favoritoRepository.findByFkClienteIdAndFkPetshopId(idCliente,
+                idPetshop);
+
+        if (favoritoOptional.isEmpty()){
+            return ResponseEntity.ok(false);
+        }
+
+        return ResponseEntity.ok(true);
+    }
+
     @PostMapping("/{idPetshop}")
     public ResponseEntity<Void> favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
         UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
