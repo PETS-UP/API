@@ -31,9 +31,11 @@ public class FavoritoController {
 
     @GetMapping
     public ResponseEntity<List<UsuarioPetshopDto>> listarFavoritos(@PathVariable Integer idCliente){
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
+        Optional<UsuarioCliente> usuarioCliente = clienteRepository.findById(idCliente);
+
+        if (usuarioCliente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         List<Favorito> favoritos = favoritoRepository.findAllByFkClienteId(idCliente);
         List<UsuarioPetshop> petshops = new ArrayList<>();
@@ -52,16 +54,17 @@ public class FavoritoController {
         return ResponseEntity.ok(petshopDetalhesDtos);
     }
 
-    @GetMapping("/favoritado/{idCliente}/{idPetshop}")
+    @GetMapping("/favoritado/{idPetshop}")
     public ResponseEntity<Boolean> isFavoritado(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
 
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
+        Optional<UsuarioCliente> usuarioCliente = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> usuarioPetshop = petshopRepository.findById(idPetshop);
 
-        UsuarioPetshop usuarioPetshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado")
-        );
+        if (usuarioCliente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else if(usuarioPetshop.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         Optional<Favorito> favoritoOptional = favoritoRepository.findByFkClienteIdAndFkPetshopId(idCliente,
                 idPetshop);
@@ -75,18 +78,19 @@ public class FavoritoController {
 
     @PostMapping("/{idPetshop}")
     public ResponseEntity<Void> favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
+        Optional<UsuarioCliente> usuarioCliente = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> usuarioPetshop = petshopRepository.findById(idPetshop);
 
-        UsuarioPetshop usuarioPetshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado")
-        );
+        if (usuarioCliente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else if(usuarioPetshop.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         Favorito favorito = new Favorito();
 
-        favorito.setFkCliente(usuarioCliente);
-        favorito.setFkPetshop(usuarioPetshop);
+        favorito.setFkCliente(usuarioCliente.get());
+        favorito.setFkPetshop(usuarioPetshop.get());
 
         favoritoRepository.save(favorito);
 
@@ -95,13 +99,14 @@ public class FavoritoController {
 
     @DeleteMapping("/{idPetshop}")
     public ResponseEntity<Void> deletarFavorito(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
+        Optional<UsuarioCliente> usuarioCliente = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> usuarioPetshop = petshopRepository.findById(idPetshop);
 
-        UsuarioPetshop usuarioPetshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado")
-        );
+        if (usuarioCliente.isEmpty()){
+            return ResponseEntity.notFound().build();
+        } else if(usuarioPetshop.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
 
         Optional<Favorito> optionalFavorito = favoritoRepository.findByFkClienteIdAndFkPetshopId(idCliente, idPetshop);
         Favorito favorito = optionalFavorito.get();
