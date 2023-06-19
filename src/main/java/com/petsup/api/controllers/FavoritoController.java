@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/favoritos/{idCliente}")
@@ -54,7 +55,7 @@ public class FavoritoController {
     }
 
     @PostMapping("/{idPetshop}")
-    public Favorito favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
+    public ResponseEntity<Favorito> favoritar(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
         UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
         );
@@ -68,13 +69,26 @@ public class FavoritoController {
         favorito.setFkCliente(usuarioCliente);
         favorito.setFkPetshop(usuarioPetshop);
 
-        return favorito;
+        favoritoRepository.save(favorito);
+
+        return ResponseEntity.ok(favorito);
     }
 
     @DeleteMapping("/{idPetshop}")
     public ResponseEntity<Void> deletarFavorito(@PathVariable Integer idCliente, @PathVariable Integer idPetshop){
+        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new RuntimeException("Cliente não encontrado")
+        );
 
+        UsuarioPetshop usuarioPetshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new RuntimeException("Petshop não encontrado")
+        );
 
-        return null;
+        Optional<Favorito> optionalFavorito = favoritoRepository.findByFkClienteAndFkPetshop(idCliente, idPetshop);
+        Favorito favorito = optionalFavorito.get();
+
+        favoritoRepository.delete(favorito);
+
+        return ResponseEntity.noContent().build();
     }
 }
