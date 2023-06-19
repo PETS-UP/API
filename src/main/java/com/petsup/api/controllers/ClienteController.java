@@ -126,7 +126,7 @@ public class ClienteController {
         );
 
         Optional<AvaliacaoPetshop> avaliacaoPetshop = avaliacaoRepository
-                .findByFkClienteAndFkPetshop(idCliente, idPetshop);
+                .findByFkClienteIdAndFkPetshopId(idCliente, idPetshop);
 
         if (avaliacaoPetshop.isEmpty()){
             return ResponseEntity.noContent().build();

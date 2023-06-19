@@ -6,12 +6,10 @@ import com.petsup.api.entities.usuario.UsuarioPetshop;
 import com.petsup.api.repositories.ClienteRepository;
 import com.petsup.api.repositories.FavoritoRepository;
 import com.petsup.api.repositories.PetshopRepository;
-import com.petsup.api.service.autentication.dto.PetshopDeatlhesDto;
 import com.petsup.api.service.dto.UsuarioMapper;
 import com.petsup.api.service.dto.UsuarioPetshopDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.method.P;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -31,15 +29,15 @@ public class FavoritoController {
     @Autowired
     private FavoritoRepository favoritoRepository;
 
-    @GetMapping
+    @GetMapping("/{idCliente}")
     public ResponseEntity<List<UsuarioPetshopDto>> listarFavoritos(@PathVariable Integer idCliente){
         UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
         );
 
-        List<Favorito> favoritos = favoritoRepository.findAllByFkCliente(idCliente);
+        List<Favorito> favoritos = favoritoRepository.findAllByFkClienteId(idCliente);
         List<UsuarioPetshop> petshops = new ArrayList<>();
-        List<UsuarioPetshopDto> petshopDeatlhesDtos = new ArrayList<>();
+        List<UsuarioPetshopDto> petshopDetalhesDtos = new ArrayList<>();
 
         if (favoritos.isEmpty()){
             return ResponseEntity.noContent().build();
@@ -47,11 +45,11 @@ public class FavoritoController {
 
         for (int i = 0; i < favoritos.size(); i ++){
             petshops.add(favoritos.get(i).getFkPetshop());
-            petshopDeatlhesDtos.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+            petshopDetalhesDtos.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
         }
 
 
-        return ResponseEntity.ok(petshopDeatlhesDtos);
+        return ResponseEntity.ok(petshopDetalhesDtos);
     }
 
     @PostMapping("/{idPetshop}")
@@ -84,7 +82,7 @@ public class FavoritoController {
                 () -> new RuntimeException("Petshop não encontrado")
         );
 
-        Optional<Favorito> optionalFavorito = favoritoRepository.findByFkClienteAndFkPetshop(idCliente, idPetshop);
+        Optional<Favorito> optionalFavorito = favoritoRepository.findByFkClienteIdAndFkPetshopId(idCliente, idPetshop);
         Favorito favorito = optionalFavorito.get();
 
         favoritoRepository.delete(favorito);
