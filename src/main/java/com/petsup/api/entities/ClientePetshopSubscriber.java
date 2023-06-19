@@ -2,9 +2,7 @@ package com.petsup.api.entities;
 
 import com.petsup.api.entities.usuario.UsuarioCliente;
 import com.petsup.api.entities.usuario.UsuarioPetshop;
-import jakarta.persistence.Entity;
-import jakarta.persistence.Id;
-import jakarta.persistence.ManyToOne;
+import jakarta.persistence.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
 
@@ -12,6 +10,7 @@ import org.springframework.mail.javamail.JavaMailSender;
 public class ClientePetshopSubscriber /*implements ClienteObserver*/ {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
     UsuarioCliente fkCliente; // inscritos
