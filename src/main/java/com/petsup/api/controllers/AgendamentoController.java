@@ -150,7 +150,7 @@ public class AgendamentoController {
         return ResponseEntity.status(404).build();
     }
 
-    @GetMapping("/report/agendamentos-dia/{idPetshop}")
+    @GetMapping("/report/dia/{idPetshop}")
     public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
                                                                              @PathVariable Integer idPetshop){
 
