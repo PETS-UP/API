@@ -29,7 +29,7 @@ public class FavoritoController {
     @Autowired
     private FavoritoRepository favoritoRepository;
 
-    @GetMapping("/{idCliente}")
+    @GetMapping
     public ResponseEntity<List<UsuarioPetshopDto>> listarFavoritos(@PathVariable Integer idCliente){
         UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new RuntimeException("Cliente não encontrado")
