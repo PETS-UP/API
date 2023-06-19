@@ -7,7 +7,7 @@ import java.util.List;
 import java.util.Optional;
 
 public interface FavoritoRepository extends JpaRepository<Favorito, Integer> {
-    List<Favorito> findAllByFkCliente(Integer idCliente);
+    List<Favorito> findAllByFkClienteId(Integer idCliente);
 
-    Optional<Favorito> findByFkClienteAndFkPetshop(Integer idCliente, Integer idPetshop);
+    Optional<Favorito> findByFkClienteIdAndFkPetshopId(Integer idCliente, Integer idPetshop);
 }

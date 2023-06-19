@@ -96,10 +96,11 @@ public class UsuarioMapper {
         usuarioPetshopDto.setEmail(usuarioPetshop.getEmail());
         usuarioPetshopDto.setTelefone(usuarioPetshop.getTelefone());
         usuarioPetshopDto.setRazaoSocial(usuarioPetshop.getRazaoSocial());
+        usuarioPetshopDto.setCnpj(usuarioPetshop.getCnpj());
         usuarioPetshopDto.setCep(usuarioPetshop.getCep());
         usuarioPetshopDto.setEstado(usuarioPetshop.getEstado());
         usuarioPetshopDto.setCidade(usuarioPetshop.getCidade());
-        usuarioPetshopDto.setBairro(usuarioPetshopDto.getBairro());
+        usuarioPetshopDto.setBairro(usuarioPetshop.getBairro());
         usuarioPetshopDto.setRua(usuarioPetshop.getRua());
         usuarioPetshopDto.setNumero(usuarioPetshop.getNumero());
 

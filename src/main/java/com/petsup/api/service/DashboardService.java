@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.time.format.TextStyle;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -22,8 +23,9 @@ public class DashboardService {
     private AgendamentoRepository agendamentoRepository;
 
     public List<Integer> getAgendamentosUltimaSemana(int idPetshop) {
+
         List<Agendamento> agendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
-                idPetshop, LocalDateTime.now().minusDays(6L), LocalDateTime.now()
+                idPetshop, LocalDateTime.now().withHour(1).minusDays(6L), LocalDateTime.now().withHour(23)
         );
         List<Integer> qtdAgendamentos = new ArrayList<>();
 

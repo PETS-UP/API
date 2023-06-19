@@ -33,7 +33,7 @@ public interface PetshopRepository  extends JpaRepository<UsuarioPetshop, Intege
 //    @Query("SELECT u FROM UsuarioPetshop u LEFT JOIN u.avaliacoes a GROUP BY u.id ORDER BY AVG(a.nota) DESC")
 //    List<UsuarioPetshop> ordenarPorAvaliacao();
 
-    @Query("select new com.petsup.api.util.PetshopAvaliacao(avg(a.nota), a.fkPetshop.razaoSocial) from AvaliacaoPetshop a group by a.fkPetshop order by avg(a.nota) desc")
+    @Query("select new com.petsup.api.util.PetshopAvaliacao(a.fkPetshop.id, avg(a.nota), a.fkPetshop.nome) from AvaliacaoPetshop a group by a.fkPetshop.id order by avg(a.nota) desc")
     List<PetshopAvaliacao> ordenarMediaAvaliacao();
     List<UsuarioPetshop> findAllByBairroAndCidade(String bairro, String cidade);
 }

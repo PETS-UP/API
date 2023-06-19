@@ -2,6 +2,7 @@ package com.petsup.api.controllers;
 
 import com.petsup.api.entities.Agendamento;
 import com.petsup.api.entities.ClientePetshopSubscriber;
+import com.petsup.api.entities.enums.NomeServico;
 import com.petsup.api.service.dto.*;
 import com.petsup.api.util.ListaObj;
 import com.petsup.api.entities.Servico;
@@ -23,7 +24,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.InputStreamResource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -33,17 +33,11 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.io.*;
-import java.nio.charset.StandardCharsets;
-import java.nio.file.Files;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.*;
-import java.util.stream.Collectors;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
-import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
 
 @Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
 @RestController
@@ -154,16 +148,15 @@ public class PetshopController {
 
         UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
         petshopRepository.save(usuarioPetshopAtt);
-        System.out.println(usuarioPetshopAtt.getBairro() + usuarioPetshopAtt.getCidade());
         return ResponseEntity.ok(usuarioPetshopAtt);
     }
 
     // Método para atualizar preços fica na controller
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
-    @PatchMapping("/atualizar/preco")
-    public ResponseEntity<ServicoDto> updatePreco(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
-                                                  @RequestParam Integer idPetshop) {
+    @PatchMapping("/atualizar/servico")
+    public ResponseEntity<ServicoDto> updateServico(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+                                                    @RequestParam Integer idPetshop) {
         Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
         Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
         //Optional<ClientePetshopSubscriber> clientePetshopSubscriberOptional =
@@ -188,9 +181,11 @@ public class PetshopController {
         }
         // Observer
 
+        servico.setNome(NomeServico.valueOf(servicoAtt.getNome()));
         servico.setPreco(servicoAtt.getPreco());
+        servico.setDescricao(servicoAtt.getDescricao());
         servicoRepository.save(servico);
-        return ResponseEntity.status(200).body(servicoAtt);
+        return ResponseEntity.ok(servicoAtt);
     }
 
     //Crud fim
@@ -339,13 +334,13 @@ public class PetshopController {
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
 
-        if (listaAgendamentos.size() == 0) {
-            return ResponseEntity.status(204).build();
+        if (listaAgendamentos.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
 
         ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
 
-        return ResponseEntity.status(200).body(listaLocal);
+        return ResponseEntity.ok(listaLocal);
     }
 
 }
