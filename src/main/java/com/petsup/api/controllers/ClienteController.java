@@ -118,7 +118,7 @@ public class ClienteController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/avaliacao{idCliente}/{idPetshop}")
+    @GetMapping("/avaliacao/{idCliente}/{idPetshop}")
     public ResponseEntity<AvaliacaoPetshop> retornaAvaliacaoCliente(@PathVariable int idCliente,
                                                                     @PathVariable int idPetshop){
         UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
