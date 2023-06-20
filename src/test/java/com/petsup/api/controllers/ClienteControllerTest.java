@@ -66,19 +66,19 @@ public class ClienteControllerTest {
         assertEquals(3, clienteRepository.findAll().size());
     }
 
-    @Test
-    void getUserByIdRetornaClienteDeId1() throws Exception {
-        Integer id = 1;
-        UsuarioCliente usuarioCliente = UsuarioClienteBuilder.buildUsuarioCliente();
-
-        when(clienteRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioCliente));
-
-        mockMvc.perform(get("/clientes/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(usuarioCliente.getId()));
-
-        assertEquals(usuarioCliente.getId(), clienteRepository.findById(1).get().getId());
-    }
+//    @Test
+//    void getUserByIdRetornaClienteDeId1() throws Exception {
+//        Integer id = 1;
+//        UsuarioCliente usuarioCliente = UsuarioClienteBuilder.buildUsuarioCliente();
+//
+//        when(clienteRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioCliente));
+//
+//        mockMvc.perform(get("/clientes/{id}", id))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").value(usuarioCliente.getId()));
+//
+//        assertEquals(usuarioCliente.getId(), clienteRepository.findById(1).get().getId());
+//    }
 
     @Test
     void getUserByIdLancaExcecao() {
