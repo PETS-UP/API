@@ -15,6 +15,7 @@ import com.petsup.api.service.autentication.dto.PetshopDeatlhesDto;
 import com.petsup.api.service.dto.*;
 import com.petsup.api.util.DetalhesEndereco;
 import com.petsup.api.util.PetshopAvaliacao;
+import com.petsup.api.util.PetshopMediaPreco;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -199,29 +200,19 @@ public class ClienteController {
         if (avaliacoes.isEmpty()){
             return ResponseEntity.noContent().build();
         }
-//        avaliacoes.get(0).getFkPetshop()
-//        for (int i = 0;){
-//
-//        }
 
         return ResponseEntity.ok().body(avaliacoes);
     }
 
     @GetMapping("/ordenar-media-preco")
-    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsPorMenorPreco(){
-        List<UsuarioPetshop> petshops = petshopRepository.ordenarPorPreco();
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+    public ResponseEntity<List<PetshopMediaPreco>> getPetshopsPorMenorPreco(){
+        List<PetshopMediaPreco> petshops = petshopRepository.ordenarPorPreco();
 
         if (petshops.isEmpty()){
             return ResponseEntity.noContent().build();
         }
 
-        for (int i = 0; i < petshops.size(); i++){
-            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
-            System.out.println(petshopsDto.get(i).getNome());
-        }
-
-        return ResponseEntity.ok().body(petshopsDto);
+        return ResponseEntity.ok().body(petshops);
     }
 
 
