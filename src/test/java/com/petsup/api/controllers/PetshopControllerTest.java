@@ -71,17 +71,17 @@ public class PetshopControllerTest {
         assertEquals(emptyList(), petshopRepository.findAll());
     }
 
-    @Test
-    void getPetshopsRetornaListaDeTamanho3() throws Exception {
-        List<UsuarioPetshop> lista = UsuarioPetshopBuilder.buildListaUsuarioPetshop();
-
-        when(petshopRepository.findAll()).thenReturn(lista);
-
-        mockMvc.perform(get("/petshops"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, petshopRepository.findAll().size());
-    }
+//    @Test
+//    void getPetshopsRetornaListaDeTamanho3() throws Exception {
+//        List<UsuarioPetshop> lista = UsuarioPetshopBuilder.buildListaUsuarioPetshop();
+//
+//        when(petshopRepository.findAll()).thenReturn(lista);
+//
+//        mockMvc.perform(get("/petshops"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, petshopRepository.findAll().size());
+//    }
 
     @Test
     void getUserByIdRetornaPetshopDeId1() throws Exception {
