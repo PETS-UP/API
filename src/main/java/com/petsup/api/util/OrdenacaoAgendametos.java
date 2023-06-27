@@ -1,8 +1,8 @@
 package com.petsup.api.util;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.service.dto.AgendamentoDto;
-import com.petsup.api.service.dto.AgendamentoMapper;
+import com.petsup.api.models.Agendamento;
+import com.petsup.api.dto.AgendamentoDto;
+import com.petsup.api.mapper.AgendamentoMapper;
 
 import java.time.LocalDateTime;
 import java.util.List;

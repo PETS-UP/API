@@ -1,6 +1,6 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.entities.Arquivo;
+import com.petsup.api.models.Arquivo;
 import com.petsup.api.repositories.ArquivoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;

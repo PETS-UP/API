@@ -1,8 +1,8 @@
 package com.petsup.api.util;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.Pet;
-import com.petsup.api.entities.enums.Especie;
+import com.petsup.api.models.Agendamento;
+import com.petsup.api.models.cliente.Pet;
+import com.petsup.api.models.enums.Especie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
@@ -16,30 +16,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class GeradorTxt {
-
-    //Adiciona linha ao arquivo sem criar um arquivo novo
-//    public static String gravaRegistro(String registro, String nomeArq) {
-//        BufferedWriter saida = null;
-//
-//        // try-catch para abrir o arquivo
-//        try {
-//            saida = new BufferedWriter(new FileWriter(nomeArq, true));
-//        }
-//        catch (IOException erro) {
-//            System.out.println("Erro ao abrir o arquivo");
-//            ResponseEntity.status(400).build();
-//        }
-//
-//        // try-catch para gravar o registro e finalizar
-//        try {
-//            saida.append(registro + "\n");
-//            saida.close();
-//        }
-//        catch (IOException erro) {
-//            System.out.println("Erro ao gravar no arquivo");
-//        }
-//        return registro;
-//    }
 
     public static File gravaArquivoTxt(ListaObj<Agendamento> lista) {
         int contaRegistroDado = 0;

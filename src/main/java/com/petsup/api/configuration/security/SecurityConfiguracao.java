@@ -2,7 +2,7 @@ package com.petsup.api.configuration.security;
 
 import com.petsup.api.configuration.security.jwt.AutenticacaoProvider;
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.petsup.api.service.autentication.AutenticacaoService;
+import com.petsup.api.services.AutenticacaoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

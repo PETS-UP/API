@@ -1,36 +1,32 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.Pet;
-import com.petsup.api.entities.Servico;
-import com.petsup.api.entities.usuario.UsuarioCliente;
-import com.petsup.api.entities.usuario.UsuarioPetshop;
+import com.petsup.api.models.Agendamento;
+import com.petsup.api.models.cliente.Pet;
+import com.petsup.api.models.petshop.Servico;
+import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.petshop.UsuarioPetshop;
 import com.petsup.api.repositories.*;
-import com.petsup.api.service.dto.AgendamentoDto;
-import com.petsup.api.service.dto.AgendamentoMapper;
-import com.petsup.api.service.dto.AgendamentoRespostaDto;
-import com.petsup.api.service.dto.PetMapper;
+import com.petsup.api.dto.AgendamentoDto;
+import com.petsup.api.mapper.AgendamentoMapper;
+import com.petsup.api.dto.AgendamentoRespostaDto;
+import com.petsup.api.repositories.cliente.ClienteRepository;
+import com.petsup.api.repositories.cliente.PetRepository;
+import com.petsup.api.repositories.petshop.PetshopRepository;
+import com.petsup.api.repositories.petshop.ServicoRepository;
 import com.petsup.api.util.ListaObj;
-import com.petsup.api.util.GeradorTxt;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
-import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
-import java.io.File;
-import java.io.IOException;
-import java.nio.file.Path;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;

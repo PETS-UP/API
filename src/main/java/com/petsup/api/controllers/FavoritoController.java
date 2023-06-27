@@ -1,13 +1,13 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.entities.Favorito;
-import com.petsup.api.entities.usuario.UsuarioCliente;
-import com.petsup.api.entities.usuario.UsuarioPetshop;
-import com.petsup.api.repositories.ClienteRepository;
+import com.petsup.api.models.Favorito;
+import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.FavoritoRepository;
-import com.petsup.api.repositories.PetshopRepository;
-import com.petsup.api.service.dto.UsuarioMapper;
-import com.petsup.api.service.dto.UsuarioPetshopDto;
+import com.petsup.api.repositories.petshop.PetshopRepository;
+import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.dto.petshop.UsuarioPetshopDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;

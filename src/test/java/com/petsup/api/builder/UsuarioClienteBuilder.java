@@ -1,9 +1,9 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.entities.usuario.UsuarioCliente;
-import com.petsup.api.service.autentication.dto.ClienteLoginDto;
-import com.petsup.api.service.autentication.dto.ClienteTokenDto;
-import com.petsup.api.service.dto.UsuarioClienteDto;
+import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.dto.authentication.ClienteLoginDto;
+import com.petsup.api.dto.authentication.ClienteTokenDto;
+import com.petsup.api.dto.cliente.UsuarioClienteDto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;

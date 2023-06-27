@@ -1,11 +1,9 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.entities.Pet;
-import com.petsup.api.entities.enums.Especie;
-import com.petsup.api.entities.enums.Raca;
-import com.petsup.api.service.dto.PetDto;
+import com.petsup.api.models.cliente.Pet;
+import com.petsup.api.models.enums.Especie;
+import com.petsup.api.dto.cliente.PetDto;
 
-import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
