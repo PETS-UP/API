@@ -1,6 +1,11 @@
 package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.dto.AvaliacaoDto;
+import com.petsup.api.dto.DetalhesEnderecoDto;
+import com.petsup.api.dto.PetshopAvaliacaoDto;
+import com.petsup.api.dto.PetshopMediaPrecoDto;
+import com.petsup.api.dto.authentication.ClienteLoginDto;
+import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.UsuarioClienteDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
 import com.petsup.api.mapper.AvaliacaoMapper;
@@ -11,13 +16,8 @@ import com.petsup.api.models.petshop.UsuarioPetshop;
 import com.petsup.api.repositories.AvaliacaoRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
+import com.petsup.api.services.ClienteService;
 import com.petsup.api.services.GeocodingService;
-import com.petsup.api.services.UsuarioService;
-import com.petsup.api.dto.authentication.ClienteLoginDto;
-import com.petsup.api.dto.authentication.ClienteTokenDto;
-import com.petsup.api.dto.DetalhesEnderecoDto;
-import com.petsup.api.dto.PetshopAvaliacaoDto;
-import com.petsup.api.dto.PetshopMediaPrecoDto;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -30,6 +30,24 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
+/*
+POST:   /clientes
+POST:   /clientes/login
+GET:    /clientes
+GET:    /clientes/{idCliente}
+GET:    /clientes/busca-email/{email}
+PATCH:  /clientes/{idCliente}
+DELETE: /clientes
+POST:   /clientes/avaliar/{idCliente}/{idPetshop}
+GET:    /clientes/avaliar/{idCliente}/{idPetshop}
+GET:    /clientes/ordenar-media-avaliacao
+GET:    /clientes/ordenar-media-preco
+PATCH:  /clientes/latitude-longitude/{idCliente}/{latitude}/{longitude}
+GET:    /clientes/petshops-proximos/{idCliente}
+*/
+
+
+
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
 @RequestMapping("/clientes")
@@ -39,8 +57,9 @@ public class ClienteController {
 
     @Autowired
     private PetshopRepository petshopRepository;
+
     @Autowired
-    private UsuarioService usuarioService;
+    private ClienteService clienteService;
 
     @Autowired
     private GeocodingService geocodingService;
@@ -49,16 +68,16 @@ public class ClienteController {
     private AvaliacaoRepository avaliacaoRepository;
 
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso.")
-    @PostMapping
     @SecurityRequirement(name = "Bearer")
+    @PostMapping
     public ResponseEntity<Void> postUserCliente(@RequestBody @Valid UsuarioClienteDto usuarioDto) {
-        this.usuarioService.criarCliente(usuarioDto);
+        this.clienteService.criarCliente(usuarioDto);
         return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<ClienteTokenDto> login(@RequestBody ClienteLoginDto usuarioLoginDto) {
-        ClienteTokenDto usuarioTokenDto = this.usuarioService.autenticarCliente(usuarioLoginDto);
+        ClienteTokenDto usuarioTokenDto = this.clienteService.autenticarCliente(usuarioLoginDto);
 
         return ResponseEntity.ok().body(usuarioTokenDto);
     }
@@ -67,138 +86,120 @@ public class ClienteController {
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso não haja clientes cadastrados.")
     @GetMapping
     public ResponseEntity<List<UsuarioClienteDto>> getClientes() {
-        List<UsuarioCliente> usuarios = this.clienteRepository.findAll();
-        List<UsuarioClienteDto> usuariosDto = new ArrayList<>();
+        List<UsuarioClienteDto> usuarioClienteDtos = this.clienteService.buscarClientes();
 
-        for (UsuarioCliente usuario : usuarios) {
-            usuariosDto.add(UsuarioMapper.ofClienteDto(usuario));
+        if (usuarioClienteDtos.isEmpty()) {
+            return ResponseEntity.status(204).body(usuarioClienteDtos);
         }
 
-        return usuariosDto.isEmpty() ? ResponseEntity.noContent().build() : ResponseEntity.ok().body(usuariosDto);
+        return ResponseEntity.ok(usuarioClienteDtos);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @GetMapping("/{id}")
-    public ResponseEntity<UsuarioClienteDto> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        )));
+    @GetMapping("/{idCliente}")
+    public ResponseEntity<UsuarioClienteDto> getUserById(@PathVariable Integer idCliente) {
+        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findById(idCliente);
+
+        if (usuarioClienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioClienteOptional.get());
+
+        return ResponseEntity.ok(usuarioClienteDto);
     }
 
     @GetMapping("/busca-email/{email}")
     public ResponseEntity<UsuarioClienteDto> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(UsuarioMapper.ofClienteDto(this.clienteRepository.findByEmail(email).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        )));
+
+        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findByEmail(email);
+
+        if (usuarioClienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioClienteOptional.get());
+
+        return ResponseEntity.ok(usuarioClienteDto);
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @PatchMapping("/{idCliente}")
+    public ResponseEntity<UsuarioClienteDto> updateById(@RequestBody UsuarioClienteDto usuarioDto,
+                                                        @PathVariable Integer idCliente) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        if (clienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok(clienteService.atualizarClientePorId(usuarioDto, idCliente));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @DeleteMapping
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
-        this.clienteRepository.deleteById(id);
+    @DeleteMapping("/{idCliente}")
+    public ResponseEntity<Void> deleteById(@PathVariable Integer idCliente) {
+        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findById(idCliente);
+
+        if (usuarioClienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        } else {
+            this.clienteRepository.deleteById(idCliente);
+        }
+
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/avaliar/{idCliente}/{idPetshop}")
-    public ResponseEntity<AvaliacaoPetshop> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl,
-                                                          @PathVariable int idCliente, @PathVariable int idPetshop) {
-
-
+    public ResponseEntity<Void> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl,
+                                              @PathVariable int idCliente, @PathVariable int idPetshop) {
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
         Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-        UsuarioCliente cliente = clienteOptional.get();
-        UsuarioPetshop petshop = petshopOptional.get();
-        avl.setFkPetshop(petshop);
-        avl.setFkCliente(cliente);
 
-        this.usuarioService.avaliarPetshop(avl);
+        if (clienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+        if (petshopOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        clienteService.avaliarPetshop(avl, clienteOptional.get(), petshopOptional.get());
+
         return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/avaliacao/{idCliente}/{idPetshop}")
     public ResponseEntity<AvaliacaoDto> retornaAvaliacaoCliente(@PathVariable int idCliente,
-                                                                @PathVariable int idPetshop){
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado")
-        );
+                                                                @PathVariable int idPetshop) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
+
+        if (clienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        if (petshopOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
 
         Optional<AvaliacaoPetshop> avaliacaoPetshop = avaliacaoRepository
                 .findByFkClienteIdAndFkPetshopId(idCliente, idPetshop);
 
-        if (avaliacaoPetshop.isEmpty()){
+        if (avaliacaoPetshop.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok(AvaliacaoMapper.ofAvaliacaoDto(avaliacaoPetshop.get()));
     }
 
-    @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
-    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @PatchMapping("/{id}")
-    public ResponseEntity<UsuarioClienteDto> updateById(
-            @RequestBody UsuarioClienteDto usuarioDto,
-            @PathVariable Integer id
-    ) {
-        return ResponseEntity.ok(usuarioService.atualizarClientePorId(usuarioDto, id));
-    }
-
-    @PatchMapping("/latitude-longitude/{id}/{latitude}/{longitude}")
-    public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer id,
-                                                       @PathVariable double latitude, @PathVariable double longitude) {
-        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
-
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, usuarioCliente);
-        clienteRepository.save(usuarioAtt);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @GetMapping("/petshops-proximos/{id}")
-    public ResponseEntity<List<UsuarioPetshopDto>> retornaPetshopsNoBairroDoCliente(@PathVariable Integer id) {
-        String bairro = "";
-
-        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
-
-        // Conversao reversa (lat/long -> endereco)
-        String results = geocodingService.reverseGeocode(usuarioCliente.getLatitude(),
-                                                                    usuarioCliente.getLongitude());
-
-        if (results.isBlank()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        System.out.println(results);
-
-        DetalhesEnderecoDto detalhesEnderecoDto = geocodingService.extrairBairroCidade(results);
-
-        System.out.println(detalhesEnderecoDto.getNeighborhood() + detalhesEnderecoDto.getCity());
-
-        List<UsuarioPetshop> petshops = petshopRepository.findAllByBairroAndCidade(detalhesEnderecoDto.getNeighborhood(),
-                detalhesEnderecoDto.getCity());
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
-        for (int i = 0; i < petshops.size(); i++){
-        petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
-        }
-
-        return ResponseEntity.ok().body(petshopsDto);
-        //return ResponseEntity.ok().build();
-
-    }
-
     @GetMapping("/ordenar-media-avaliacao")
-    public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsPorMedia(){
+    public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsPorMedia() {
         List<PetshopAvaliacaoDto> avaliacoes = petshopRepository.ordenarMediaAvaliacao();
 
-        if (avaliacoes.isEmpty()){
+        if (avaliacoes.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
@@ -206,17 +207,50 @@ public class ClienteController {
     }
 
     @GetMapping("/ordenar-media-preco")
-    public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsPorMenorPreco(){
+    public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsPorMenorPreco() {
         List<PetshopMediaPrecoDto> petshops = petshopRepository.ordenarPorPreco();
 
-        if (petshops.isEmpty()){
+        if (petshops.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
         return ResponseEntity.ok().body(petshops);
     }
 
+    @PatchMapping("/latitude-longitude/{idCliente}/{latitude}/{longitude}")
+    public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer idCliente, @PathVariable double latitude,
+                                                       @PathVariable double longitude) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
 
+        if (clienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, clienteOptional.get());
+        clienteRepository.save(usuarioAtt);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping("/petshops-proximos/{idCliente}")
+    public ResponseEntity<List<UsuarioPetshopDto>> retornaPetshopsNoBairroDoCliente(@PathVariable Integer idCliente) {
+
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        if (clienteOptional.isEmpty()) {
+            return ResponseEntity.notFound().build();
+        }
+
+        List<UsuarioPetshopDto> usuarioPetshopDtos = clienteService.retornaPetshopsNoBairroDoCliente(clienteOptional);
+
+        if (usuarioPetshopDtos.isEmpty()){
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok().body(usuarioPetshopDtos);
+    }
+
+// Método de teste API Maps
 //    @Scheduled(cron = "5/5 * * * * *")
 //    public void aaa(){
 //        String results = geocodingService.reverseGeocode(7.193871,
