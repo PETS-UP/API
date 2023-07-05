@@ -156,7 +156,8 @@ public class PetshopController {
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/servico")
-    public ResponseEntity<ServicoRespostaDto> updateServico(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+    public ResponseEntity<ServicoRespostaDto> updateServico(@RequestBody ServicoDto servicoAtt,
+                                                            @RequestParam Integer idServico,
                                                             @RequestParam Integer idPetshop) {
         return ResponseEntity.ok(petshopService.atualizarServico(servicoAtt, idServico, idPetshop));
     }
@@ -239,25 +240,7 @@ public class PetshopController {
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
     @PostMapping("/inscrever/{idPetshop}")
     public ResponseEntity<Void> subscribeToPetshop(@PathVariable Integer idPetshop, @RequestParam Integer idCliente) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-        if (clienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-        if (petshopOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UsuarioCliente usuarioCliente = clienteOptional.get();
-        UsuarioPetshop usuarioPetshop = petshopOptional.get();
-
-        ClienteSubscriber inscrito = new ClienteSubscriber();
-        inscrito.setFkCliente(usuarioCliente);
-        inscrito.setFkPetshop(usuarioPetshop);
-
-        clienteSubscriberRepository.save(inscrito);
-
+        petshopService.subscribeToPetshop(idPetshop, idCliente);
         return ResponseEntity.status(201).build();
     }
 
@@ -266,25 +249,14 @@ public class PetshopController {
             "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
     @ApiResponse(responseCode = "404", description = "Não há petshops com esse identificador.")
-    public ResponseEntity<ListaObj<AgendamentoDto>> ordenarAgendamentosPorData(@PathVariable Integer usuario) {
+    public ResponseEntity<ListaObj<AgendamentoDto>> orderAgendamentosByDate(@PathVariable Integer idPetshop) {
+        ListaObj<AgendamentoDto> agendamentoDtoListaObj = petshopService.orderAgendamentosByDate(idPetshop);
 
-        Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
-
-        if (usuarioPetshopOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UsuarioPetshop usuarioPetshop = usuarioPetshopOptional.get();
-
-        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
-
-        if (listaAgendamentos.isEmpty()) {
+        if (agendamentoDtoListaObj.getTamanho() == 0){
             return ResponseEntity.noContent().build();
         }
 
-        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
-
-        return ResponseEntity.ok(listaLocal);
+        return ResponseEntity.ok(agendamentoDtoListaObj);
     }
 
 }

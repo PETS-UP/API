@@ -1,6 +1,7 @@
 package com.petsup.api.services;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
+import com.petsup.api.dto.AgendamentoDto;
 import com.petsup.api.dto.authentication.PetshopDeatlhesDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
@@ -20,6 +21,7 @@ import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.AvaliacaoRepository;
 import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
+import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
 import com.petsup.api.util.GeradorCsv;
@@ -43,6 +45,8 @@ import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+
+import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 
 @Service
 public class PetshopService {
@@ -71,6 +75,9 @@ public class PetshopService {
 
     @Autowired
     private AuthenticationManager authenticationManager;
+
+    @Autowired
+    private ClienteSubscriberRepository clienteSubscriberRepository;
 
     @Autowired
     private JavaMailSender enviador;
@@ -192,5 +199,32 @@ public class PetshopService {
 //        }
 //        GeradorCsv.gravaArquivoCsv(listaLocal);
 //    }
+
+    public void subscribeToPetshop(Integer idPetshop, Integer idCliente){
+        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        );
+
+        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        ClienteSubscriber inscrito = new ClienteSubscriber();
+        inscrito.setFkCliente(cliente);
+        inscrito.setFkPetshop(petshop);
+
+        clienteSubscriberRepository.save(inscrito);
+    }
+
+    public ListaObj<AgendamentoDto> orderAgendamentosByDate(Integer idPetshop){
+        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
+        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+
+        return listaLocal;
+    }
 
 }
