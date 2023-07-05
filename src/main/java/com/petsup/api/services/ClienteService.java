@@ -92,12 +92,14 @@ public class ClienteService {
     }
 
     public UsuarioClienteDto atualizarClientePorId(UsuarioClienteDto usuarioClienteDto, Integer id) {
-        UsuarioCliente usuarioCliente = clienteRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        );
+        Optional<UsuarioCliente> usuarioCliente = clienteRepository.findById(id);
+        if (usuarioCliente.isEmpty()){
+            return null;
+        }
 
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteDto, usuarioCliente);
+        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteDto, usuarioCliente.get());
         clienteRepository.save(usuarioAtt);
+
         return UsuarioMapper.ofClienteDto(usuarioAtt);
     }
 

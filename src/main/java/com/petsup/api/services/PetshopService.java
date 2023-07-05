@@ -1,23 +1,36 @@
 package com.petsup.api.services;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.petsup.api.models.AvaliacaoPetshop;
-import com.petsup.api.models.Usuario;
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
-import com.petsup.api.repositories.*;
-import com.petsup.api.dto.authentication.ClienteLoginDto;
-import com.petsup.api.dto.authentication.ClienteTokenDto;
+import com.petsup.api.dto.authentication.PetshopDeatlhesDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
-import com.petsup.api.dto.cliente.UsuarioClienteDto;
-import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.dto.petshop.ServicoDto;
+import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.mapper.ServicoMapper;
+import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.models.Agendamento;
+import com.petsup.api.models.Usuario;
+import com.petsup.api.models.cliente.ClienteSubscriber;
+import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.enums.NomeServico;
+import com.petsup.api.models.petshop.Servico;
+import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.repositories.AgendamentoRepository;
+import com.petsup.api.repositories.AvaliacaoRepository;
+import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
-import com.petsup.api.util.FilaObj;
+import com.petsup.api.repositories.petshop.ServicoRepository;
+import com.petsup.api.util.GeradorCsv;
+import com.petsup.api.util.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -25,6 +38,11 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Optional;
 
 @Service
 public class PetshopService {
@@ -40,6 +58,9 @@ public class PetshopService {
     private PetshopRepository petshopRepository;
 
     @Autowired
+    private ServicoRepository servicoRepository;
+
+    @Autowired
     private AvaliacaoRepository avaliacaoRepository;
 
     @Autowired
@@ -51,7 +72,10 @@ public class PetshopService {
     @Autowired
     private AuthenticationManager authenticationManager;
 
-    public void criarPetshop(UsuarioPetshopDto usuarioDto){
+    @Autowired
+    private JavaMailSender enviador;
+
+    public void criarPetshop(UsuarioPetshopDto usuarioDto) {
         final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
 
         String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
@@ -79,5 +103,94 @@ public class PetshopService {
 
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
     }
+
+    public List<UsuarioPetshopDto> listarPetshops(){
+        List<UsuarioPetshop> petshops = this.petshopRepository.findAll();
+
+        return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
+    }
+
+    public UsuarioPetshopDto getPetshopById(Integer id){
+        UsuarioPetshop petshop = petshopRepository.findById(id).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        return UsuarioMapper.ofPetshopDto(petshop);
+    }
+
+    public List<UsuarioPetshopDto> listarPetshopsPorNome(String nome){
+        List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
+
+        return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
+    }
+
+    public UsuarioPetshopDto getPetshopByEmail(String email){
+        UsuarioPetshop petshop = petshopRepository.findByEmail(email).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        return UsuarioMapper.ofPetshopDto(petshop);
+    }
+
+    public void deleteById(Integer id){
+        if(!petshopRepository.existsById(id)){
+            throw new ResponseStatusException(404, "Petshop não encontrado", null);
+        }
+
+        petshopRepository.deleteById(id);
+    }
+
+    public UsuarioPetshopDto updatePetshop(Integer idPetshop, UsuarioPetshopDto usuarioPetshopDto){
+        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        UsuarioPetshop petshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, petshop);
+        petshopRepository.save(petshopAtt);
+
+        return UsuarioMapper.ofPetshopDto(petshopAtt);
+    }
+
+    public ServicoRespostaDto atualizarServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
+        Servico servico = servicoRepository.findById(idServico).orElseThrow(
+                () -> new ResponseStatusException(404, "Serviço não encontrado", null)
+        );
+
+        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        // Observer
+        if (servico.getPreco() > servicoAtt.getPreco()) {
+            for (int i = 0; i < petshop.getInscritos().size(); i++) {
+                petshop.atualiza(enviador, petshop.getInscritos().get(i).getFkCliente().getEmail(),
+                        petshop.getEmail(), servicoAtt.getPreco()); // Chamada do método de atualização na
+                // entidade observada (publisher)
+            }
+        }
+        // Observer
+
+        servico.setNome(NomeServico.valueOf(servicoAtt.getNome()));
+        servico.setPreco(servicoAtt.getPreco());
+        servico.setDescricao(servicoAtt.getDescricao());
+        servicoRepository.save(servico);
+
+        return ServicoMapper.ofServicoRespostaDto(servico);
+    }
+
+//    public void gerarRelatorioCsv(int id){
+//        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
+//
+//        if (as.isEmpty()){
+//            throw new RuntimeException("Petshop não possui agendamentos");
+//        }
+//
+//        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
+//
+//        for (int i = 0; i < as.size(); i++) {
+//            listaLocal.adiciona(as.get(i));
+//        }
+//        GeradorCsv.gravaArquivoCsv(listaLocal);
+//    }
 
 }

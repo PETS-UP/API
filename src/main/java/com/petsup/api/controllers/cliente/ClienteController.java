@@ -31,19 +31,19 @@ import java.util.List;
 import java.util.Optional;
 
 /*
-POST:   /clientes
-POST:   /clientes/login
-GET:    /clientes
-GET:    /clientes/{idCliente}
-GET:    /clientes/busca-email/{email}
-PATCH:  /clientes/{idCliente}
-DELETE: /clientes
-POST:   /clientes/avaliar/{idCliente}/{idPetshop}
-GET:    /clientes/avaliar/{idCliente}/{idPetshop}
-GET:    /clientes/ordenar-media-avaliacao
-GET:    /clientes/ordenar-media-preco
-PATCH:  /clientes/latitude-longitude/{idCliente}/{latitude}/{longitude}
-GET:    /clientes/petshops-proximos/{idCliente}
+ POST:   /clientes
+ POST:   /clientes/login
+ GET:    /clientes
+ GET:    /clientes/{idCliente}
+ GET:    /clientes/busca-email/{email}
+ PATCH:  /clientes/{idCliente}
+ DELETE: /clientes
+ POST:   /clientes/avaliar/{idCliente}/{idPetshop}
+ GET:    /clientes/avaliar/{idCliente}/{idPetshop}
+ GET:    /clientes/ordenar-media-avaliacao
+ GET:    /clientes/ordenar-media-preco
+ PATCH:  /clientes/latitude-longitude/{idCliente}/{latitude}/{longitude}
+ GET:    /clientes/petshops-proximos/{idCliente}
 */
 
 
@@ -88,7 +88,7 @@ public class ClienteController {
     public ResponseEntity<List<UsuarioClienteDto>> getClientes() {
         List<UsuarioClienteDto> usuarioClienteDtos = this.clienteService.buscarClientes();
 
-        if (usuarioClienteDtos.isEmpty()) {
+        if (usuarioClienteDtos.isEmpty() || usuarioClienteDtos == null) {
             return ResponseEntity.status(204).body(usuarioClienteDtos);
         }
 
@@ -129,13 +129,18 @@ public class ClienteController {
     @PatchMapping("/{idCliente}")
     public ResponseEntity<UsuarioClienteDto> updateById(@RequestBody UsuarioClienteDto usuarioDto,
                                                         @PathVariable Integer idCliente) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+//        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+//
+//        if (clienteOptional.isEmpty()) {
+//            return ResponseEntity.notFound().build();
+//        }
 
-        if (clienteOptional.isEmpty()) {
+        UsuarioClienteDto usuarioClienteDto = clienteService.atualizarClientePorId(usuarioDto, idCliente);
+        if (usuarioClienteDto == null){
             return ResponseEntity.notFound().build();
         }
 
-        return ResponseEntity.ok(clienteService.atualizarClientePorId(usuarioDto, idCliente));
+        return ResponseEntity.ok(usuarioClienteDto);
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
@@ -199,7 +204,7 @@ public class ClienteController {
     public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsPorMedia() {
         List<PetshopAvaliacaoDto> avaliacoes = petshopRepository.ordenarMediaAvaliacao();
 
-        if (avaliacoes.isEmpty()) {
+        if (avaliacoes.isEmpty() || avaliacoes == null) {
             return ResponseEntity.noContent().build();
         }
 
@@ -210,7 +215,7 @@ public class ClienteController {
     public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsPorMenorPreco() {
         List<PetshopMediaPrecoDto> petshops = petshopRepository.ordenarPorPreco();
 
-        if (petshops.isEmpty()) {
+        if (petshops.isEmpty() || petshops == null) {
             return ResponseEntity.noContent().build();
         }
 
@@ -222,7 +227,7 @@ public class ClienteController {
                                                        @PathVariable double longitude) {
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
 
-        if (clienteOptional.isEmpty()) {
+        if (clienteOptional.isEmpty() || clienteOptional == null) {
             return ResponseEntity.notFound().build();
         }
 
@@ -243,7 +248,7 @@ public class ClienteController {
 
         List<UsuarioPetshopDto> usuarioPetshopDtos = clienteService.retornaPetshopsNoBairroDoCliente(clienteOptional);
 
-        if (usuarioPetshopDtos.isEmpty()){
+        if (usuarioPetshopDtos.isEmpty() || usuarioPetshopDtos == null){
             return ResponseEntity.noContent().build();
         }
 

@@ -8,6 +8,8 @@ import com.petsup.api.models.petshop.UsuarioPetshop;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 
+import java.util.List;
+
 public class UsuarioMapper {
 
     public static Usuario ofCliente(UsuarioClienteDto usuarioCriacaoDto) {
@@ -167,5 +169,19 @@ public class UsuarioMapper {
         usuario.setLongitude(longitude);
 
         return usuario;
+    }
+
+    public static List<UsuarioPetshopDto> ofListUsuarioPetshopDto(List<UsuarioPetshop> petshops){
+        List<UsuarioPetshopDto> usuarioPetshopDtos = petshops.stream().map(
+                UsuarioMapper::ofPetshopDto).toList();
+
+        return usuarioPetshopDtos;
+    }
+
+    public static List<UsuarioClienteDto> ofListUsuarioClienteDto(List<UsuarioCliente> usuarios){
+        List<UsuarioClienteDto> usuarioClienteDtos = usuarios.stream().map(
+                UsuarioMapper::ofClienteDto).toList();
+
+        return usuarioClienteDtos;
     }
 }

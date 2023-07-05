@@ -1,29 +1,29 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoDto;
+import com.petsup.api.dto.authentication.PetshopLoginDto;
+import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
-import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.mapper.UsuarioMapper;
 import com.petsup.api.models.Agendamento;
+import com.petsup.api.models.Usuario;
 import com.petsup.api.models.cliente.ClienteSubscriber;
+import com.petsup.api.models.cliente.UsuarioCliente;
 import com.petsup.api.models.enums.NomeServico;
+import com.petsup.api.models.petshop.Servico;
+import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
-import com.petsup.api.util.ListaObj;
-import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.Usuario;
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
-import com.petsup.api.repositories.*;
+import com.petsup.api.services.PetshopService;
 import com.petsup.api.services.UsuarioService;
-import com.petsup.api.dto.authentication.PetshopLoginDto;
-import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
+import com.petsup.api.util.ListaObj;
 import io.swagger.v3.oas.annotations.media.Content;
 import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -31,6 +31,8 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -39,8 +41,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.*;
-import java.util.ArrayList;
+import java.io.File;
+import java.io.FileNotFoundException;
 import java.util.List;
 import java.util.Optional;
 
@@ -64,6 +66,9 @@ public class PetshopController {
     private UsuarioService usuarioService;
 
     @Autowired
+    private PetshopService petshopService;
+
+    @Autowired
     private ClienteRepository clienteRepository;
 
     @Autowired
@@ -78,15 +83,16 @@ public class PetshopController {
     @ApiResponse(responseCode = "201", description =
             "Petshop cadastrado com sucesso.", content = @Content(schema = @Schema(hidden = true)))
     public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto) {
-        this.usuarioService.criarPetshop(usuarioDto);
+        this.petshopService.criarPetshop(usuarioDto);
+
         return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<PetshopTokenDto> login(@RequestBody PetshopLoginDto usuarioLoginDto) {
-        PetshopTokenDto usuarioTokenDto = this.usuarioService.autenticarPetshop(usuarioLoginDto);
+        PetshopTokenDto usuarioTokenDto = this.petshopService.autenticarPetshop(usuarioLoginDto);
 
-        return ResponseEntity.status(200).body(usuarioTokenDto);
+        return ResponseEntity.ok(usuarioTokenDto);
     }
 
     @GetMapping
@@ -94,27 +100,21 @@ public class PetshopController {
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
     public ResponseEntity<List<UsuarioPetshopDto>> getPetshops() {
-        List<UsuarioPetshop> usuarios = this.petshopRepository.findAll();
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+        List<UsuarioPetshopDto> petshopsDto = petshopService.listarPetshops();
 
-        for (UsuarioPetshop petshop : usuarios) {
-            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshop));
+        if (petshopsDto.isEmpty()) {
+            return ResponseEntity.noContent().build();
         }
 
-        return petshopsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petshopsDto);
+        return ResponseEntity.ok(petshopsDto);
     }
 
     @GetMapping("/busca/nome")
     public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
-        List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+        List<UsuarioPetshopDto> petshopsDto = petshopService.listarPetshopsPorNome(nome);
 
-        if (petshops.isEmpty()) {
+        if (petshopsDto.isEmpty()) {
             return ResponseEntity.noContent().build();
-        }
-
-        for (UsuarioPetshop usuarioPetshop : petshops) {
-            petshopsDto.add(UsuarioMapper.ofPetshopDto(usuarioPetshop));
         }
 
         return ResponseEntity.ok(petshopsDto);
@@ -124,131 +124,66 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshopDto> getUserById(@PathVariable Integer id) {
-        return ResponseEntity.ok().body(UsuarioMapper.ofPetshopDto(petshopRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado"))
-        ));
+    public ResponseEntity<UsuarioPetshopDto> getPetshopById(@PathVariable Integer id) {
+        return ResponseEntity.ok(petshopService.getPetshopById(id));
     }
 
     @GetMapping("/busca-email/{email}")
-    @ApiResponse(responseCode = "204", description =
-            "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "204", description = "Petshops não encontrado.",
+            content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshop> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(this.petshopRepository.findByEmail(email).orElseThrow(
-                () -> new RuntimeException("Cliente não encontrado")
-        ));
+    public ResponseEntity<UsuarioPetshopDto> getPetshopByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(petshopService.getPetshopByEmail(email));
     }
 
     @DeleteMapping
     @ApiResponse(responseCode = "204", description = "Petshop deletado.")
+    @ApiResponse(responseCode = "404", description = "Petshop não encontrado.")
     public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
-        this.petshopRepository.deleteById(id);
-        return ResponseEntity.status(204).build();
+        petshopService.deleteById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     @PatchMapping("/{id}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
-    public ResponseEntity<Usuario> update(@PathVariable Integer id, @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
-        UsuarioPetshop usuarioPetshop = petshopRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Petshop não encontrado"));
-
-        UsuarioPetshop usuarioPetshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, usuarioPetshop);
-        petshopRepository.save(usuarioPetshopAtt);
-        return ResponseEntity.ok(usuarioPetshopAtt);
+    public ResponseEntity<UsuarioPetshopDto> updatePetshop(@PathVariable Integer idPetshop,
+                                                           @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
+        return ResponseEntity.ok(petshopService.updatePetshop(idPetshop, usuarioPetshopDto));
     }
 
     // Método para atualizar preços fica na controller
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
     @PatchMapping("/atualizar/servico")
-    public ResponseEntity<ServicoDto> updateServico(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
-                                                    @RequestParam Integer idPetshop) {
-        Optional<Servico> servicoOptional = servicoRepository.findById(idServico);
-        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-        //Optional<ClienteSubscriber> clientePetshopSubscriberOptional =
-        //        clienteSubscriberRepository.findByFkPetshopId(idPetshop);
-
-        if (servicoOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        Servico servico = servicoOptional.get();
-        UsuarioPetshop petshop = petshopOptional.get();
-
-        // Observer
-        if (servico.getPreco() > servicoAtt.getPreco()) {
-            for (int i = 0; i < petshop.getInscritos().size(); i++) {
-                petshop.atualiza(enviador, petshop.getInscritos().get(i).getFkCliente().getEmail(),
-                        petshop.getEmail(), servicoAtt.getPreco()); // Chamada do método de atualização na
-                // entidade observada (publisher)
-            }
-        }
-        // Observer
-
-        servico.setNome(NomeServico.valueOf(servicoAtt.getNome()));
-        servico.setPreco(servicoAtt.getPreco());
-        servico.setDescricao(servicoAtt.getDescricao());
-        servicoRepository.save(servico);
-        return ResponseEntity.ok(servicoAtt);
+    public ResponseEntity<ServicoRespostaDto> updateServico(@RequestBody ServicoDto servicoAtt, @RequestParam Integer idServico,
+                                                            @RequestParam Integer idPetshop) {
+        return ResponseEntity.ok(petshopService.atualizarServico(servicoAtt, idServico, idPetshop));
     }
 
     //Crud fim
 
-    @GetMapping("/report/arquivo/csv/{id}")
-    @ApiResponse(responseCode = "201", description = "Relatório gravado em CSV.")
-    public ResponseEntity<Void> gerarReportCsv(@PathVariable int id) {
-        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
-
-        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
-
-        for (int i = 0; i < as.size(); i++) {
-            listaLocal.adiciona(as.get(i));
-        }
-        GeradorCsv.gravaArquivoCsv(listaLocal);
-        return ResponseEntity.status(201).build();
-    }
-
-//    @GetMapping("/report/arquivo/txt/{id}")
-//    @ApiResponse(responseCode = "201", description = "Relatório gravado em TXT.")
-//    public ResponseEntity<Resource> gerarReportTxt(@PathVariable int id) {
-//        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
-////
-//        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
-////
-//        for (int i = 0; i < as.size(); i++) {
-//            listaLocal.adiciona(as.get(i));
-//        }
-////        GeradorTxt.gravaArquivoTxt(listaLocal);
-////        return ResponseEntity.status(201).build();
-//
-//            String nomeArq = "agendamentos";
-//            byte[] encodedBytes;
-//            try {
-//                encodedBytes = Files.readAllBytes(GeradorTxt.gravaArquivoTxt(listaLocal, nomeArq).toPath());
-//            } catch (IOException e) {
-//                throw new RuntimeException(e);
-//            }
-//
-//            InputStream inputStream = new ByteArrayInputStream( new String(encodedBytes, StandardCharsets.UTF_8)
-//                    .getBytes(StandardCharsets.UTF_8));
-//
-//            Resource resource = new InputStreamResource(inputStream);
-//
-//            HttpHeaders headers = new HttpHeaders();
-//            headers.setContentType(MediaType.APPLICATION_OCTET_STREAM);
-//            headers.setContentDispositionFormData("attachment", nomeArq);
-//
-//            return new ResponseEntity<>(resource, headers, HttpStatus.OK);
-//        }
+//    @GetMapping("/report/arquivo/csv/{id}")
+//    @ApiResponse(responseCode = "201", description = "Relatório gravado em CSV.")
+//    public ResponseEntity<Void> reportCsv(@PathVariable int id) {
+//        petshopService.gerarRelatorioCsv(id);
+//        return ResponseEntity.status(201).build();
+//    }
 
     @GetMapping("/download/csv/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
     public ResponseEntity<Resource> downloadCsv(@PathVariable int id) {
+        if (petshopRepository.findById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        if (list.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+
         //Transfere elementos de list para agendamentos
         for (int i = 0; i < list.size(); i++) {
             agendamentos.adiciona(list.get(i));
@@ -270,8 +205,17 @@ public class PetshopController {
     @GetMapping("/download/txt/{id}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
     public ResponseEntity<Resource> downloadTxt(@PathVariable int id) throws FileNotFoundException {
+        if (petshopRepository.findById(id).isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
         List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        if (list.isEmpty()){
+            return ResponseEntity.notFound().build();
+        }
+
         ListaObj<Agendamento> agendamentos = new ListaObj<>(list.size());
+
         //Transfere elementos de list para agendamentos
         for (int i = 0; i < list.size(); i++) {
             agendamentos.adiciona(list.get(i));
@@ -296,27 +240,22 @@ public class PetshopController {
     @PostMapping("/inscrever/{idPetshop}")
     public ResponseEntity<Void> subscribeToPetshop(@PathVariable Integer idPetshop, @RequestParam Integer idCliente) {
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-
         if (clienteOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Cliente não encontrado."
-            );
+            return ResponseEntity.notFound().build();
         }
 
+        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
         if (petshopOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND,
-                    "Pet shop não encontrado."
-            );
+            return ResponseEntity.notFound().build();
         }
 
         UsuarioCliente usuarioCliente = clienteOptional.get();
         UsuarioPetshop usuarioPetshop = petshopOptional.get();
+
         ClienteSubscriber inscrito = new ClienteSubscriber();
         inscrito.setFkCliente(usuarioCliente);
         inscrito.setFkPetshop(usuarioPetshop);
+
         clienteSubscriberRepository.save(inscrito);
 
         return ResponseEntity.status(201).build();
@@ -332,9 +271,7 @@ public class PetshopController {
         Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(usuario);
 
         if (usuarioPetshopOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
+            return ResponseEntity.notFound().build();
         }
 
         UsuarioPetshop usuarioPetshop = usuarioPetshopOptional.get();

@@ -9,17 +9,6 @@ import java.util.List;
 
 public class ServicoMapper {
 
-    public static ServicoDto ofServicoDto(Servico servico) {
-        ServicoDto servicoDto = new ServicoDto();
-
-        servicoDto.setId(servico.getId());
-        servicoDto.setNome(servico.getNome().toString());
-        servicoDto.setPreco(servico.getPreco());
-        servicoDto.setDescricao(servico.getDescricao());
-
-        return servicoDto;
-    }
-
     public static ServicoRespostaDto ofServicoRespostaDto(Servico servico) {
         ServicoRespostaDto servicoRespostaDto = new ServicoRespostaDto();
 
