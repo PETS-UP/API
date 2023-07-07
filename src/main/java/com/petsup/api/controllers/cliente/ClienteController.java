@@ -36,8 +36,6 @@ import java.util.List;
  GET:    /clientes/petshops-proximos/{idCliente}
 */
 
-
-
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
 @RequestMapping("/clientes")

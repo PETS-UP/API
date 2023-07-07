@@ -11,6 +11,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.util.List;
 
+/*
+ GET:    /dashboard/{idPetshop}/ultima-semana
+ GET:    /dashboard/{idPetshop}/dia-mais-movimentado
+ GET:    /dashboard/{idPetshop}/dia-menos-movimentado
+ GET:    /dashboard/{idPetshop}/renda-ultimos-meses
+ GET:    /dashboard/{idPetshop}/renda-este-mes
+ GET:    /dashboard/{idPetshop}/servico-mais-agendado
+*/
+
 @RestController
 @RequestMapping("/dashboard/{idPetshop}")
 public class DashboardController {
@@ -50,6 +59,4 @@ public class DashboardController {
     public ResponseEntity<String> getServicoMaisAgendadoMesAtual(@PathVariable Integer idPetshop){
         return ResponseEntity.ok(dashboardService.getServicoMaisAgendadoMesAtual(idPetshop));
     }
-//
-
 }

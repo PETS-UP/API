@@ -7,7 +7,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.nio.file.Path;
+/*
+ POST:   /arquivos/upload
+ GET:    /arquivos/download/{idArquivo}
+*/
 
 @RestController
 @RequestMapping("/arquivos")
@@ -21,10 +24,10 @@ public class ArquivoController { // Controller com endpoints para download e upl
         return ResponseEntity.status(200).body(arquivoService.upload(file));
     }
 
-    @GetMapping("/download/{id}")
-    public ResponseEntity<byte[]> download(@PathVariable Integer id){
+    @GetMapping("/download/{idArquivo}")
+    public ResponseEntity<byte[]> download(@PathVariable Integer idArquivo){
             return ResponseEntity.status(200).header("Content-Disposition",
-                            "attachment; filename=" + arquivoService.getNomeArquivoOriginal(id))
-                    .body(arquivoService.download(id));
+                            "attachment; filename=" + arquivoService.getNomeArquivoOriginal(idArquivo))
+                    .body(arquivoService.download(idArquivo));
     }
 }

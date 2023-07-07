@@ -54,8 +54,8 @@ public class ArquivoService {
         return String.format("%s_%s", UUID.randomUUID(), nomeOriginal);
     }
 
-    public byte[] download(Integer id) {
-        Arquivo arquivo = arquivoRepository.findById(id).orElseThrow(
+    public byte[] download(Integer idArquivo) {
+        Arquivo arquivo = arquivoRepository.findById(idArquivo).orElseThrow(
                 () -> new ResponseStatusException(404, "Arquivo não encontrado", null)
         );
 
@@ -75,8 +75,8 @@ public class ArquivoService {
         }
     }
 
-    public String getNomeArquivoOriginal(Integer id){
-        Arquivo arquivo = arquivoRepository.findById(id).orElseThrow(
+    public String getNomeArquivoOriginal(Integer idArquivo){
+        Arquivo arquivo = arquivoRepository.findById(idArquivo).orElseThrow(
                 () -> new ResponseStatusException(404, "Arquivo não encontrado", null)
         );
         return arquivo.getNomeArquivoOriginal();

@@ -23,6 +23,18 @@ import org.springframework.web.server.ResponseStatusException;
 import java.util.List;
 import java.util.Optional;
 
+/*
+ POST:   /pets
+ GET:    /pets
+ GET:    /pets/{idPet}
+ POST:   /pets/adicionar-pilha/{obj}
+ GET:    /pets/pop-pilha
+ POST:   /pets/limpa-pilha
+ POST:   /pets/cadastrar-pilha
+ POST:   /pets/upload
+ DELETE: /pets/{idPet}
+*/
+
 @Tag(name = "Pets", description = "Requisições relacionadas a pets.")
 @RestController
 @RequestMapping("/pets")
@@ -35,6 +47,50 @@ public class PetController {
     private ClienteRepository clienteRepository;
 
     private PilhaObj<String> pilhaObj = new PilhaObj<String>(3);
+
+
+    @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
+    @PostMapping
+    public ResponseEntity<Void> postPet(@RequestBody @Valid Pet pet, @RequestParam Integer idCliente) {
+        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
+
+        if (clienteOptional.isEmpty()){
+            throw new ResponseStatusException(
+                    HttpStatus.NOT_FOUND
+            );
+        }
+
+        UsuarioCliente cliente = clienteOptional.get();
+        pet.setFkCliente(cliente);
+        petRepository.save(pet);
+        return ResponseEntity.status(201).build();
+    }
+
+
+    @ApiResponse(responseCode = "200", description = "Retorna uma lista de pets atrelados ao cliente.")
+    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha pets cadastrados.")
+    @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
+    @GetMapping
+    public ResponseEntity<List<PetRespostaDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
+
+        if (clienteRepository.findById(idCliente).isPresent()) {
+            List<Pet> pets = petRepository.findByFkClienteId(idCliente);
+            List<PetRespostaDto> petsDto = PetMapper.ofListaPetRespostaDto(pets);
+
+            return petsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petsDto);
+        }
+        return ResponseEntity.status(404).build();
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @GetMapping("/{idPet}")
+    public ResponseEntity<PetRespostaDto> getPetById(@PathVariable Integer idPet) {
+        return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(idPet).orElseThrow(
+                () -> new RuntimeException("Pet não encontrado"))
+        ));
+    }
 
     @PostMapping("/adicionar-pilha/{obj}")
     public ResponseEntity<Void> adicionarNaPilha(@PathVariable String obj){
@@ -84,48 +140,6 @@ public class PetController {
         return ResponseEntity.status(201).build();
     }
 
-    @ApiResponse(responseCode = "201", description = "Pet cadastrado com sucesso.")
-    @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
-    @PostMapping
-    public ResponseEntity<Void> postPet(@RequestBody @Valid Pet pet, @RequestParam Integer idCliente) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-
-        if (clienteOptional.isEmpty()){
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        UsuarioCliente cliente = clienteOptional.get();
-        pet.setFkCliente(cliente);
-        petRepository.save(pet);
-        return ResponseEntity.status(201).build();
-    }
-
-    @ApiResponse(responseCode = "200", description = "Retorna uma lista de pets atrelados ao cliente.")
-    @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o cliente não tenha pets cadastrados.")
-    @ApiResponse(responseCode = "404", description = "Cliente não encontrado")
-    @GetMapping
-    public ResponseEntity<List<PetRespostaDto>> getPetsByIdCliente(@RequestParam Integer idCliente) {
-
-        if (clienteRepository.findById(idCliente).isPresent()) {
-            List<Pet> pets = petRepository.findByFkClienteId(idCliente);
-            List<PetRespostaDto> petsDto = PetMapper.ofListaPetRespostaDto(pets);
-
-            return petsDto.isEmpty() ? ResponseEntity.status(204).build() : ResponseEntity.status(200).body(petsDto);
-        }
-        return ResponseEntity.status(404).build();
-    }
-
-    @ApiResponse(responseCode = "200", description = "Retorna o pet a partir do id.")
-    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @GetMapping("/{id}")
-    public ResponseEntity<PetRespostaDto> getPetById(@PathVariable Integer id) {
-        return ResponseEntity.ok(PetMapper.ofPetRespostaDto(petRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Pet não encontrado"))
-        ));
-    }
-
     @PostMapping("/upload")
     public ResponseEntity<Void> uploadByTxt(@RequestParam("arquivo") MultipartFile arquivo, @RequestParam Integer idCliente){
         Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
@@ -147,10 +161,10 @@ public class PetController {
         }
     }
 
-    @DeleteMapping("/{id}")
-    public ResponseEntity<Void> deletarById(@PathVariable Integer id){
-        if(petRepository.findById(id).isPresent()){
-            petRepository.deleteById(id);
+    @DeleteMapping("/{idPet}")
+    public ResponseEntity<Void> deletarById(@PathVariable Integer idPet){
+        if(petRepository.findById(idPet).isPresent()){
+            petRepository.deleteById(idPet);
             return ResponseEntity.status(204).build();
         }
         return ResponseEntity.status(404).build();
