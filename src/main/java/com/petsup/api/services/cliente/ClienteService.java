@@ -132,7 +132,16 @@ public class ClienteService {
         return usuarioClienteDto;
     }
 
-    public AvaliacaoPetshop postAvaliacao(AvaliacaoPetshop avl, int idCliente, int idPetshop) {
+    public void deleteById(Integer idCliente) {
+        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        );
+
+        this.clienteRepository.deleteById(idCliente);
+    }
+
+
+        public AvaliacaoPetshop postAvaliacao(AvaliacaoPetshop avl, int idCliente, int idPetshop) {
         UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );

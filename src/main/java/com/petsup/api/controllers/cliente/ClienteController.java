@@ -113,14 +113,7 @@ public class ClienteController {
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @DeleteMapping("/{idCliente}")
     public ResponseEntity<Void> deleteById(@PathVariable Integer idCliente) {
-        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findById(idCliente);
-
-        if (usuarioClienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            this.clienteRepository.deleteById(idCliente);
-        }
-
+        clienteService.deleteById(idCliente);
         return ResponseEntity.noContent().build();
     }
 
