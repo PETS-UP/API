@@ -1,8 +1,7 @@
-package com.petsup.api.services;
+package com.petsup.api.services.petshop;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AgendamentoDto;
-import com.petsup.api.dto.authentication.PetshopDeatlhesDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -24,14 +23,8 @@ import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
-import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,10 +34,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 
@@ -82,7 +72,7 @@ public class PetshopService {
     @Autowired
     private JavaMailSender enviador;
 
-    public void criarPetshop(UsuarioPetshopDto usuarioDto) {
+    public void postPetshop(UsuarioPetshopDto usuarioDto) {
         final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
 
         String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
@@ -91,7 +81,7 @@ public class PetshopService {
         this.usuarioRepository.save(novoUsuario);
     }
 
-    public PetshopTokenDto autenticarPetshop(PetshopLoginDto usuarioLoginDto) {
+    public PetshopTokenDto authenticatePetshop(PetshopLoginDto usuarioLoginDto) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuarioLoginDto.getEmail(), usuarioLoginDto.getSenha());
@@ -111,7 +101,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
     }
 
-    public List<UsuarioPetshopDto> listarPetshops(){
+    public List<UsuarioPetshopDto> listPetshops(){
         List<UsuarioPetshop> petshops = this.petshopRepository.findAll();
 
         return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
@@ -125,7 +115,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshopDto(petshop);
     }
 
-    public List<UsuarioPetshopDto> listarPetshopsPorNome(String nome){
+    public List<UsuarioPetshopDto> listPetshopsByNome(String nome){
         List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
 
         return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
@@ -158,7 +148,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshopDto(petshopAtt);
     }
 
-    public ServicoRespostaDto atualizarServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
+    public ServicoRespostaDto updateServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
         Servico servico = servicoRepository.findById(idServico).orElseThrow(
                 () -> new ResponseStatusException(404, "Serviço não encontrado", null)
         );

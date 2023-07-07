@@ -29,8 +29,8 @@ class UsuarioServiceTest {
 //        UsuarioCliente usuarioClienteEsperado = UsuarioClienteBuilder.buildUsuarioCliente();
 //
 //        when(usuarioRepository.save(any())).thenReturn(usuarioClienteEsperado);
-//        doNothing().when(usuarioService).criarCliente(UsuarioClienteBuilder.buildUsuarioClienteDto());
+//        doNothing().when(usuarioService).postCliente(UsuarioClienteBuilder.buildUsuarioClienteDto());
 //
-//        verify(usuarioService, times(1)).criarCliente(UsuarioClienteBuilder.buildUsuarioClienteDto());
+//        verify(usuarioService, times(1)).postCliente(UsuarioClienteBuilder.buildUsuarioClienteDto());
 //    }
 }

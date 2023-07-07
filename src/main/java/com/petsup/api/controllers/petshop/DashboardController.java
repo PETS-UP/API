@@ -1,7 +1,7 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.repositories.AgendamentoRepository;
-import com.petsup.api.services.DashboardService;
+import com.petsup.api.services.petshop.DashboardService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
