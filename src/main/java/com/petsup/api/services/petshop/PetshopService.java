@@ -129,7 +129,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshopDto(petshop);
     }
 
-    public void deleteById(Integer id){
+    public void deletePetshopById(Integer id){
         if(!petshopRepository.existsById(id)){
             throw new ResponseStatusException(404, "Petshop não encontrado", null);
         }

@@ -7,12 +7,7 @@ import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.UsuarioClienteDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
-import com.petsup.api.mapper.UsuarioMapper;
 import com.petsup.api.models.AvaliacaoPetshop;
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.repositories.AvaliacaoRepository;
-import com.petsup.api.repositories.cliente.ClienteRepository;
-import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.services.cliente.ClienteService;
 import com.petsup.api.services.GeocodingService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -24,7 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 /*
  POST:   /clientes
@@ -33,7 +27,7 @@ import java.util.Optional;
  GET:    /clientes/{idCliente}
  GET:    /clientes/busca-email/{email}
  PATCH:  /clientes/{idCliente}
- DELETE: /clientes
+ DELETE: /clientes/{idCliente}
  POST:   /clientes/avaliar/{idCliente}/{idPetshop}
  GET:    /clientes/avaliar/{idCliente}/{idPetshop}
  GET:    /clientes/ordenar-media-avaliacao
@@ -48,20 +42,12 @@ import java.util.Optional;
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private PetshopRepository petshopRepository;
 
     @Autowired
     private ClienteService clienteService;
 
     @Autowired
     private GeocodingService geocodingService;
-
-    @Autowired
-    private AvaliacaoRepository avaliacaoRepository;
 
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso.")
     @SecurityRequirement(name = "Bearer")

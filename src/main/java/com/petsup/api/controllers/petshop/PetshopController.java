@@ -8,10 +8,7 @@ import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.repositories.AgendamentoRepository;
-import com.petsup.api.repositories.cliente.ClienteRepository;
-import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
-import com.petsup.api.repositories.petshop.ServicoRepository;
 import com.petsup.api.services.petshop.PetshopService;
 import com.petsup.api.services.UsuarioService;
 import com.petsup.api.util.GeradorCsv;
@@ -36,6 +33,22 @@ import java.io.File;
 import java.io.FileNotFoundException;
 import java.util.List;
 
+/*
+ POST:   /petshops
+ POST:   /petshops/login
+ GET:    /petshops
+ GET:    /petshops/{idPetshop}
+ GET:    /petshops/busca/nome
+ GET:    /petshops/busca-email/{email}
+ PATCH:  /petshops/{idPetshop}
+ DELETE: /petshops/{idPetshop}
+ PATCH:  /petshops/atualizar/servico
+ GET:    /petshops/download/csv/{idPetshop}
+ GET:    /petshops/download/txt/{idPetshop}
+ POST:   /petshops/inscrever/{idPetshop}
+ GET:    /petshops/report/{idPetshop}
+*/
+
 @Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
 @RestController
 @RequestMapping("/petshops")
@@ -48,19 +61,10 @@ public class PetshopController {
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
-    private ServicoRepository servicoRepository;
-
-    @Autowired
     private UsuarioService usuarioService;
 
     @Autowired
     private PetshopService petshopService;
-
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private ClienteSubscriberRepository clienteSubscriberRepository;
 
     @Autowired
     private JavaMailSender enviador;
@@ -97,6 +101,14 @@ public class PetshopController {
         return ResponseEntity.ok(petshopsDto);
     }
 
+    @GetMapping("/{idPetshop}")
+    @ApiResponse(responseCode = "204", description =
+            "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
+    @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
+    public ResponseEntity<UsuarioPetshopDto> getPetshopById(@PathVariable Integer idPetshop) {
+        return ResponseEntity.ok(petshopService.getPetshopById(idPetshop));
+    }
+
     @GetMapping("/busca/nome")
     public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
         List<UsuarioPetshopDto> petshopsDto = petshopService.listPetshopsByNome(nome);
@@ -108,14 +120,6 @@ public class PetshopController {
         return ResponseEntity.ok(petshopsDto);
     }
 
-    @GetMapping("/{id}")
-    @ApiResponse(responseCode = "204", description =
-            "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
-    @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshopDto> getPetshopById(@PathVariable Integer id) {
-        return ResponseEntity.ok(petshopService.getPetshopById(id));
-    }
-
     @GetMapping("/busca-email/{email}")
     @ApiResponse(responseCode = "204", description = "Petshops não encontrado.",
             content = @Content(schema = @Schema(hidden = true)))
@@ -124,20 +128,20 @@ public class PetshopController {
         return ResponseEntity.ok(petshopService.getPetshopByEmail(email));
     }
 
-    @DeleteMapping
-    @ApiResponse(responseCode = "204", description = "Petshop deletado.")
-    @ApiResponse(responseCode = "404", description = "Petshop não encontrado.")
-    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
-        petshopService.deleteById(id);
-
-        return ResponseEntity.noContent().build();
-    }
-
-    @PatchMapping("/{id}")
+    @PatchMapping("/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
     public ResponseEntity<UsuarioPetshopDto> updatePetshop(@PathVariable Integer idPetshop,
                                                            @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
         return ResponseEntity.ok(petshopService.updatePetshop(idPetshop, usuarioPetshopDto));
+    }
+
+    @DeleteMapping
+    @ApiResponse(responseCode = "204", description = "Petshop deletado.")
+    @ApiResponse(responseCode = "404", description = "Petshop não encontrado.")
+    public ResponseEntity<Void> deletePetshopById(@PathVariable Integer id) {
+        petshopService.deletePetshopById(id);
+
+        return ResponseEntity.noContent().build();
     }
 
     // Método para atualizar preços fica na controller
@@ -159,14 +163,14 @@ public class PetshopController {
 //        return ResponseEntity.status(201).build();
 //    }
 
-    @GetMapping("/download/csv/{id}")
+    @GetMapping("/download/csv/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
-    public ResponseEntity<Resource> downloadCsv(@PathVariable int id) {
-        if (petshopRepository.findById(id).isEmpty()){
+    public ResponseEntity<Resource> downloadCsv(@PathVariable int idPetshop) {
+        if (petshopRepository.findById(idPetshop).isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(idPetshop);
         if (list.isEmpty()){
             return ResponseEntity.notFound().build();
         }
@@ -191,14 +195,14 @@ public class PetshopController {
                 .body(resource);
     }
 
-    @GetMapping("/download/txt/{id}")
+    @GetMapping("/download/txt/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
-    public ResponseEntity<Resource> downloadTxt(@PathVariable int id) throws FileNotFoundException {
-        if (petshopRepository.findById(id).isEmpty()){
+    public ResponseEntity<Resource> downloadTxt(@PathVariable int idPetshop) throws FileNotFoundException {
+        if (petshopRepository.findById(idPetshop).isEmpty()){
             return ResponseEntity.notFound().build();
         }
 
-        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(id);
+        List<Agendamento> list = agendamentoRepository.findByFkPetshopId(idPetshop);
         if (list.isEmpty()){
             return ResponseEntity.notFound().build();
         }
@@ -232,7 +236,7 @@ public class PetshopController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/report/{usuario}")
+    @GetMapping("/report/{idPetshop}")
     @ApiResponse(responseCode = "204", description =
             "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
