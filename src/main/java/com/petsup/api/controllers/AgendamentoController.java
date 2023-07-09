@@ -71,59 +71,27 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
     @GetMapping("/report/agendamento/{usuario}")
     public ResponseEntity<AgendamentoRespostaDto> findAgendamentoByData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
-
-        List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(usuario);
-        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
-        Optional<AgendamentoDto> agendamentoDtoOptional = pesquisaBinaria(listaLocal, dataHora);
-
-        if (agendamentoDtoOptional.isPresent()) {
-            return ResponseEntity.status(200).body(agendamentoDtoOptional.get());
-        }
-        return ResponseEntity.status(404).build();
+        AgendamentoRespostaDto agendamento = agendamentoService.findAgendamentoByData(dataHora, usuario);
+        return ResponseEntity.ok(agendamento);
     }
 
     @GetMapping("/report/dia/{idPetshop}")
-    public ResponseEntity<List<AgendamentoDto>> encontrarAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
-                                                                             @PathVariable Integer idPetshop){
+    public ResponseEntity<List<AgendamentoRespostaDto>> findAgendamentosDoDia(@RequestParam LocalDateTime dataHora,
+                                                                              @PathVariable Integer idPetshop) {
+        List<AgendamentoRespostaDto> agendamentos = agendamentoService.findAgendamentosDoDia(dataHora, idPetshop);
 
-        Optional<UsuarioPetshop> usuarioPetshopOptional = petshopRepository.findById(idPetshop);
-
-        if (usuarioPetshopOptional.isEmpty()) {
-            throw new ResponseStatusException(
-                    HttpStatus.NOT_FOUND
-            );
-        }
-
-        // Define o início do dia (00:00:00)
-        LocalDateTime inicioDoDia = dataHora.with(LocalTime.MIN);
-
-        // Define o fim do dia (23:59:59)
-        LocalDateTime fimDoDia = dataHora.with(LocalTime.MAX);
-
-        List<Agendamento> listaAgendamentos = agendamentoRepository.findAllByFkPetshopIdAndDataHoraBetween(
-                idPetshop, inicioDoDia, fimDoDia
-        );
-
-        if (listaAgendamentos.isEmpty()){
+        if (agendamentos.isEmpty()) {
             return ResponseEntity.noContent().build();
-        }
-
-        List<AgendamentoDto> agendamentoDtos = new ArrayList<>();
-
-        for (int i = 0; i < listaAgendamentos.size(); i ++){
-            agendamentoDtos.add(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
-        }
-
-        return ResponseEntity.ok(agendamentoDtos);
+        }                                             
+        return ResponseEntity.ok(agendamentos);                           
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
     public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
-        return ResponseEntity.ok(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoRepository.findById(id).orElseThrow(
-                () -> new RuntimeException("Agendamento não encontrado"))
-        ));
+        AgendamentoRespostaDto agendamento = AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoService.findById(id));
+        return ResponseEntity.ok(agendamento);
     }
 
 //    @PostMapping("/upload")
