@@ -1,4 +1,4 @@
-package com.petsup.api.services;
+package com.petsup.api.services.petshop;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AgendamentoRespostaDto;
