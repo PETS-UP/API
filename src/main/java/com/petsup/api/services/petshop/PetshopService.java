@@ -217,5 +217,4 @@ public class PetshopService {
 
         return AgendamentoMapper.ofListaObjAgendamentoRespostaDto(listaLocal);
     }
-
 }

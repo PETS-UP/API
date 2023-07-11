@@ -1,4 +1,4 @@
-package com.petsup.api.services;
+package com.petsup.api.services.petshop;
 
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.repositories.AgendamentoRepository;

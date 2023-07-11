@@ -1,22 +1,14 @@
 package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.dto.AvaliacaoDto;
-import com.petsup.api.dto.DetalhesEnderecoDto;
 import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.UsuarioClienteDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
-import com.petsup.api.mapper.AvaliacaoMapper;
-import com.petsup.api.mapper.UsuarioMapper;
 import com.petsup.api.models.AvaliacaoPetshop;
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
-import com.petsup.api.repositories.AvaliacaoRepository;
-import com.petsup.api.repositories.cliente.ClienteRepository;
-import com.petsup.api.repositories.petshop.PetshopRepository;
-import com.petsup.api.services.ClienteService;
+import com.petsup.api.services.cliente.ClienteService;
 import com.petsup.api.services.GeocodingService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
@@ -26,9 +18,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 /*
  POST:   /clientes
@@ -37,7 +27,7 @@ import java.util.Optional;
  GET:    /clientes/{idCliente}
  GET:    /clientes/busca-email/{email}
  PATCH:  /clientes/{idCliente}
- DELETE: /clientes
+ DELETE: /clientes/{idCliente}
  POST:   /clientes/avaliar/{idCliente}/{idPetshop}
  GET:    /clientes/avaliar/{idCliente}/{idPetshop}
  GET:    /clientes/ordenar-media-avaliacao
@@ -46,17 +36,10 @@ import java.util.Optional;
  GET:    /clientes/petshops-proximos/{idCliente}
 */
 
-
-
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
 @RequestMapping("/clientes")
 public class ClienteController {
-    @Autowired
-    private ClienteRepository clienteRepository;
-
-    @Autowired
-    private PetshopRepository petshopRepository;
 
     @Autowired
     private ClienteService clienteService;
@@ -64,32 +47,27 @@ public class ClienteController {
     @Autowired
     private GeocodingService geocodingService;
 
-    @Autowired
-    private AvaliacaoRepository avaliacaoRepository;
-
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso.")
     @SecurityRequirement(name = "Bearer")
     @PostMapping
     public ResponseEntity<Void> postUserCliente(@RequestBody @Valid UsuarioClienteDto usuarioDto) {
-        this.clienteService.criarCliente(usuarioDto);
+        this.clienteService.postCliente(usuarioDto);
         return ResponseEntity.status(201).build();
     }
 
     @PostMapping("/login")
     public ResponseEntity<ClienteTokenDto> login(@RequestBody ClienteLoginDto usuarioLoginDto) {
-        ClienteTokenDto usuarioTokenDto = this.clienteService.autenticarCliente(usuarioLoginDto);
-
-        return ResponseEntity.ok().body(usuarioTokenDto);
+        return ResponseEntity.ok().body(clienteService.authenticateCliente(usuarioLoginDto));
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de clientes.")
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso não haja clientes cadastrados.")
     @GetMapping
     public ResponseEntity<List<UsuarioClienteDto>> getClientes() {
-        List<UsuarioClienteDto> usuarioClienteDtos = this.clienteService.buscarClientes();
+        List<UsuarioClienteDto> usuarioClienteDtos = clienteService.findClientes();
 
-        if (usuarioClienteDtos.isEmpty() || usuarioClienteDtos == null) {
-            return ResponseEntity.status(204).body(usuarioClienteDtos);
+        if (usuarioClienteDtos.isEmpty()) {
+            return ResponseEntity.status(204).build();
         }
 
         return ResponseEntity.ok(usuarioClienteDtos);
@@ -98,124 +76,61 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{idCliente}")
-    public ResponseEntity<UsuarioClienteDto> getUserById(@PathVariable Integer idCliente) {
-        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findById(idCliente);
-
-        if (usuarioClienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioClienteOptional.get());
-
-        return ResponseEntity.ok(usuarioClienteDto);
+    public ResponseEntity<UsuarioClienteDto> getClienteById(@PathVariable Integer idCliente) {
+        return ResponseEntity.ok(clienteService.getClienteById(idCliente));
     }
 
     @GetMapping("/busca-email/{email}")
     public ResponseEntity<UsuarioClienteDto> getUserByEmail(@PathVariable String email) {
-
-        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findByEmail(email);
-
-        if (usuarioClienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioClienteOptional.get());
-
-        return ResponseEntity.ok(usuarioClienteDto);
+        return ResponseEntity.ok(clienteService.getUserByEmail(email));
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @PatchMapping("/{idCliente}")
-    public ResponseEntity<UsuarioClienteDto> updateById(@RequestBody UsuarioClienteDto usuarioDto,
-                                                        @PathVariable Integer idCliente) {
-//        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-//
-//        if (clienteOptional.isEmpty()) {
-//            return ResponseEntity.notFound().build();
-//        }
-
-        UsuarioClienteDto usuarioClienteDto = clienteService.atualizarClientePorId(usuarioDto, idCliente);
-        if (usuarioClienteDto == null){
-            return ResponseEntity.notFound().build();
-        }
-
-        return ResponseEntity.ok(usuarioClienteDto);
+    public ResponseEntity<UsuarioClienteDto> updateClienteById(@RequestBody UsuarioClienteDto usuarioDto,
+                                                               @PathVariable Integer idCliente) {
+        return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @DeleteMapping("/{idCliente}")
     public ResponseEntity<Void> deleteById(@PathVariable Integer idCliente) {
-        Optional<UsuarioCliente> usuarioClienteOptional = clienteRepository.findById(idCliente);
-
-        if (usuarioClienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        } else {
-            this.clienteRepository.deleteById(idCliente);
-        }
-
+        clienteService.deleteById(idCliente);
         return ResponseEntity.noContent().build();
     }
 
     @PostMapping("/avaliar/{idCliente}/{idPetshop}")
-    public ResponseEntity<Void> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl,
-                                              @PathVariable int idCliente, @PathVariable int idPetshop) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-
-        if (clienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-        if (petshopOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        clienteService.avaliarPetshop(avl, clienteOptional.get(), petshopOptional.get());
+    public ResponseEntity<Void> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl, @PathVariable int idCliente,
+                                              @PathVariable int idPetshop) {
+        clienteService.postAvaliacao(avl, idCliente, idPetshop);
 
         return ResponseEntity.status(201).build();
     }
 
     @GetMapping("/avaliacao/{idCliente}/{idPetshop}")
-    public ResponseEntity<AvaliacaoDto> retornaAvaliacaoCliente(@PathVariable int idCliente,
-                                                                @PathVariable int idPetshop) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-        Optional<UsuarioPetshop> petshopOptional = petshopRepository.findById(idPetshop);
-
-        if (clienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        if (petshopOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        Optional<AvaliacaoPetshop> avaliacaoPetshop = avaliacaoRepository
-                .findByFkClienteIdAndFkPetshopId(idCliente, idPetshop);
-
-        if (avaliacaoPetshop.isEmpty()) {
-            return ResponseEntity.noContent().build();
-        }
-
-        return ResponseEntity.ok(AvaliacaoMapper.ofAvaliacaoDto(avaliacaoPetshop.get()));
+    public ResponseEntity<AvaliacaoDto> getAvaliacaoCliente(@PathVariable int idCliente,
+                                                            @PathVariable int idPetshop) {
+        return ResponseEntity.ok(clienteService.getAvaliacaoCliente(idCliente, idPetshop));
     }
 
     @GetMapping("/ordenar-media-avaliacao")
-    public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsPorMedia() {
-        List<PetshopAvaliacaoDto> avaliacoes = petshopRepository.ordenarMediaAvaliacao();
+    public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsOrderByMedia() {
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = clienteService.getPetshopsOrderByMedia();
 
-        if (avaliacoes.isEmpty() || avaliacoes == null) {
+        if (petshopAvaliacaoDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(avaliacoes);
+        return ResponseEntity.ok().body(petshopAvaliacaoDtos);
     }
 
     @GetMapping("/ordenar-media-preco")
-    public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsPorMenorPreco() {
-        List<PetshopMediaPrecoDto> petshops = petshopRepository.ordenarPorPreco();
+    public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsOrderByPrecoAsc() {
+        List<PetshopMediaPrecoDto> petshops = clienteService.getPetshopsOrderByPrecoAsc();
 
-        if (petshops.isEmpty() || petshops == null) {
+        if (petshops.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 
@@ -225,34 +140,20 @@ public class ClienteController {
     @PatchMapping("/latitude-longitude/{idCliente}/{latitude}/{longitude}")
     public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer idCliente, @PathVariable double latitude,
                                                        @PathVariable double longitude) {
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-
-        if (clienteOptional.isEmpty() || clienteOptional == null) {
-            return ResponseEntity.notFound().build();
-        }
-
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, clienteOptional.get());
-        clienteRepository.save(usuarioAtt);
+        clienteService.updateLocalizacaoAtual(idCliente, latitude, longitude);
 
         return ResponseEntity.noContent().build();
     }
 
     @GetMapping("/petshops-proximos/{idCliente}")
-    public ResponseEntity<List<UsuarioPetshopDto>> retornaPetshopsNoBairroDoCliente(@PathVariable Integer idCliente) {
+    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
+        List<UsuarioPetshopDto> usuarioPetshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
 
-        Optional<UsuarioCliente> clienteOptional = clienteRepository.findById(idCliente);
-
-        if (clienteOptional.isEmpty()) {
-            return ResponseEntity.notFound().build();
-        }
-
-        List<UsuarioPetshopDto> usuarioPetshopDtos = clienteService.retornaPetshopsNoBairroDoCliente(clienteOptional);
-
-        if (usuarioPetshopDtos.isEmpty() || usuarioPetshopDtos == null){
+        if (usuarioPetshopDtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok().body(usuarioPetshopDtos);
+        return ResponseEntity.ok(usuarioPetshopDtos);
     }
 
 // Método de teste API Maps
