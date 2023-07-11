@@ -1,6 +1,7 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoDto;
+import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -241,8 +242,8 @@ public class PetshopController {
             "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
     @ApiResponse(responseCode = "404", description = "Não há petshops com esse identificador.")
-    public ResponseEntity<ListaObj<AgendamentoDto>> orderAgendamentosByDate(@PathVariable Integer idPetshop) {
-        ListaObj<AgendamentoDto> agendamentoDtoListaObj = petshopService.orderAgendamentosByDate(idPetshop);
+    public ResponseEntity<ListaObj<AgendamentoRespostaDto>> orderAgendamentosByDate(@PathVariable Integer idPetshop) {
+        ListaObj<AgendamentoRespostaDto> agendamentoDtoListaObj = petshopService.orderAgendamentosByDate(idPetshop);
 
         if (agendamentoDtoListaObj.getTamanho() == 0){
             return ResponseEntity.noContent().build();

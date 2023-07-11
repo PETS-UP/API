@@ -1,7 +1,7 @@
 package com.petsup.api.util;
 
 import com.petsup.api.models.Agendamento;
-import com.petsup.api.dto.AgendamentoDto;
+import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.mapper.AgendamentoMapper;
 
 import java.time.LocalDateTime;
@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public class OrdenacaoAgendametos {
 
-    public static Optional<AgendamentoDto> pesquisaBinaria(ListaObj<AgendamentoDto> agendamentos, LocalDateTime dataHoraAgendamento) {
+    public static Optional<AgendamentoRespostaDto> pesquisaBinaria(ListaObj<Agendamento> agendamentos, LocalDateTime dataHoraAgendamento) {
         int inicio = 0;
         int fim = agendamentos.getTamanho() - 1;
-        Optional<AgendamentoDto> agendamentoDtoOptional;
+        Optional<AgendamentoRespostaDto> agendamentoOptional;
 
         do {
             int meio = (inicio + fim) / 2;
             if (dataHoraAgendamento.isEqual(agendamentos.getElemento(meio).getDataHora())) {
-                agendamentoDtoOptional = Optional.of(agendamentos.getElemento(meio));
-                return agendamentoDtoOptional;
+                agendamentoOptional = Optional.of(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentos.getElemento(meio)));
+                return agendamentoOptional;
             } else {
                 if (dataHoraAgendamento.isAfter(agendamentos.getElemento(meio).getDataHora())) {
                     inicio = meio + 1;
@@ -31,12 +31,12 @@ public class OrdenacaoAgendametos {
         return Optional.empty();
     }
 
-    public static ListaObj<AgendamentoDto> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
+    public static ListaObj<Agendamento> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
 
-        ListaObj<AgendamentoDto> listaLocal = new ListaObj(listaAgendamentos.size());
+        ListaObj<Agendamento> listaLocal = new ListaObj(listaAgendamentos.size());
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-            listaLocal.adiciona(AgendamentoMapper.ofAgendamentoDto(listaAgendamentos.get(i)));
+            listaLocal.adiciona(listaAgendamentos.get(i));
         }
 
         int i, j, indMenor;
@@ -47,7 +47,7 @@ public class OrdenacaoAgendametos {
                     indMenor = j;
                 }
             }
-            AgendamentoDto ag = listaLocal.getElemento(indMenor);
+            Agendamento ag = listaLocal.getElemento(indMenor);
             //ag = listaLocal.getElemento(i);
             listaLocal.removeDeixaNulo(indMenor);
             listaLocal.adicionaNoNulo(indMenor, listaLocal.getElemento(i));
