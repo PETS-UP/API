@@ -10,16 +10,16 @@ import java.util.Optional;
 
 public class OrdenacaoAgendametos {
 
-    public static Optional<AgendamentoRespostaDto> pesquisaBinaria(ListaObj<AgendamentoRespostaDto> agendamentos, LocalDateTime dataHoraAgendamento) {
+    public static Optional<AgendamentoRespostaDto> pesquisaBinaria(ListaObj<Agendamento> agendamentos, LocalDateTime dataHoraAgendamento) {
         int inicio = 0;
         int fim = agendamentos.getTamanho() - 1;
-        Optional<AgendamentoRespostaDto> agendamentoRespostaDtoOptional;
+        Optional<AgendamentoRespostaDto> agendamentoOptional;
 
         do {
             int meio = (inicio + fim) / 2;
             if (dataHoraAgendamento.isEqual(agendamentos.getElemento(meio).getDataHora())) {
-                agendamentoRespostaDtoOptional = Optional.of(agendamentos.getElemento(meio));
-                return agendamentoRespostaDtoOptional;
+                agendamentoOptional = Optional.of(AgendamentoMapper.ofAgendamentoRespostaDto(agendamentos.getElemento(meio)));
+                return agendamentoOptional;
             } else {
                 if (dataHoraAgendamento.isAfter(agendamentos.getElemento(meio).getDataHora())) {
                     inicio = meio + 1;
@@ -31,12 +31,12 @@ public class OrdenacaoAgendametos {
         return Optional.empty();
     }
 
-    public static ListaObj<AgendamentoRespostaDto> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
+    public static ListaObj<Agendamento> ordenaListaAgendamento(List<Agendamento> listaAgendamentos) {
 
-        ListaObj<AgendamentoRespostaDto> listaLocal = new ListaObj(listaAgendamentos.size());
+        ListaObj<Agendamento> listaLocal = new ListaObj(listaAgendamentos.size());
 
         for (int i = 0; i < listaAgendamentos.size(); i++) {
-            listaLocal.adiciona(AgendamentoMapper.ofAgendamentoRespostaDto(listaAgendamentos.get(i)));
+            listaLocal.adiciona(listaAgendamentos.get(i));
         }
 
         int i, j, indMenor;
@@ -47,7 +47,7 @@ public class OrdenacaoAgendametos {
                     indMenor = j;
                 }
             }
-            AgendamentoRespostaDto ag = listaLocal.getElemento(indMenor);
+            Agendamento ag = listaLocal.getElemento(indMenor);
             //ag = listaLocal.getElemento(i);
             listaLocal.removeDeixaNulo(indMenor);
             listaLocal.adicionaNoNulo(indMenor, listaLocal.getElemento(i));

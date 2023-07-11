@@ -1,28 +1,15 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.models.Agendamento;
-import com.petsup.api.models.petshop.UsuarioPetshop;
-import com.petsup.api.dto.AgendamentoDto;
-import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.services.AgendamentoService;
-import com.petsup.api.util.ListaObj;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.server.ResponseStatusException;
 import java.time.LocalDateTime;
 
-import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
-
-import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
-import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
 
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
@@ -90,7 +77,7 @@ public class AgendamentoController {
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{id}")
     public ResponseEntity<AgendamentoRespostaDto> getAgendamentoById(@PathVariable Integer id) {
-        AgendamentoRespostaDto agendamento = AgendamentoMapper.ofAgendamentoRespostaDto(agendamentoService.findById(id));
+        AgendamentoRespostaDto agendamento = agendamentoService.getAgendamentoById(id);
         return ResponseEntity.ok(agendamento);
     }
 

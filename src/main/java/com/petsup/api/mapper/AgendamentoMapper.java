@@ -3,6 +3,7 @@ package com.petsup.api.mapper;
 import com.petsup.api.dto.AgendamentoDto;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.models.Agendamento;
+import com.petsup.api.util.ListaObj;
 
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -48,7 +49,15 @@ public class AgendamentoMapper {
         for (int i = 0; i < agendamentos.size(); i++) {
             listaAgendamentosDto.add(ofAgendamentoRespostaDto(agendamentos.get(i)));
         }
-
         return listaAgendamentosDto;
+    }
+
+    public static ListaObj<AgendamentoRespostaDto> ofListaObjAgendamentoRespostaDto(ListaObj<Agendamento> agendamentos) {
+        ListaObj<AgendamentoRespostaDto> listaObj = new ListaObj(agendamentos.getTamanho());
+
+        for (int i = 0; i < agendamentos.getTamanho(); i++) {
+            listaObj.adiciona(ofAgendamentoRespostaDto(agendamentos.getElemento(i)));
+        }
+        return listaObj;
     }
 }

@@ -1,6 +1,5 @@
 package com.petsup.api.services;
 
-import com.petsup.api.dto.AgendamentoDto;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.models.Agendamento;
@@ -19,9 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
+import static com.petsup.api.util.OrdenacaoAgendametos.pesquisaBinaria;
 
 @Service
 public class AgendamentoService {
@@ -80,7 +81,7 @@ public class AgendamentoService {
 
     public AgendamentoRespostaDto findAgendamentoByData(LocalDateTime dataHora, Integer usuario) {
         List<Agendamento> agendamentos = agendamentoRepository.findByFkPetshopId(usuario);
-        ListaObj<AgendamentoRespostaDto> listaLocal = ordenaListaAgendamento(agendamentos);
+        ListaObj<Agendamento> listaLocal = ordenaListaAgendamento(agendamentos);
         AgendamentoRespostaDto agendamentoRespostaDto = pesquisaBinaria(listaLocal, dataHora).orElseThrow(
                 () -> new ResponseStatusException(404, "Agendamento não encontrado", null)
         );

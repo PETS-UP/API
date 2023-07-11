@@ -1,13 +1,13 @@
 package com.petsup.api.services;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.petsup.api.dto.AgendamentoDto;
-import com.petsup.api.dto.authentication.PetshopDeatlhesDto;
+import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.mapper.ServicoMapper;
 import com.petsup.api.mapper.UsuarioMapper;
 import com.petsup.api.models.Agendamento;
@@ -24,14 +24,8 @@ import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
-import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.ListaObj;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.core.io.FileSystemResource;
-import org.springframework.core.io.Resource;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -41,10 +35,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import java.io.File;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
 
@@ -216,15 +207,15 @@ public class PetshopService {
         clienteSubscriberRepository.save(inscrito);
     }
 
-    public ListaObj<AgendamentoDto> orderAgendamentosByDate(Integer idPetshop){
+    public ListaObj<AgendamentoRespostaDto> orderAgendamentosByDate(Integer idPetshop){
         UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
         List<Agendamento> listaAgendamentos = agendamentoRepository.findByFkPetshopId(idPetshop);
-        ListaObj<AgendamentoDto> listaLocal = ordenaListaAgendamento(listaAgendamentos);
+        ListaObj<Agendamento> listaLocal = ordenaListaAgendamento(listaAgendamentos);
 
-        return listaLocal;
+        return AgendamentoMapper.ofListaObjAgendamentoRespostaDto(listaLocal);
     }
 
 }
