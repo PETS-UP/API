@@ -3,7 +3,7 @@ package com.petsup.api.controllers.petshop;
 import com.petsup.api.models.petshop.Servico;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.services.PetshopService;
-import com.petsup.api.services.ServicoService;
+import com.petsup.api.services.petshop.ServicoService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;

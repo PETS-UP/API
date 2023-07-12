@@ -1,4 +1,4 @@
-package com.petsup.api.services;
+package com.petsup.api.services.petshop;
 
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.mapper.ServicoMapper;
