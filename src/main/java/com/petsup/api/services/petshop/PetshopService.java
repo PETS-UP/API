@@ -73,7 +73,7 @@ public class PetshopService {
     @Autowired
     private JavaMailSender enviador;
 
-    public void criarPetshop(UsuarioPetshopDto usuarioDto) {
+    public void postPetshop(UsuarioPetshopDto usuarioDto) {
         final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
 
         String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
@@ -82,7 +82,7 @@ public class PetshopService {
         this.usuarioRepository.save(novoUsuario);
     }
 
-    public PetshopTokenDto autenticarPetshop(PetshopLoginDto usuarioLoginDto) {
+    public PetshopTokenDto authenticatePetshop(PetshopLoginDto usuarioLoginDto) {
 
         final UsernamePasswordAuthenticationToken credentials = new UsernamePasswordAuthenticationToken(
                 usuarioLoginDto.getEmail(), usuarioLoginDto.getSenha());
@@ -102,7 +102,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
     }
 
-    public List<UsuarioPetshopDto> listarPetshops(){
+    public List<UsuarioPetshopDto> listPetshops(){
         List<UsuarioPetshop> petshops = this.petshopRepository.findAll();
 
         return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
@@ -116,9 +116,8 @@ public class PetshopService {
         return UsuarioMapper.ofPetshopDto(petshop);
     }
 
-    public List<UsuarioPetshopDto> listarPetshopsPorNome(String nome){
+    public List<UsuarioPetshopDto> getPetshopsByNome(String nome) {
         List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
-
         return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
     }
 
@@ -149,7 +148,7 @@ public class PetshopService {
         return UsuarioMapper.ofPetshopDto(petshopAtt);
     }
 
-    public ServicoRespostaDto atualizarServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
+    public ServicoRespostaDto updateServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
         Servico servico = servicoRepository.findById(idServico).orElseThrow(
                 () -> new ResponseStatusException(404, "Serviço não encontrado", null)
         );

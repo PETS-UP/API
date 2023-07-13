@@ -1,6 +1,5 @@
 package com.petsup.api.controllers.petshop;
 
-import com.petsup.api.dto.AgendamentoDto;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
@@ -54,18 +53,17 @@ import java.util.List;
 @RestController
 @RequestMapping("/petshops")
 public class PetshopController {
+    @Autowired
+    private UsuarioService usuarioService;
+
+    @Autowired
+    private PetshopService petshopService;
 
     @Autowired
     private PetshopRepository petshopRepository;
 
     @Autowired
     private AgendamentoRepository agendamentoRepository;
-
-    @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
-    private PetshopService petshopService;
 
     @Autowired
     private JavaMailSender enviador;
@@ -75,7 +73,7 @@ public class PetshopController {
     @SecurityRequirement(name = "Bearer")
     @ApiResponse(responseCode = "201", description =
             "Petshop cadastrado com sucesso.", content = @Content(schema = @Schema(hidden = true)))
-    public ResponseEntity<Void> postUserPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto) {
+    public ResponseEntity<Void> postPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto) {
         this.petshopService.postPetshop(usuarioDto);
 
         return ResponseEntity.status(201).build();
@@ -112,7 +110,7 @@ public class PetshopController {
 
     @GetMapping("/busca/nome")
     public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
-        List<UsuarioPetshopDto> petshopsDto = petshopService.listPetshopsByNome(nome);
+        List<UsuarioPetshopDto> petshopsDto = petshopService.getPetshopsByNome(nome);
 
         if (petshopsDto.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -139,8 +137,8 @@ public class PetshopController {
     @DeleteMapping
     @ApiResponse(responseCode = "204", description = "Petshop deletado.")
     @ApiResponse(responseCode = "404", description = "Petshop não encontrado.")
-    public ResponseEntity<Void> deletePetshopById(@PathVariable Integer id) {
-        petshopService.deletePetshopById(id);
+    public ResponseEntity<Void> deleteById(@PathVariable Integer id) {
+        petshopService.deleteById(id);
 
         return ResponseEntity.noContent().build();
     }

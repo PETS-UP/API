@@ -116,7 +116,7 @@ public class PetshopControllerTest {
 
         doNothing().when(usuarioService).criarPetshop(usuarioPetshopDto);
 
-        HttpStatus status = (HttpStatus) petshopController.postUserPetshop(usuarioPetshopDto).getStatusCode();
+        HttpStatus status = (HttpStatus) petshopController.postPetshop(usuarioPetshopDto).getStatusCode();
 
         assertEquals(HttpStatus.CREATED, status);
     }
@@ -125,7 +125,7 @@ public class PetshopControllerTest {
     void deleteByIdRetornaStatus204NoContent() {
         doNothing().when(petshopRepository).deleteById(any());
 
-        HttpStatus status = (HttpStatus) petshopController.deletePetshopById(1).getStatusCode();
+        HttpStatus status = (HttpStatus) petshopController.deleteById(1).getStatusCode();
 
         assertEquals(HttpStatus.NO_CONTENT, status);
     }
@@ -134,10 +134,10 @@ public class PetshopControllerTest {
     void deleteByIdLancaExcecao() {
         RuntimeException exception = new RuntimeException("Petshop não encontrado");
 
-        when(petshopController.deletePetshopById(999)).thenThrow(exception);
+        when(petshopController.deleteById(999)).thenThrow(exception);
 
         assertThrows(RuntimeException.class,
-                () -> petshopController.deletePetshopById(999));
+                () -> petshopController.deleteById(999));
         assertEquals("Petshop não encontrado", exception.getMessage());
     }
 
