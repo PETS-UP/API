@@ -4,9 +4,9 @@ import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.models.cliente.Pet;
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.PetRepository;
@@ -44,10 +44,10 @@ public class AgendamentoService {
     public void postAgendamento(LocalDateTime dataHora,
                                 Integer idCliente, Integer idPetshop,
                                 Integer idPet, Integer idServico) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Pet shop não encontrado", null)
         );
         Pet pet = petRepository.findById(idPet).orElseThrow(
@@ -66,14 +66,14 @@ public class AgendamentoService {
     }
 
     public List<AgendamentoRespostaDto> getAgendamentosByIdPetshop(Integer idPetshop) {
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Pet shop não encontrado", null)
         );
         return AgendamentoMapper.ofListaAgendamentoRespostaDto(agendamentoRepository.findByFkPetshopId(idPetshop));
     }
 
     public List<AgendamentoRespostaDto> getAgendamentosByIdCliente(Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
         return AgendamentoMapper.ofListaAgendamentoRespostaDto(agendamentoRepository.findByFkClienteId(idCliente));
@@ -89,7 +89,7 @@ public class AgendamentoService {
     }
 
     public List<AgendamentoRespostaDto> findAgendamentosDoDia(LocalDateTime dataHora, Integer idPetshop) {
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Pet shop não encontrado", null)
         );
         // Define o início do dia (00:00:00)

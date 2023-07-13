@@ -1,9 +1,9 @@
 package com.petsup.api.models;
 
 import com.petsup.api.models.cliente.Pet;
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.Future;
 import jakarta.validation.constraints.NotNull;
@@ -28,11 +28,11 @@ public class Agendamento {
 
     @ManyToOne
     @JoinColumn(name = "fkPetshop")
-    private UsuarioPetshop fkPetshop;
+    private Petshop fkPetshop;
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")
-    private UsuarioCliente fkCliente;
+    private Cliente fkCliente;
 
     @ManyToOne
     @JoinColumn(name = "fkServico")
@@ -62,19 +62,19 @@ public class Agendamento {
         this.fkPet = fkPet;
     }
 
-    public UsuarioPetshop getFkPetshop() {
+    public Petshop getFkPetshop() {
         return fkPetshop;
     }
 
-    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+    public void setFkPetshop(Petshop fkPetshop) {
         this.fkPetshop = fkPetshop;
     }
 
-    public UsuarioCliente getFkCliente() {
+    public Cliente getFkCliente() {
         return fkCliente;
     }
 
-    public void setFkCliente(UsuarioCliente fkCliente) {
+    public void setFkCliente(Cliente fkCliente) {
         this.fkCliente = fkCliente;
     }
 

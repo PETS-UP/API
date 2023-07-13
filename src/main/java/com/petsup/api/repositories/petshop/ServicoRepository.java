@@ -1,7 +1,7 @@
 package com.petsup.api.repositories.petshop;
 
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
@@ -12,5 +12,5 @@ import java.util.Optional;
 public interface ServicoRepository extends JpaRepository<Servico, Integer> {
 
     List<Servico> findAllByFkPetshopId(int fkPetshop);
-    Optional<UsuarioPetshop> findFkPetshopById(Integer integer);
+    Optional<Petshop> findFkPetshopById(Integer integer);
 }

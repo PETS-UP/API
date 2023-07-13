@@ -2,8 +2,6 @@ package com.petsup.api.service;
 
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
-import com.petsup.api.repositories.UsuarioRepository;
-import com.petsup.api.services.UsuarioService;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;

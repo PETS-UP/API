@@ -1,6 +1,6 @@
 package com.petsup.api.controllers;
 
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.services.FavoritoService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -29,14 +29,14 @@ public class FavoritoController {
     }
 
     @GetMapping
-    public ResponseEntity<List<UsuarioPetshopDto>> getFavoritos(@PathVariable Integer idCliente){
-        List<UsuarioPetshopDto> usuarioPetshopDtos = favoritoService.getFavoritos(idCliente);
+    public ResponseEntity<List<PetshopDto>> getFavoritos(@PathVariable Integer idCliente){
+        List<PetshopDto> petshopDtos = favoritoService.getFavoritos(idCliente);
 
-        if (usuarioPetshopDtos.isEmpty()){
+        if (petshopDtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(usuarioPetshopDtos);
+        return ResponseEntity.ok(petshopDtos);
     }
 
     @GetMapping("/favoritado/{idPetshop}")

@@ -5,8 +5,8 @@ import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
-import com.petsup.api.dto.cliente.UsuarioClienteDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.cliente.ClienteDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.AvaliacaoPetshop;
 import com.petsup.api.services.cliente.ClienteService;
 import com.petsup.api.services.GeocodingService;
@@ -50,7 +50,7 @@ public class ClienteController {
     @ApiResponse(responseCode = "201", description = "Cliente cadastrado com sucesso.")
     @SecurityRequirement(name = "Bearer")
     @PostMapping
-    public ResponseEntity<Void> postUserCliente(@RequestBody @Valid UsuarioClienteDto usuarioDto) {
+    public ResponseEntity<Void> postUserCliente(@RequestBody @Valid ClienteDto usuarioDto) {
         this.clienteService.postCliente(usuarioDto);
         return ResponseEntity.status(201).build();
     }
@@ -63,33 +63,33 @@ public class ClienteController {
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de clientes.")
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso não haja clientes cadastrados.")
     @GetMapping
-    public ResponseEntity<List<UsuarioClienteDto>> getClientes() {
-        List<UsuarioClienteDto> usuarioClienteDtos = clienteService.findClientes();
+    public ResponseEntity<List<ClienteDto>> getClientes() {
+        List<ClienteDto> clienteDtos = clienteService.findClientes();
 
-        if (usuarioClienteDtos.isEmpty()) {
+        if (clienteDtos.isEmpty()) {
             return ResponseEntity.status(204).build();
         }
 
-        return ResponseEntity.ok(usuarioClienteDtos);
+        return ResponseEntity.ok(clienteDtos);
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @GetMapping("/{idCliente}")
-    public ResponseEntity<UsuarioClienteDto> getClienteById(@PathVariable Integer idCliente) {
+    public ResponseEntity<ClienteDto> getClienteById(@PathVariable Integer idCliente) {
         return ResponseEntity.ok(clienteService.getClienteById(idCliente));
     }
 
     @GetMapping("/busca-email/{email}")
-    public ResponseEntity<UsuarioClienteDto> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<ClienteDto> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(clienteService.getUserByEmail(email));
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @PatchMapping("/{idCliente}")
-    public ResponseEntity<UsuarioClienteDto> updateClienteById(@RequestBody UsuarioClienteDto usuarioDto,
-                                                               @PathVariable Integer idCliente) {
+    public ResponseEntity<ClienteDto> updateClienteById(@RequestBody ClienteDto usuarioDto,
+                                                        @PathVariable Integer idCliente) {
         return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
     }
 
@@ -146,14 +146,14 @@ public class ClienteController {
     }
 
     @GetMapping("/petshops-proximos/{idCliente}")
-    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
-        List<UsuarioPetshopDto> usuarioPetshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
+    public ResponseEntity<List<PetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
+        List<PetshopDto> petshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
 
-        if (usuarioPetshopDtos.isEmpty()){
+        if (petshopDtos.isEmpty()){
             return ResponseEntity.noContent().build();
         }
 
-        return ResponseEntity.ok(usuarioPetshopDtos);
+        return ResponseEntity.ok(petshopDtos);
     }
 
 // Método de teste API Maps

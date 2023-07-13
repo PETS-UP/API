@@ -1,11 +1,11 @@
 package com.petsup.api.services;
 
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.cliente.Cliente;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.dto.authentication.ClienteDetalhesDto;
-import com.petsup.api.dto.authentication.PetshopDeatlhesDto;
+import com.petsup.api.dto.authentication.PetshopDetalhesDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -26,16 +26,16 @@ public class AutenticacaoService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 
-        Optional<UsuarioPetshop> usuarioOpt = petshopRepository.findByEmail(username);
+        Optional<Petshop> usuarioOpt = petshopRepository.findByEmail(username);
         if (usuarioOpt.isEmpty()) {
-            Optional<UsuarioCliente> usuarioOptCli = clienteRepository.findByEmail(username);
-            if(usuarioOptCli.isEmpty()){
+            Optional<Cliente> usuarioOptCli = clienteRepository.findByEmail(username);
+            if (usuarioOptCli.isEmpty()) {
                 throw new UsernameNotFoundException(String.format("usuario: %s nao encontrado", username));
-            }else{
+            } else {
                 return new ClienteDetalhesDto(usuarioOptCli.get());
             }
-        }else{
-            return new PetshopDeatlhesDto(usuarioOpt.get());
+        } else {
+            return new PetshopDetalhesDto(usuarioOpt.get());
         }
     }
 }

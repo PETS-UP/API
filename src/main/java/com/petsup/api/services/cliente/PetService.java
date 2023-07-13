@@ -3,7 +3,7 @@ package com.petsup.api.services.cliente;
 import com.petsup.api.dto.cliente.PetRespostaDto;
 import com.petsup.api.mapper.PetMapper;
 import com.petsup.api.models.cliente.Pet;
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.models.enums.Especie;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.PetRepository;
@@ -28,7 +28,7 @@ public class PetService {
     private PilhaObj<String> pilhaObj = new PilhaObj<String>(3);
 
     public void postPet(Pet pet, Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
         pet.setFkCliente(cliente);
@@ -36,7 +36,7 @@ public class PetService {
     }
 
     public List<PetRespostaDto> getPetsByIdCliente(Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
         List<PetRespostaDto> pets = PetMapper.ofListaPetRespostaDto(petRepository.findByFkClienteId(idCliente));
@@ -66,7 +66,7 @@ public class PetService {
     }
 
     public void postPilha(Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
         String nome = pilhaObj.pop();
@@ -83,7 +83,7 @@ public class PetService {
     }
 
     public void uploadByTxt(MultipartFile arquivo, Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
         try{

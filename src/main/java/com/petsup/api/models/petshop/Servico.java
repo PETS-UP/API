@@ -16,7 +16,7 @@ public class Servico {
 
     @ManyToOne
     @JoinColumn(name = "fkPetshop")
-    private UsuarioPetshop fkPetshop;
+    private Petshop fkPetshop;
 
     private NomeServico nome;
 
@@ -35,11 +35,11 @@ public class Servico {
         this.id = id;
     }
 
-    public UsuarioPetshop getFkPetshop() {
+    public Petshop getFkPetshop() {
         return fkPetshop;
     }
 
-    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+    public void setFkPetshop(Petshop fkPetshop) {
         this.fkPetshop = fkPetshop;
     }
 

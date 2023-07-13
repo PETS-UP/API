@@ -1,7 +1,7 @@
 package com.petsup.api.models;
 
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.cliente.Cliente;
+import com.petsup.api.models.petshop.Petshop;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
@@ -17,11 +17,11 @@ public class AvaliacaoPetshop {
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")
-    private UsuarioCliente fkCliente;
+    private Cliente fkCliente;
 
     @ManyToOne
     @JoinColumn(name = "fkPetshop")
-    private UsuarioPetshop fkPetshop;
+    private Petshop fkPetshop;
 
     @NotNull
     @DecimalMin("0.0")
@@ -36,19 +36,19 @@ public class AvaliacaoPetshop {
         this.id = id;
     }
 
-    public UsuarioCliente getFkCliente() {
+    public Cliente getFkCliente() {
         return fkCliente;
     }
 
-    public void setFkCliente(UsuarioCliente fkCliente) {
+    public void setFkCliente(Cliente fkCliente) {
         this.fkCliente = fkCliente;
     }
 
-    public UsuarioPetshop getFkPetshop() {
+    public Petshop getFkPetshop() {
         return fkPetshop;
     }
 
-    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+    public void setFkPetshop(Petshop fkPetshop) {
         this.fkPetshop = fkPetshop;
     }
 

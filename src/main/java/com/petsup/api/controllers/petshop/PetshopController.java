@@ -5,12 +5,11 @@ import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.services.petshop.PetshopService;
-import com.petsup.api.services.UsuarioService;
 import com.petsup.api.util.GeradorCsv;
 import com.petsup.api.util.GeradorTxt;
 import com.petsup.api.util.ListaObj;
@@ -54,9 +53,6 @@ import java.util.List;
 @RequestMapping("/petshops")
 public class PetshopController {
     @Autowired
-    private UsuarioService usuarioService;
-
-    @Autowired
     private PetshopService petshopService;
 
     @Autowired
@@ -73,7 +69,7 @@ public class PetshopController {
     @SecurityRequirement(name = "Bearer")
     @ApiResponse(responseCode = "201", description =
             "Petshop cadastrado com sucesso.", content = @Content(schema = @Schema(hidden = true)))
-    public ResponseEntity<Void> postPetshop(@RequestBody @Valid UsuarioPetshopDto usuarioDto) {
+    public ResponseEntity<Void> postPetshop(@RequestBody @Valid PetshopDto usuarioDto) {
         this.petshopService.postPetshop(usuarioDto);
 
         return ResponseEntity.status(201).build();
@@ -90,8 +86,8 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
-    public ResponseEntity<List<UsuarioPetshopDto>> getPetshops() {
-        List<UsuarioPetshopDto> petshopsDto = petshopService.listPetshops();
+    public ResponseEntity<List<PetshopDto>> getPetshops() {
+        List<PetshopDto> petshopsDto = petshopService.listPetshops();
 
         if (petshopsDto.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -104,13 +100,13 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshopDto> getPetshopById(@PathVariable Integer idPetshop) {
+    public ResponseEntity<PetshopDto> getPetshopById(@PathVariable Integer idPetshop) {
         return ResponseEntity.ok(petshopService.getPetshopById(idPetshop));
     }
 
     @GetMapping("/busca/nome")
-    public ResponseEntity<List<UsuarioPetshopDto>> getPetshopsByNome(@RequestParam String nome) {
-        List<UsuarioPetshopDto> petshopsDto = petshopService.getPetshopsByNome(nome);
+    public ResponseEntity<List<PetshopDto>> getPetshopsByNome(@RequestParam String nome) {
+        List<PetshopDto> petshopsDto = petshopService.getPetshopsByNome(nome);
 
         if (petshopsDto.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -123,15 +119,15 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description = "Petshops não encontrado.",
             content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<UsuarioPetshopDto> getPetshopByEmail(@PathVariable String email) {
+    public ResponseEntity<PetshopDto> getPetshopByEmail(@PathVariable String email) {
         return ResponseEntity.ok(petshopService.getPetshopByEmail(email));
     }
 
     @PatchMapping("/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
-    public ResponseEntity<UsuarioPetshopDto> updatePetshop(@PathVariable Integer idPetshop,
-                                                           @RequestBody UsuarioPetshopDto usuarioPetshopDto) {
-        return ResponseEntity.ok(petshopService.updatePetshop(idPetshop, usuarioPetshopDto));
+    public ResponseEntity<PetshopDto> updatePetshop(@PathVariable Integer idPetshop,
+                                                    @RequestBody PetshopDto petshopDto) {
+        return ResponseEntity.ok(petshopService.updatePetshop(idPetshop, petshopDto));
     }
 
     @DeleteMapping

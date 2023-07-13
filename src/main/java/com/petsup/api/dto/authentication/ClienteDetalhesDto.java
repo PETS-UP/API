@@ -1,6 +1,6 @@
 package com.petsup.api.dto.authentication;
 
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -14,13 +14,13 @@ public class ClienteDetalhesDto implements UserDetails {
     private final String telefone;
     private final String cpf;
 
-    public ClienteDetalhesDto(UsuarioCliente usuarioCliente) {
-        this.nome = usuarioCliente.getNome();
-        this.email = usuarioCliente.getEmail();
-        this.senha = usuarioCliente.getSenha();
-        this.cep = usuarioCliente.getCep();
-        this.telefone = usuarioCliente.getTelefone();
-        this.cpf = usuarioCliente.getCpf();
+    public ClienteDetalhesDto(Cliente cliente) {
+        this.nome = cliente.getNome();
+        this.email = cliente.getEmail();
+        this.senha = cliente.getSenha();
+        this.cep = cliente.getCep();
+        this.telefone = cliente.getTelefone();
+        this.cpf = cliente.getCpf();
     }
 
     public String getNome() {

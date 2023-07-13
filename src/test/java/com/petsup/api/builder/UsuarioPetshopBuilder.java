@@ -1,38 +1,38 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioPetshopBuilder {
 
-    public static UsuarioPetshop buildUsuarioPetshop() {
-        UsuarioPetshop usuarioPetshop = new UsuarioPetshop();
-        usuarioPetshop.setId(1);
-        usuarioPetshop.setNome("Petshop Exemplo");
-        usuarioPetshop.setEmail("petshop@gmail.com");
-        usuarioPetshop.setSenha("#Teste12");
-        usuarioPetshop.setCnpj("12345678901234");
-        usuarioPetshop.setRazaoSocial("Petshop Exemplo LTDA");
-        usuarioPetshop.setCep("01414001");
-        usuarioPetshop.setEstado("SP");
-        usuarioPetshop.setCidade("São Paulo");
-        usuarioPetshop.setBairro("Cerqueira César");
-        usuarioPetshop.setRua("Rua Haddock Lobo");
-        usuarioPetshop.setNumero("595");
+    public static Petshop buildUsuarioPetshop() {
+        Petshop petshop = new Petshop();
+        petshop.setId(1);
+        petshop.setNome("Petshop Exemplo");
+        petshop.setEmail("petshop@gmail.com");
+        petshop.setSenha("#Teste12");
+        petshop.setCnpj("12345678901234");
+        petshop.setRazaoSocial("Petshop Exemplo LTDA");
+        petshop.setCep("01414001");
+        petshop.setEstado("SP");
+        petshop.setCidade("São Paulo");
+        petshop.setBairro("Cerqueira César");
+        petshop.setRua("Rua Haddock Lobo");
+        petshop.setNumero("595");
 
-        return usuarioPetshop;
+        return petshop;
     }
 
-    public static List<UsuarioPetshop> buildListaUsuarioPetshop() {
-        List<UsuarioPetshop> lista = new ArrayList<>();
-        UsuarioPetshop petshop1 = new UsuarioPetshop();
-        UsuarioPetshop petshop2 = new UsuarioPetshop();
-        UsuarioPetshop petshop3 = new UsuarioPetshop();
+    public static List<Petshop> buildListaUsuarioPetshop() {
+        List<Petshop> lista = new ArrayList<>();
+        Petshop petshop1 = new Petshop();
+        Petshop petshop2 = new Petshop();
+        Petshop petshop3 = new Petshop();
         petshop2.setId(2);
         petshop3.setId(3);
 
@@ -43,21 +43,21 @@ public class UsuarioPetshopBuilder {
         return lista;
     }
 
-    public static UsuarioPetshopDto buildUsuarioPetshopDto() {
-        UsuarioPetshopDto usuarioPetshopDto = new UsuarioPetshopDto();
-        usuarioPetshopDto.setNome("Petshop Exemplo");
-        usuarioPetshopDto.setEmail("petshop@gmail.com");
-        usuarioPetshopDto.setSenha("#Teste12");
-        usuarioPetshopDto.setCnpj("12345678901234");
-        usuarioPetshopDto.setRazaoSocial("Petshop Exemplo LTDA");
-        usuarioPetshopDto.setCep("01414001");
-        usuarioPetshopDto.setEstado("SP");
-        usuarioPetshopDto.setCidade("São Paulo");
-        usuarioPetshopDto.setBairro("Cerqueira César");
-        usuarioPetshopDto.setRua("Rua Haddock Lobo");
-        usuarioPetshopDto.setNumero("595");
+    public static PetshopDto buildUsuarioPetshopDto() {
+        PetshopDto petshopDto = new PetshopDto();
+        petshopDto.setNome("Petshop Exemplo");
+        petshopDto.setEmail("petshop@gmail.com");
+        petshopDto.setSenha("#Teste12");
+        petshopDto.setCnpj("12345678901234");
+        petshopDto.setRazaoSocial("Petshop Exemplo LTDA");
+        petshopDto.setCep("01414001");
+        petshopDto.setEstado("SP");
+        petshopDto.setCidade("São Paulo");
+        petshopDto.setBairro("Cerqueira César");
+        petshopDto.setRua("Rua Haddock Lobo");
+        petshopDto.setNumero("595");
 
-        return usuarioPetshopDto;
+        return petshopDto;
     }
 
     public static PetshopLoginDto buildPetshopLoginDto() {

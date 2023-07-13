@@ -1,6 +1,6 @@
 package com.petsup.api.models.cliente;
 
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import jakarta.persistence.*;
 import org.springframework.mail.SimpleMailMessage;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -12,10 +12,10 @@ public class ClienteSubscriber {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private int id;
     @ManyToOne
-    UsuarioCliente fkCliente; // inscritos
+    Cliente fkCliente; // inscritos
 
     @ManyToOne
-    UsuarioPetshop fkPetshop;
+    Petshop fkPetshop;
 
     public int getId() {
         return id;
@@ -25,19 +25,19 @@ public class ClienteSubscriber {
         this.id = id;
     }
 
-    public UsuarioCliente getFkCliente() {
+    public Cliente getFkCliente() {
         return fkCliente;
     }
 
-    public void setFkCliente(UsuarioCliente fkCliente) {
+    public void setFkCliente(Cliente fkCliente) {
         this.fkCliente = fkCliente;
     }
 
-    public UsuarioPetshop getFkPetshop() {
+    public Petshop getFkPetshop() {
         return fkPetshop;
     }
 
-    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+    public void setFkPetshop(Petshop fkPetshop) {
         this.fkPetshop = fkPetshop;
     }
 

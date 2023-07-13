@@ -1,7 +1,7 @@
 package com.petsup.api.models;
 
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.cliente.Cliente;
+import com.petsup.api.models.petshop.Petshop;
 import jakarta.persistence.*;
 
 @Entity
@@ -14,11 +14,11 @@ public class Favorito {
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")
-    private UsuarioCliente fkCliente;
+    private Cliente fkCliente;
 
     @ManyToOne
     @JoinColumn(name = "fkPetshop")
-    private UsuarioPetshop fkPetshop;
+    private Petshop fkPetshop;
 
     public Integer getId() {
         return id;
@@ -28,19 +28,19 @@ public class Favorito {
         this.id = id;
     }
 
-    public UsuarioCliente getFkCliente() {
+    public Cliente getFkCliente() {
         return fkCliente;
     }
 
-    public void setFkCliente(UsuarioCliente fkCliente) {
+    public void setFkCliente(Cliente fkCliente) {
         this.fkCliente = fkCliente;
     }
 
-    public UsuarioPetshop getFkPetshop() {
+    public Petshop getFkPetshop() {
         return fkPetshop;
     }
 
-    public void setFkPetshop(UsuarioPetshop fkPetshop) {
+    public void setFkPetshop(Petshop fkPetshop) {
         this.fkPetshop = fkPetshop;
     }
 }

@@ -25,7 +25,7 @@ public class Pet {
 
     @ManyToOne
     @JoinColumn(name = "fkCliente")
-    private UsuarioCliente fkCliente;
+    private Cliente fkCliente;
 
     public Integer getId() {
         return id;
@@ -59,11 +59,11 @@ public class Pet {
         this.especie = especie;
     }
 
-    public UsuarioCliente getFkCliente() {
+    public Cliente getFkCliente() {
         return fkCliente;
     }
 
-    public void setFkCliente(UsuarioCliente fkCliente) {
+    public void setFkCliente(Cliente fkCliente) {
         this.fkCliente = fkCliente;
     }
 

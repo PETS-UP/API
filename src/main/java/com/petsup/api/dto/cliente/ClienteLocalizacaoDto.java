@@ -1,6 +1,6 @@
 package com.petsup.api.dto.cliente;
 
-public class UsuarioClienteLocalizacaoDto {
+public class ClienteLocalizacaoDto {
 
     private double latitude;
 

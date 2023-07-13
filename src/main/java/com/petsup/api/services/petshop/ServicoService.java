@@ -3,7 +3,7 @@ package com.petsup.api.services.petshop;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.mapper.ServicoMapper;
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,7 +22,7 @@ public class ServicoService {
     private PetshopRepository petshopRepository;
 
     public void postServico(Servico servico, Integer idPetshop) {
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado.", null)
         );
         servico.setFkPetshop(petshop);
@@ -30,7 +30,7 @@ public class ServicoService {
     }
 
     public List<ServicoRespostaDto> getServicosByIdPetshop(Integer idPetshop) {
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado.", null)
         );
         return ServicoMapper.ofListaServicoRespostaDto(servicoRepository.findAllByFkPetshopId(idPetshop));

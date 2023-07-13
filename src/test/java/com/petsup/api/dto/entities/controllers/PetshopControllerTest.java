@@ -2,15 +2,15 @@ package com.petsup.api.dto.entities.controllers;
 
 import com.petsup.api.builder.UsuarioPetshopBuilder;
 import com.petsup.api.controllers.petshop.PetshopController;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.*;
-import com.petsup.api.services.UsuarioService;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
+import com.petsup.api.services.petshop.PetshopService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -47,7 +47,7 @@ public class PetshopControllerTest {
     private ServicoRepository servicoRepository;
 
     @Mock
-    private UsuarioService usuarioService;
+    private PetshopService petshopService;
 
     @Mock
     private ClienteRepository clienteRepository;
@@ -90,15 +90,15 @@ public class PetshopControllerTest {
     @Test
     void getUserByIdRetornaPetshopDeId1() throws Exception {
         Integer id = 1;
-        UsuarioPetshop usuarioPetshop = UsuarioPetshopBuilder.buildUsuarioPetshop();
+        Petshop petshop = UsuarioPetshopBuilder.buildUsuarioPetshop();
 
-        when(petshopRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioPetshop));
+        when(petshopRepository.findById(Mockito.any())).thenReturn(Optional.of(petshop));
 
         mockMvc.perform(get("/petshops/{id}", id))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(usuarioPetshop.getId()));
+                .andExpect(jsonPath("$.id").value(petshop.getId()));
 
-        assertEquals(usuarioPetshop.getId(), petshopRepository.findById(1).get().getId());
+        assertEquals(petshop.getId(), petshopRepository.findById(1).get().getId());
     }
 
     @Test
@@ -112,11 +112,11 @@ public class PetshopControllerTest {
 
     @Test
     void postUserPetshopRetornaStatus201Created() {
-        UsuarioPetshopDto usuarioPetshopDto = UsuarioPetshopBuilder.buildUsuarioPetshopDto();
+        PetshopDto petshopDto = UsuarioPetshopBuilder.buildUsuarioPetshopDto();
 
-        doNothing().when(usuarioService).criarPetshop(usuarioPetshopDto);
+        doNothing().when(petshopService).postPetshop(petshopDto);
 
-        HttpStatus status = (HttpStatus) petshopController.postPetshop(usuarioPetshopDto).getStatusCode();
+        HttpStatus status = (HttpStatus) petshopController.postPetshop(petshopDto).getStatusCode();
 
         assertEquals(HttpStatus.CREATED, status);
     }
@@ -145,7 +145,7 @@ public class PetshopControllerTest {
     void loginRetornaStatus200OkEPetshopEsperado() {
         PetshopTokenDto petshopEsperado = UsuarioPetshopBuilder.buildPetshopTokenDto();
 
-        when(usuarioService.autenticarPetshop(any()))
+        when(petshopService.authenticatePetshop(any()))
                 .thenReturn(UsuarioPetshopBuilder.buildPetshopTokenDto());
 
         PetshopTokenDto petshop = petshopController.login(UsuarioPetshopBuilder.buildPetshopLoginDto()).getBody();

@@ -7,35 +7,31 @@ import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
-import com.petsup.api.dto.cliente.UsuarioClienteDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.cliente.ClienteDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.mapper.AvaliacaoMapper;
-import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.mapper.ClienteMapper;
+import com.petsup.api.mapper.PetshopMapper;
 import com.petsup.api.models.AvaliacaoPetshop;
-import com.petsup.api.models.Usuario;
-import com.petsup.api.models.cliente.UsuarioCliente;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.cliente.Cliente;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.AvaliacaoRepository;
-import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.services.GeocodingService;
 import com.petsup.api.util.FilaObj;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ClienteService {
@@ -43,8 +39,6 @@ public class ClienteService {
     FilaObj<AvaliacaoPetshop> filaAvaliacao = new FilaObj(1000);
     @Autowired
     private AgendamentoRepository agendamentoRepository;
-    @Autowired
-    private UsuarioRepository usuarioRepository;
     @Autowired
     private ClienteRepository clienteRepository;
     @Autowired
@@ -60,13 +54,13 @@ public class ClienteService {
     @Autowired
     private GeocodingService geocodingService;
 
-    public void postCliente(UsuarioClienteDto usuarioDto) {
-        final Usuario novoUsuario = UsuarioMapper.ofCliente(usuarioDto);
+    public void postCliente(ClienteDto usuarioDto) {
+        Cliente cliente = ClienteMapper.ofCliente(usuarioDto);
 
-        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
-        novoUsuario.setSenha(senhaCriptografada);
+        String senhaCriptografada = passwordEncoder.encode(cliente.getSenha());
+        cliente.setSenha(senhaCriptografada);
 
-        this.usuarioRepository.save(novoUsuario);
+        this.clienteRepository.save(cliente);
     }
 
     public ClienteTokenDto authenticateCliente(ClienteLoginDto usuarioLoginDto) {
@@ -76,7 +70,7 @@ public class ClienteService {
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        UsuarioCliente usuarioAutenticado =
+        Cliente usuarioAutenticado =
                 clienteRepository.findByEmail(usuarioLoginDto.getEmail())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
@@ -86,67 +80,66 @@ public class ClienteService {
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
-        return UsuarioMapper.ofCliente(usuarioAutenticado, token);
+        return ClienteMapper.ofCliente(usuarioAutenticado, token);
     }
 
-    public UsuarioClienteDto updateClienteById(UsuarioClienteDto usuarioClienteDto, Integer idCliente) {
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
+    public ClienteDto updateClienteById(ClienteDto clienteDto, Integer idCliente) {
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(usuarioClienteDto, usuarioCliente);
+        Cliente usuarioAtt = ClienteMapper.ofCliente(clienteDto, cliente);
         clienteRepository.save(usuarioAtt);
 
-        return UsuarioMapper.ofClienteDto(usuarioAtt);
+        return ClienteMapper.ofClienteDto(usuarioAtt);
     }
 
-    public List<UsuarioClienteDto> findClientes() {
-        List<UsuarioCliente> usuarios = this.clienteRepository.findAll();
+    public List<ClienteDto> findClientes() {
+        List<Cliente> usuarios = this.clienteRepository.findAll();
 
-        List<UsuarioClienteDto> usuariosDto = new ArrayList<>();
+        List<ClienteDto> usuariosDto = new ArrayList<>();
 
-        for (UsuarioCliente usuario : usuarios) {
-            usuariosDto.add(UsuarioMapper.ofClienteDto(usuario));
+        for (Cliente usuario : usuarios) {
+            usuariosDto.add(ClienteMapper.ofClienteDto(usuario));
         }
 
         return usuariosDto;
     }
 
-    public UsuarioClienteDto getClienteById(Integer idCliente) {
-        UsuarioCliente usuarioCliente = clienteRepository.findById(idCliente).orElseThrow(
+    public ClienteDto getClienteById(Integer idCliente) {
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioCliente);
+        ClienteDto clienteDto = ClienteMapper.ofClienteDto(cliente);
 
-        return usuarioClienteDto;
+        return clienteDto;
     }
 
-    public UsuarioClienteDto getUserByEmail(String email) {
-        UsuarioCliente usuarioCliente = clienteRepository.findByEmail(email).orElseThrow(
+    public ClienteDto getUserByEmail(String email) {
+        Cliente cliente = clienteRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioClienteDto usuarioClienteDto = UsuarioMapper.ofClienteDto(usuarioCliente);
+        ClienteDto clienteDto = ClienteMapper.ofClienteDto(cliente);
 
-        return usuarioClienteDto;
+        return clienteDto;
     }
 
     public void deleteById(Integer idCliente) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
         this.clienteRepository.deleteById(idCliente);
     }
 
-
         public AvaliacaoPetshop postAvaliacao(AvaliacaoPetshop avl, int idCliente, int idPetshop) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
@@ -158,11 +151,11 @@ public class ClienteService {
     }
 
     public AvaliacaoDto getAvaliacaoCliente(int idCliente, int idPetshop) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
@@ -193,18 +186,18 @@ public class ClienteService {
     }
 
     public void updateLocalizacaoAtual(Integer idCliente, double latitude, double longitude) {
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioCliente usuarioAtt = UsuarioMapper.ofCliente(latitude, longitude, cliente);
+        Cliente usuarioAtt = ClienteMapper.ofCliente(latitude, longitude, cliente);
         clienteRepository.save(usuarioAtt);
     }
 
-    public List<UsuarioPetshopDto> getPetshopsByClienteBairro(Integer idCliente) {
+    public List<PetshopDto> getPetshopsByClienteBairro(Integer idCliente) {
         String bairro = "";
 
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
@@ -222,13 +215,13 @@ public class ClienteService {
 
         System.out.println(detalhesEnderecoDto.getNeighborhood() + detalhesEnderecoDto.getCity());
 
-        List<UsuarioPetshop> petshops = petshopRepository
+        List<Petshop> petshops = petshopRepository
                 .findAllByBairroAndCidade(detalhesEnderecoDto.getNeighborhood(), detalhesEnderecoDto.getCity());
 
-        List<UsuarioPetshopDto> petshopsDto = new ArrayList<>();
+        List<PetshopDto> petshopsDto = new ArrayList<>();
 
         for (int i = 0; i < petshops.size(); i++) {
-            petshopsDto.add(UsuarioMapper.ofPetshopDto(petshops.get(i)));
+            petshopsDto.add(PetshopMapper.ofPetshopDto(petshops.get(i)));
         }
 
         return petshopsDto;

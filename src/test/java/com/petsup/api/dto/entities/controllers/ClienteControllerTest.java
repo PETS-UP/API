@@ -1,12 +1,12 @@
 package com.petsup.api.dto.entities.controllers;
 
 import com.petsup.api.controllers.cliente.ClienteController;
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
-import com.petsup.api.dto.cliente.UsuarioClienteDto;
+import com.petsup.api.dto.cliente.ClienteDto;
 import com.petsup.api.repositories.cliente.ClienteRepository;
-import com.petsup.api.services.UsuarioService;
 import com.petsup.api.builder.UsuarioClienteBuilder;
+import com.petsup.api.services.cliente.ClienteService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -29,7 +29,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 public class ClienteControllerTest {
 
     @Mock
-    private UsuarioService usuarioService;
+    private ClienteService clienteService;
 
     @Mock
     private ClienteRepository clienteRepository;
@@ -56,7 +56,7 @@ public class ClienteControllerTest {
 
     @Test
     void getClientesRetornaListaDeTamanho3() throws Exception {
-        List<UsuarioCliente> lista = UsuarioClienteBuilder.buildListaUsuarioCliente();
+        List<Cliente> lista = UsuarioClienteBuilder.buildListaUsuarioCliente();
 
         when(clienteRepository.findAll()).thenReturn(lista);
 
@@ -91,11 +91,11 @@ public class ClienteControllerTest {
 
     @Test
     void postUserClienteRetornaStatus201Created() {
-        UsuarioClienteDto usuarioClienteDto = UsuarioClienteBuilder.buildUsuarioClienteDto();
+        ClienteDto clienteDto = UsuarioClienteBuilder.buildUsuarioClienteDto();
 
-        doNothing().when(usuarioService).criarCliente(usuarioClienteDto);
+        doNothing().when(clienteService).postCliente(clienteDto);
 
-        HttpStatus status = (HttpStatus) clienteController.postUserCliente(usuarioClienteDto).getStatusCode();
+        HttpStatus status = (HttpStatus) clienteController.postUserCliente(clienteDto).getStatusCode();
 
         assertEquals(HttpStatus.CREATED, status);
     }
@@ -124,7 +124,7 @@ public class ClienteControllerTest {
     void loginRetornaStatus200OkEClienteEsperado() {
         ClienteTokenDto clienteEsperado = UsuarioClienteBuilder.buildClienteTokenDto();
 
-        when(usuarioService.autenticarCliente(any()))
+        when(clienteService.authenticateCliente(any()))
                 .thenReturn(UsuarioClienteBuilder.buildClienteTokenDto());
 
         ClienteTokenDto cliente = clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getBody();

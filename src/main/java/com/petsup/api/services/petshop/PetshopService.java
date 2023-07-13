@@ -6,20 +6,18 @@ import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
-import com.petsup.api.dto.petshop.UsuarioPetshopDto;
+import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.mapper.ServicoMapper;
-import com.petsup.api.mapper.UsuarioMapper;
+import com.petsup.api.mapper.PetshopMapper;
 import com.petsup.api.models.Agendamento;
-import com.petsup.api.models.Usuario;
 import com.petsup.api.models.cliente.ClienteSubscriber;
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.models.enums.NomeServico;
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.models.petshop.UsuarioPetshop;
+import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.AvaliacaoRepository;
-import com.petsup.api.repositories.UsuarioRepository;
 import com.petsup.api.repositories.cliente.ClienteRepository;
 import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
@@ -46,8 +44,6 @@ public class PetshopService {
     private AgendamentoRepository agendamentoRepository;
 
     @Autowired
-    private UsuarioRepository usuarioRepository;
-    @Autowired
     private ClienteRepository clienteRepository;
     @Autowired
     private PetshopRepository petshopRepository;
@@ -73,13 +69,13 @@ public class PetshopService {
     @Autowired
     private JavaMailSender enviador;
 
-    public void postPetshop(UsuarioPetshopDto usuarioDto) {
-        final Usuario novoUsuario = UsuarioMapper.ofPetshop(usuarioDto);
+    public void postPetshop(PetshopDto usuarioDto) {
+        final Petshop petshop = PetshopMapper.ofPetshop(usuarioDto);
 
-        String senhaCriptografada = passwordEncoder.encode(novoUsuario.getSenha());
-        novoUsuario.setSenha(senhaCriptografada);
+        String senhaCriptografada = passwordEncoder.encode(petshop.getSenha());
+        petshop.setSenha(senhaCriptografada);
 
-        this.usuarioRepository.save(novoUsuario);
+        this.petshopRepository.save(petshop);
     }
 
     public PetshopTokenDto authenticatePetshop(PetshopLoginDto usuarioLoginDto) {
@@ -89,7 +85,7 @@ public class PetshopService {
 
         final Authentication authentication = this.authenticationManager.authenticate(credentials);
 
-        UsuarioPetshop usuarioAutenticado =
+        Petshop usuarioAutenticado =
                 petshopRepository.findByEmail(usuarioLoginDto.getEmail())
                         .orElseThrow(
                                 () -> new ResponseStatusException(404, "Email do usuário não cadastrado", null)
@@ -99,34 +95,34 @@ public class PetshopService {
 
         final String token = gerenciadorTokenJwt.generateToken(authentication);
 
-        return UsuarioMapper.ofPetshop(usuarioAutenticado, token);
+        return PetshopMapper.ofPetshop(usuarioAutenticado, token);
     }
 
-    public List<UsuarioPetshopDto> listPetshops(){
-        List<UsuarioPetshop> petshops = this.petshopRepository.findAll();
+    public List<PetshopDto> listPetshops(){
+        List<Petshop> petshops = this.petshopRepository.findAll();
 
-        return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
+        return PetshopMapper.ofListUsuarioPetshopDto(petshops);
     }
 
-    public UsuarioPetshopDto getPetshopById(Integer id){
-        UsuarioPetshop petshop = petshopRepository.findById(id).orElseThrow(
+    public PetshopDto getPetshopById(Integer id){
+        Petshop petshop = petshopRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        return UsuarioMapper.ofPetshopDto(petshop);
+        return PetshopMapper.ofPetshopDto(petshop);
     }
 
-    public List<UsuarioPetshopDto> getPetshopsByNome(String nome) {
-        List<UsuarioPetshop> petshops = petshopRepository.findAllByNomeLike(nome);
-        return UsuarioMapper.ofListUsuarioPetshopDto(petshops);
+    public List<PetshopDto> getPetshopsByNome(String nome) {
+        List<Petshop> petshops = petshopRepository.findAllByNomeLike(nome);
+        return PetshopMapper.ofListUsuarioPetshopDto(petshops);
     }
 
-    public UsuarioPetshopDto getPetshopByEmail(String email){
-        UsuarioPetshop petshop = petshopRepository.findByEmail(email).orElseThrow(
+    public PetshopDto getPetshopByEmail(String email){
+        Petshop petshop = petshopRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        return UsuarioMapper.ofPetshopDto(petshop);
+        return PetshopMapper.ofPetshopDto(petshop);
     }
 
     public void deleteById(Integer id){
@@ -137,15 +133,15 @@ public class PetshopService {
         petshopRepository.deleteById(id);
     }
 
-    public UsuarioPetshopDto updatePetshop(Integer idPetshop, UsuarioPetshopDto usuarioPetshopDto){
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+    public PetshopDto updatePetshop(Integer idPetshop, PetshopDto petshopDto){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        UsuarioPetshop petshopAtt = UsuarioMapper.ofPetshop(usuarioPetshopDto, petshop);
+        Petshop petshopAtt = PetshopMapper.ofPetshop(petshopDto, petshop);
         petshopRepository.save(petshopAtt);
 
-        return UsuarioMapper.ofPetshopDto(petshopAtt);
+        return PetshopMapper.ofPetshopDto(petshopAtt);
     }
 
     public ServicoRespostaDto updateServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
@@ -153,7 +149,7 @@ public class PetshopService {
                 () -> new ResponseStatusException(404, "Serviço não encontrado", null)
         );
 
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
@@ -191,11 +187,11 @@ public class PetshopService {
 //    }
 
     public void subscribeToPetshop(Integer idPetshop, Integer idCliente){
-        UsuarioCliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
@@ -207,7 +203,7 @@ public class PetshopService {
     }
 
     public ListaObj<AgendamentoRespostaDto> orderAgendamentosByDate(Integer idPetshop){
-        UsuarioPetshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 

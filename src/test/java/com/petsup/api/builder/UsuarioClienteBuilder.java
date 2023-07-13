@@ -1,38 +1,38 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.models.cliente.UsuarioCliente;
+import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
-import com.petsup.api.dto.cliente.UsuarioClienteDto;
+import com.petsup.api.dto.cliente.ClienteDto;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 public class UsuarioClienteBuilder {
-    public static UsuarioCliente buildUsuarioCliente() {
-        UsuarioCliente usuarioCliente = new UsuarioCliente();
-        usuarioCliente.setId(1);
-        usuarioCliente.setNome("Ana Beatriz");
-        usuarioCliente.setEmail("ana@gmail.com");
-        usuarioCliente.setSenha("#Teste12");
-        usuarioCliente.setDataNasc(LocalDate.of(2000, 1, 1));
-        usuarioCliente.setCpf("12345678901");
-        usuarioCliente.setCep("01414001");
-        usuarioCliente.setEstado("SP");
-        usuarioCliente.setCidade("São Paulo");
-        usuarioCliente.setBairro("Cerqueira César");
-        usuarioCliente.setRua("Rua Haddock Lobo");
-        usuarioCliente.setNumero("595");
+    public static Cliente buildUsuarioCliente() {
+        Cliente cliente = new Cliente();
+        cliente.setId(1);
+        cliente.setNome("Ana Beatriz");
+        cliente.setEmail("ana@gmail.com");
+        cliente.setSenha("#Teste12");
+        cliente.setDataNasc(LocalDate.of(2000, 1, 1));
+        cliente.setCpf("12345678901");
+        cliente.setCep("01414001");
+        cliente.setEstado("SP");
+        cliente.setCidade("São Paulo");
+        cliente.setBairro("Cerqueira César");
+        cliente.setRua("Rua Haddock Lobo");
+        cliente.setNumero("595");
 
-        return usuarioCliente;
+        return cliente;
     }
 
-    public static List<UsuarioCliente> buildListaUsuarioCliente() {
-        List<UsuarioCliente> lista = new ArrayList<>();
-        UsuarioCliente cliente1 = buildUsuarioCliente();
-        UsuarioCliente cliente2 = buildUsuarioCliente();
-        UsuarioCliente cliente3 = buildUsuarioCliente();
+    public static List<Cliente> buildListaUsuarioCliente() {
+        List<Cliente> lista = new ArrayList<>();
+        Cliente cliente1 = buildUsuarioCliente();
+        Cliente cliente2 = buildUsuarioCliente();
+        Cliente cliente3 = buildUsuarioCliente();
         cliente2.setId(2);
         cliente3.setId(3);
 
@@ -43,21 +43,21 @@ public class UsuarioClienteBuilder {
         return lista;
     }
 
-    public static UsuarioClienteDto buildUsuarioClienteDto() {
-        UsuarioClienteDto usuarioClienteDto = new UsuarioClienteDto();
-        usuarioClienteDto.setNome("Ana Beatriz");
-        usuarioClienteDto.setEmail("ana@gmail.com");
-        usuarioClienteDto.setSenha("#Teste12");
-        usuarioClienteDto.setDataNasc(LocalDate.of(2000, 1, 1));
-        usuarioClienteDto.setCpf("12345678901");
-        usuarioClienteDto.setCep("01414001");
-        usuarioClienteDto.setEstado("SP");
-        usuarioClienteDto.setCidade("São Paulo");
-        usuarioClienteDto.setBairro("Cerqueira César");
-        usuarioClienteDto.setRua("Rua Haddock Lobo");
-        usuarioClienteDto.setNumero("595");
+    public static ClienteDto buildUsuarioClienteDto() {
+        ClienteDto clienteDto = new ClienteDto();
+        clienteDto.setNome("Ana Beatriz");
+        clienteDto.setEmail("ana@gmail.com");
+        clienteDto.setSenha("#Teste12");
+        clienteDto.setDataNasc(LocalDate.of(2000, 1, 1));
+        clienteDto.setCpf("12345678901");
+        clienteDto.setCep("01414001");
+        clienteDto.setEstado("SP");
+        clienteDto.setCidade("São Paulo");
+        clienteDto.setBairro("Cerqueira César");
+        clienteDto.setRua("Rua Haddock Lobo");
+        clienteDto.setNumero("595");
 
-        return usuarioClienteDto;
+        return clienteDto;
     }
 
     public static ClienteLoginDto buildClienteLoginDto() {

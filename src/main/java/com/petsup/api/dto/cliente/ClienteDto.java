@@ -1,12 +1,12 @@
-package com.petsup.api.dto;
+package com.petsup.api.dto.cliente;
 
 import io.swagger.v3.oas.annotations.media.Schema;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotBlank;
-import jakarta.validation.constraints.Pattern;
-import jakarta.validation.constraints.Size;
+import jakarta.validation.constraints.*;
+import org.hibernate.validator.constraints.br.CPF;
 
-public abstract class UsuarioDto {
+import java.time.LocalDate;
+
+public class ClienteDto {
 
     @NotBlank
     @Size(min=3)
@@ -38,7 +38,14 @@ public abstract class UsuarioDto {
 
     private String numero;
 
-    //Getters and setters
+    @Schema(description = "Data de nascimento do cliente", example = "1999-01-01")
+    @Past
+    private LocalDate dataNasc;
+
+    @Schema(name = "CPF", description = "CPF do cliente", example = "12345678901")
+    @CPF
+    private String cpf;
+
     public String getNome() {
         return nome;
     }
@@ -117,5 +124,21 @@ public abstract class UsuarioDto {
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public LocalDate getDataNasc() {
+        return dataNasc;
+    }
+
+    public void setDataNasc(LocalDate dataNasc) {
+        this.dataNasc = dataNasc;
+    }
+
+    public String getCpf() {
+        return cpf;
+    }
+
+    public void setCpf(String cpf) {
+        this.cpf = cpf;
     }
 }
