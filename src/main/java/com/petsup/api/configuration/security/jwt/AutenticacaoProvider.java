@@ -1,6 +1,6 @@
 package com.petsup.api.configuration.security.jwt;
 
-import com.petsup.api.service.autentication.AutenticacaoService;
+import com.petsup.api.services.AutenticacaoService;
 import org.springframework.security.authentication.AuthenticationProvider;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;

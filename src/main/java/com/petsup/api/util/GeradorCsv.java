@@ -1,6 +1,6 @@
 package com.petsup.api.util;
 
-import com.petsup.api.entities.Agendamento;
+import com.petsup.api.models.Agendamento;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.server.ResponseStatusException;
 

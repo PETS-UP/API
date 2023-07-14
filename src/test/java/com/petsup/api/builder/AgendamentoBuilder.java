@@ -1,10 +1,10 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.entities.Agendamento;
-import com.petsup.api.entities.enums.Especie;
-import com.petsup.api.entities.enums.NomeServico;
-import com.petsup.api.entities.enums.Raca;
-import com.petsup.api.service.dto.AgendamentoDto;
+import com.petsup.api.models.Agendamento;
+import com.petsup.api.models.enums.Especie;
+import com.petsup.api.models.enums.NomeServico;
+import com.petsup.api.models.enums.Raca;
+import com.petsup.api.dto.AgendamentoDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

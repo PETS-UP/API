@@ -1,6 +1,6 @@
 package com.petsup.api.repositories;
 
-import com.petsup.api.entities.Agendamento;
+import com.petsup.api.models.Agendamento;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
