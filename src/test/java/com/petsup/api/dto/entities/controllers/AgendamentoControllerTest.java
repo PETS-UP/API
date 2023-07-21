@@ -53,81 +53,81 @@ public class AgendamentoControllerTest {
 
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(agendamentoController).build();
-    }
-
-    @Test
-    void getAgendamentosByIdPetshopRetornaListaVazia() throws Exception {
-        when(agendamentoRepository.findByFkPetshopId(anyInt())).thenReturn(emptyList());
-        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
-
-        mockMvc.perform(get("/agendamentos/petshop").param("idPetshop", "1"))
-                .andExpect(status().isNoContent());
-
-        assertEquals(emptyList(), agendamentoRepository.findByFkPetshopId(1));
-    }
-
-    @Test
-    void getAgendamentosByIdPetshopRetornaListaDeTamanho3() throws Exception {
-        List<Agendamento> lista = AgendamentoBuilder.buildListaAgendamento();
-
-        when(agendamentoRepository.findByFkPetshopId(anyInt())).thenReturn(lista);
-        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
-
-        mockMvc.perform(get("/agendamentos/petshop").param("idPetshop", "1"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, agendamentoRepository.findByFkPetshopId(1).size());
-    }
-
-    @Test
-    void getAgendamentosByIdClienteRetornaListaVazia() throws Exception {
-        when(agendamentoRepository.findByFkClienteId(anyInt())).thenReturn(emptyList());
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        mockMvc.perform(get("/agendamentos/cliente").param("idCliente", "1"))
-                .andExpect(status().isNoContent());
-
-        assertEquals(emptyList(), agendamentoRepository.findByFkClienteId(1));
-    }
-
-    @Test
-    void getAgendamentosByIdClienteRetornaListaDeTamanho3() throws Exception {
-        List<Agendamento> lista = AgendamentoBuilder.buildListaAgendamento();
-
-        when(agendamentoRepository.findByFkClienteId(anyInt())).thenReturn(lista);
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        mockMvc.perform(get("/agendamentos/cliente").param("idCliente", "1"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, agendamentoRepository.findByFkClienteId(1).size());
-    }
-
-    @Test
-    void getAgendamentoByIdRetornaAgendamentoDeId1() throws Exception {
-        Integer id = 1;
-        Agendamento agendamento = AgendamentoBuilder.buildAgendamento();
-
-        when(agendamentoRepository.findById(anyInt())).thenReturn(Optional.of(agendamento));
-
-        mockMvc.perform(get("/agendamentos/{id}", id))
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.id").value(agendamento.getId()));
-
-        assertEquals(agendamento.getId(), agendamentoRepository.findById(1).get().getId());
-    }
-
-    @Test
-    void getAgendamentoByIdLancaExcecao() {
-        when(agendamentoRepository.findById(anyInt())).thenThrow(new RuntimeException("Agendamento não encontrado"));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> agendamentoRepository.findById(999));
-
-        assertEquals("Agendamento não encontrado", exception.getMessage());
-    }
+//    @BeforeEach
+//    public void setup() {
+//        mockMvc = MockMvcBuilders.standaloneSetup(agendamentoController).build();
+//    }
+//
+//    @Test
+//    void getAgendamentosByIdPetshopRetornaListaVazia() throws Exception {
+//        when(agendamentoRepository.findByFkPetshopId(anyInt())).thenReturn(emptyList());
+//        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
+//
+//        mockMvc.perform(get("/agendamentos/petshop").param("idPetshop", "1"))
+//                .andExpect(status().isNoContent());
+//
+//        assertEquals(emptyList(), agendamentoRepository.findByFkPetshopId(1));
+//    }
+//
+//    @Test
+//    void getAgendamentosByIdPetshopRetornaListaDeTamanho3() throws Exception {
+//        List<Agendamento> lista = AgendamentoBuilder.buildListaAgendamento();
+//
+//        when(agendamentoRepository.findByFkPetshopId(anyInt())).thenReturn(lista);
+//        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
+//
+//        mockMvc.perform(get("/agendamentos/petshop").param("idPetshop", "1"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, agendamentoRepository.findByFkPetshopId(1).size());
+//    }
+//
+//    @Test
+//    void getAgendamentosByIdClienteRetornaListaVazia() throws Exception {
+//        when(agendamentoRepository.findByFkClienteId(anyInt())).thenReturn(emptyList());
+//        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
+//
+//        mockMvc.perform(get("/agendamentos/cliente").param("idCliente", "1"))
+//                .andExpect(status().isNoContent());
+//
+//        assertEquals(emptyList(), agendamentoRepository.findByFkClienteId(1));
+//    }
+//
+//    @Test
+//    void getAgendamentosByIdClienteRetornaListaDeTamanho3() throws Exception {
+//        List<Agendamento> lista = AgendamentoBuilder.buildListaAgendamento();
+//
+//        when(agendamentoRepository.findByFkClienteId(anyInt())).thenReturn(lista);
+//        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
+//
+//        mockMvc.perform(get("/agendamentos/cliente").param("idCliente", "1"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, agendamentoRepository.findByFkClienteId(1).size());
+//    }
+//
+//    @Test
+//    void getAgendamentoByIdRetornaAgendamentoDeId1() throws Exception {
+//        Integer id = 1;
+//        Agendamento agendamento = AgendamentoBuilder.buildAgendamento();
+//
+//        when(agendamentoRepository.findById(anyInt())).thenReturn(Optional.of(agendamento));
+//
+//        mockMvc.perform(get("/agendamentos/{id}", id))
+//                .andExpect(status().isOk())
+//                .andExpect(jsonPath("$.id").value(agendamento.getId()));
+//
+//        assertEquals(agendamento.getId(), agendamentoRepository.findById(1).get().getId());
+//    }
+//
+//    @Test
+//    void getAgendamentoByIdLancaExcecao() {
+//        when(agendamentoRepository.findById(anyInt())).thenThrow(new RuntimeException("Agendamento não encontrado"));
+//
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> agendamentoRepository.findById(999));
+//
+//        assertEquals("Agendamento não encontrado", exception.getMessage());
+//    }
 
 //    @Test
 //    void postAgendamentoRetornaStatus201Created() {

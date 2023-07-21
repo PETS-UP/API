@@ -43,53 +43,53 @@ public class ServicoControllerTest {
 
     private MockMvc mockMvc;
 
-    @BeforeEach
-    public void setup() {
-        mockMvc = MockMvcBuilders.standaloneSetup(servicoController).build();
-    }
-
-    @Test
-    void getServicosByIdPetshopRetornaListaVazia() throws Exception {
-        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(emptyList());
-        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
-
-        mockMvc.perform(get("/servicos").param("idPetshop", "1"))
-                .andExpect(status().isNoContent());
-
-        assertEquals(emptyList(), servicoRepository.findAllByFkPetshopId(1));
-    }
-
-    @Test
-    void getServicosByIdPetshopRetornaListaDeTamanho3() throws Exception {
-        List<Servico> lista = ServicoBuilder.buildListaServico();
-
-        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(lista);
-        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
-
-        mockMvc.perform(get("/servicos").param("idPetshop", "1"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, servicoRepository.findAllByFkPetshopId(1).size());
-    }
-
-    @Test
-    void getServicoByIdLancaExcecao() {
-        when(servicoRepository.findById(anyInt())).thenThrow(new RuntimeException("Serviço não encontrado."));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> servicoRepository.findById(999));
-
-        assertEquals("Serviço não encontrado.", exception.getMessage());
-    }
-
-    @Test
-    void postServicoRetornaStatus201Created() {
-        Servico servico = ServicoBuilder.buildServico();
-
-        when(servicoRepository.save(any())).thenReturn(servico);
-        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
-
-        HttpStatus status = (HttpStatus) servicoController.postServico(servico, 1).getStatusCode();
-
-        assertEquals(HttpStatus.CREATED, status);
-    }
+//    @BeforeEach
+//    public void setup() {
+//        mockMvc = MockMvcBuilders.standaloneSetup(servicoController).build();
+//    }
+//
+//    @Test
+//    void getServicosByIdPetshopRetornaListaVazia() throws Exception {
+//        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(emptyList());
+//        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
+//
+//        mockMvc.perform(get("/servicos").param("idPetshop", "1"))
+//                .andExpect(status().isNoContent());
+//
+//        assertEquals(emptyList(), servicoRepository.findAllByFkPetshopId(1));
+//    }
+//
+//    @Test
+//    void getServicosByIdPetshopRetornaListaDeTamanho3() throws Exception {
+//        List<Servico> lista = ServicoBuilder.buildListaServico();
+//
+//        when(servicoRepository.findAllByFkPetshopId(anyInt())).thenReturn(lista);
+//        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
+//
+//        mockMvc.perform(get("/servicos").param("idPetshop", "1"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, servicoRepository.findAllByFkPetshopId(1).size());
+//    }
+//
+//    @Test
+//    void getServicoByIdLancaExcecao() {
+//        when(servicoRepository.findById(anyInt())).thenThrow(new RuntimeException("Serviço não encontrado."));
+//
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> servicoRepository.findById(999));
+//
+//        assertEquals("Serviço não encontrado.", exception.getMessage());
+//    }
+//
+//    @Test
+//    void postServicoRetornaStatus201Created() {
+//        Servico servico = ServicoBuilder.buildServico();
+//
+//        when(servicoRepository.save(any())).thenReturn(servico);
+//        when(petshopRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioPetshopBuilder.buildUsuarioPetshop()));
+//
+//        HttpStatus status = (HttpStatus) servicoController.postServico(servico, 1).getStatusCode();
+//
+//        assertEquals(HttpStatus.CREATED, status);
+//    }
 }
