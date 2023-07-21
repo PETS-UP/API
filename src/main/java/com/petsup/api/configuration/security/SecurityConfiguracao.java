@@ -65,8 +65,10 @@ public class SecurityConfiguracao {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http.cors(Customizer.withDefaults())
+        http
+                .cors(Customizer.withDefaults())
                 .authorizeHttpRequests( auth -> auth.anyRequest().authenticated())
+                .httpBasic(Customizer.withDefaults())
                 .headers()
                 .frameOptions().disable()
                 .and()
