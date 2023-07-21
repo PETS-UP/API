@@ -65,29 +65,9 @@ public class SecurityConfiguracao {
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
-        http
-                .cors(Customizer.withDefaults())
+        return http.cors(Customizer.withDefaults())
                 .authorizeHttpRequests( auth -> auth.anyRequest().authenticated())
-                .httpBasic(Customizer.withDefaults())
-                .headers()
-                .frameOptions().disable()
-                .and()
-                .csrf()
-                .disable()
-                .authorizeHttpRequests(authorize -> authorize.requestMatchers(URLS_PERMITIDAS)
-                        .permitAll()
-                        .anyRequest()
-                        .authenticated()
-                )
-                .exceptionHandling()
-                .authenticationEntryPoint(autenticacaoJwtEntryPoint)
-                .and()
-                .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS);
-
-        http.addFilterBefore(jwtAuthenticationFilterBean(), UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+                .httpBasic(Customizer.withDefaults()).build();
     }
 
     @Bean
