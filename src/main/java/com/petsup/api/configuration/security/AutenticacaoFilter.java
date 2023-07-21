@@ -1,7 +1,7 @@
 package com.petsup.api.configuration.security;
 
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
-import com.petsup.api.service.autentication.AutenticacaoService;
+import com.petsup.api.services.AutenticacaoService;
 import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;

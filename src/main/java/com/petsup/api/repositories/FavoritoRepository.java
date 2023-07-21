@@ -1,6 +1,6 @@
 package com.petsup.api.repositories;
 
-import com.petsup.api.entities.Favorito;
+import com.petsup.api.models.Favorito;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

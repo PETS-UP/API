@@ -1,0 +1,10 @@
+application:
+  name: PetsUp Prd Env
+
+spring:
+  datasource:
+    url: jdbc:sqlserver://servidor-petsup.database.windows.net:1433;database=bd-petsup
+    username: admin-petsup@servidor-petsup
+    password: "#Gfgrupo3"
+  jpa:
+    database-platform: org.hibernate.dialect.SQLServer2012Dialect

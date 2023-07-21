@@ -1,8 +1,8 @@
 package com.petsup.api.builder;
 
-import com.petsup.api.entities.Servico;
-import com.petsup.api.entities.enums.NomeServico;
-import com.petsup.api.service.dto.ServicoDto;
+import com.petsup.api.models.petshop.Servico;
+import com.petsup.api.models.enums.NomeServico;
+import com.petsup.api.dto.petshop.ServicoDto;
 
 import java.util.ArrayList;
 import java.util.List;
