@@ -39,6 +39,7 @@ import java.util.List;
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
 @RequestMapping("/clientes")
+@CrossOrigin(maxAge = 3600)
 public class ClienteController {
 
     @Autowired

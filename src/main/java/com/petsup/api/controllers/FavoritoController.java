@@ -17,6 +17,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping("/favoritos/{idCliente}")
+@CrossOrigin(maxAge = 3600)
 public class FavoritoController {
 
     @Autowired

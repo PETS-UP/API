@@ -14,6 +14,7 @@ import java.util.List;
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
 @RequestMapping("/agendamentos")
+@CrossOrigin(maxAge = 3600)
 public class AgendamentoController {
 
     @Autowired

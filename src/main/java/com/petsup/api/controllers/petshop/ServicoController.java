@@ -16,6 +16,7 @@ import java.util.List;
 @Tag(name = "Serviços", description = "Requisições relacionadas a serviços.")
 @RestController
 @RequestMapping("/servicos")
+@CrossOrigin(maxAge = 3600)
 public class ServicoController {
 
     @Autowired

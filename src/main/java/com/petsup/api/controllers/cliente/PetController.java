@@ -28,6 +28,7 @@ import java.util.List;
 @Tag(name = "Pets", description = "Requisições relacionadas a pets.")
 @RestController
 @RequestMapping("/pets")
+@CrossOrigin(maxAge = 3600)
 public class PetController {
     @Autowired
     private PetService petService;
