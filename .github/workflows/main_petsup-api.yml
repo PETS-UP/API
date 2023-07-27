@@ -49,5 +49,5 @@ jobs:
         with:
           app-name: 'petsup-api'
           slot-name: 'Production'
-          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_6F5FDEF21BDB44EBB07D7C6D65EF35AE }}
+          publish-profile: ${{ secrets.AZUREAPPSERVICE_PUBLISHPROFILE_527E1915848B4E3C9B164F6AC5457AAC }}
           package: '*.jar'
