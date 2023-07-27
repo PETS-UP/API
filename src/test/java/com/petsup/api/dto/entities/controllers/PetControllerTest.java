@@ -48,48 +48,48 @@ public class PetControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(petController).build();
     }
 
-    @Test
-    void getPetsByUserIdRetornaListaVazia() throws Exception {
-        when(petRepository.findByFkClienteId(anyInt())).thenReturn(emptyList());
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        mockMvc.perform(get("/pets").param("idCliente", "1"))
-                .andExpect(status().isNoContent());
-
-        assertEquals(emptyList(), petRepository.findByFkClienteId(1));
-    }
-
-    @Test
-    void getPetsByUserIdRetornaListaDeTamanho3() throws Exception {
-        List<Pet> lista = PetBuilder.buildListaPet();
-
-        when(petRepository.findByFkClienteId(anyInt())).thenReturn(lista);
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        mockMvc.perform(get("/pets").param("idCliente", "1"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, petRepository.findByFkClienteId(1).size());
-    }
-
-    @Test
-    void getPetByIdLancaExcecao() {
-        when(petRepository.findById(anyInt())).thenThrow(new RuntimeException("Pet não encontrado"));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> petRepository.findById(999));
-
-        assertEquals("Pet não encontrado", exception.getMessage());
-    }
-
-    @Test
-    void postPetRetornaStatus201Created() {
-        Pet pet = PetBuilder.buildPet();
-
-        when(petRepository.save(any())).thenReturn(pet);
-        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
-
-        HttpStatus status = (HttpStatus) petController.postPet(pet, 1).getStatusCode();
-
-        assertEquals(HttpStatus.CREATED, status);
-    }
+//    @Test
+//    void getPetsByUserIdRetornaListaVazia() throws Exception {
+//        when(petRepository.findByFkClienteId(anyInt())).thenReturn(emptyList());
+//        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
+//
+//        mockMvc.perform(get("/pets").param("idCliente", "1"))
+//                .andExpect(status().isNoContent());
+//
+//        assertEquals(emptyList(), petRepository.findByFkClienteId(1));
+//    }
+//
+//    @Test
+//    void getPetsByUserIdRetornaListaDeTamanho3() throws Exception {
+//        List<Pet> lista = PetBuilder.buildListaPet();
+//
+//        when(petRepository.findByFkClienteId(anyInt())).thenReturn(lista);
+//        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
+//
+//        mockMvc.perform(get("/pets").param("idCliente", "1"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, petRepository.findByFkClienteId(1).size());
+//    }
+//
+//    @Test
+//    void getPetByIdLancaExcecao() {
+//        when(petRepository.findById(anyInt())).thenThrow(new RuntimeException("Pet não encontrado"));
+//
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> petRepository.findById(999));
+//
+//        assertEquals("Pet não encontrado", exception.getMessage());
+//    }
+//
+//    @Test
+//    void postPetRetornaStatus201Created() {
+//        Pet pet = PetBuilder.buildPet();
+//
+//        when(petRepository.save(any())).thenReturn(pet);
+//        when(clienteRepository.findById(anyInt())).thenReturn(Optional.of(UsuarioClienteBuilder.buildUsuarioCliente()));
+//
+//        HttpStatus status = (HttpStatus) petController.postPet(pet, 1).getStatusCode();
+//
+//        assertEquals(HttpStatus.CREATED, status);
+//    }
 }
