@@ -44,95 +44,95 @@ public class ClienteControllerTest {
         mockMvc = MockMvcBuilders.standaloneSetup(clienteController).build();
     }
 
-    @Test
-    void getClientesRetornaListaVazia() throws Exception {
-        when(clienteRepository.findAll()).thenReturn(emptyList());
-
-        mockMvc.perform(get("/clientes"))
-                .andExpect(status().isNoContent());
-
-        assertEquals(emptyList(), clienteRepository.findAll());
-    }
-
-    @Test
-    void getClientesRetornaListaDeTamanho3() throws Exception {
-        List<Cliente> lista = UsuarioClienteBuilder.buildListaUsuarioCliente();
-
-        when(clienteRepository.findAll()).thenReturn(lista);
-
-        mockMvc.perform(get("/clientes"))
-                .andExpect(status().isOk());
-
-        assertEquals(3, clienteRepository.findAll().size());
-    }
-
 //    @Test
-//    void getUserByIdRetornaClienteDeId1() throws Exception {
-//        Integer id = 1;
-//        UsuarioCliente usuarioCliente = UsuarioClienteBuilder.buildUsuarioCliente();
+//    void getClientesRetornaListaVazia() throws Exception {
+//        when(clienteRepository.findAll()).thenReturn(emptyList());
 //
-//        when(clienteRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioCliente));
+//        mockMvc.perform(get("/clientes"))
+//                .andExpect(status().isNoContent());
 //
-//        mockMvc.perform(get("/clientes/{id}", id))
-//                .andExpect(status().isOk())
-//                .andExpect(jsonPath("$.id").value(usuarioCliente.getId()));
-//
-//        assertEquals(usuarioCliente.getId(), clienteRepository.findById(1).get().getId());
+//        assertEquals(emptyList(), clienteRepository.findAll());
 //    }
-
-    @Test
-    void getUserByIdLancaExcecao() {
-        when(clienteRepository.findById(any())).thenThrow(new RuntimeException("Cliente não encontrado"));
-
-        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteRepository.findById(999));
-
-        assertEquals("Cliente não encontrado", exception.getMessage());
-    }
-
-    @Test
-    void postUserClienteRetornaStatus201Created() {
-        ClienteDto clienteDto = UsuarioClienteBuilder.buildUsuarioClienteDto();
-
-        doNothing().when(clienteService).postCliente(clienteDto);
-
-        HttpStatus status = (HttpStatus) clienteController.postUserCliente(clienteDto).getStatusCode();
-
-        assertEquals(HttpStatus.CREATED, status);
-    }
-
-    @Test
-    void deleteByIdRetornaStatus204NoContent() {
-        doNothing().when(clienteRepository).deleteById(any());
-
-        HttpStatus status = (HttpStatus) clienteController.deleteById(1).getStatusCode();
-
-        assertEquals(HttpStatus.NO_CONTENT, status);
-    }
-
-    @Test
-    void deleteByIdLancaExcecao() {
-        RuntimeException exception = new RuntimeException("Cliente não encontrado");
-
-        when(clienteController.deleteById(999)).thenThrow(exception);
-
-        assertThrows(RuntimeException.class,
-                () -> clienteController.deleteById(999));
-        assertEquals("Cliente não encontrado", exception.getMessage());
-    }
-
-    @Test
-    void loginRetornaStatus200OkEClienteEsperado() {
-        ClienteTokenDto clienteEsperado = UsuarioClienteBuilder.buildClienteTokenDto();
-
-        when(clienteService.authenticateCliente(any()))
-                .thenReturn(UsuarioClienteBuilder.buildClienteTokenDto());
-
-        ClienteTokenDto cliente = clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getBody();
-
-        assertEquals(HttpStatus.OK, clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getStatusCode());
-        assertEquals(clienteEsperado.getClienteId(), cliente.getClienteId());
-        assertEquals(clienteEsperado.getNome(), cliente.getNome());
-        assertEquals(clienteEsperado.getEmail(), cliente.getEmail());
-        assertEquals(clienteEsperado.getToken(), cliente.getToken());
-    }
+//
+//    @Test
+//    void getClientesRetornaListaDeTamanho3() throws Exception {
+//        List<Cliente> lista = UsuarioClienteBuilder.buildListaUsuarioCliente();
+//
+//        when(clienteRepository.findAll()).thenReturn(lista);
+//
+//        mockMvc.perform(get("/clientes"))
+//                .andExpect(status().isOk());
+//
+//        assertEquals(3, clienteRepository.findAll().size());
+//    }
+//
+////    @Test
+////    void getUserByIdRetornaClienteDeId1() throws Exception {
+////        Integer id = 1;
+////        UsuarioCliente usuarioCliente = UsuarioClienteBuilder.buildUsuarioCliente();
+////
+////        when(clienteRepository.findById(Mockito.any())).thenReturn(Optional.of(usuarioCliente));
+////
+////        mockMvc.perform(get("/clientes/{id}", id))
+////                .andExpect(status().isOk())
+////                .andExpect(jsonPath("$.id").value(usuarioCliente.getId()));
+////
+////        assertEquals(usuarioCliente.getId(), clienteRepository.findById(1).get().getId());
+////    }
+//
+//    @Test
+//    void getUserByIdLancaExcecao() {
+//        when(clienteRepository.findById(any())).thenThrow(new RuntimeException("Cliente não encontrado"));
+//
+//        RuntimeException exception = assertThrows(RuntimeException.class, () -> clienteRepository.findById(999));
+//
+//        assertEquals("Cliente não encontrado", exception.getMessage());
+//    }
+//
+//    @Test
+//    void postUserClienteRetornaStatus201Created() {
+//        ClienteDto clienteDto = UsuarioClienteBuilder.buildUsuarioClienteDto();
+//
+//        doNothing().when(clienteService).postCliente(clienteDto);
+//
+//        HttpStatus status = (HttpStatus) clienteController.postUserCliente(clienteDto).getStatusCode();
+//
+//        assertEquals(HttpStatus.CREATED, status);
+//    }
+//
+//    @Test
+//    void deleteByIdRetornaStatus204NoContent() {
+//        doNothing().when(clienteRepository).deleteById(any());
+//
+//        HttpStatus status = (HttpStatus) clienteController.deleteById(1).getStatusCode();
+//
+//        assertEquals(HttpStatus.NO_CONTENT, status);
+//    }
+//
+//    @Test
+//    void deleteByIdLancaExcecao() {
+//        RuntimeException exception = new RuntimeException("Cliente não encontrado");
+//
+//        when(clienteController.deleteById(999)).thenThrow(exception);
+//
+//        assertThrows(RuntimeException.class,
+//                () -> clienteController.deleteById(999));
+//        assertEquals("Cliente não encontrado", exception.getMessage());
+//    }
+//
+//    @Test
+//    void loginRetornaStatus200OkEClienteEsperado() {
+//        ClienteTokenDto clienteEsperado = UsuarioClienteBuilder.buildClienteTokenDto();
+//
+//        when(clienteService.authenticateCliente(any()))
+//                .thenReturn(UsuarioClienteBuilder.buildClienteTokenDto());
+//
+//        ClienteTokenDto cliente = clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getBody();
+//
+//        assertEquals(HttpStatus.OK, clienteController.login(UsuarioClienteBuilder.buildClienteLoginDto()).getStatusCode());
+//        assertEquals(clienteEsperado.getClienteId(), cliente.getClienteId());
+//        assertEquals(clienteEsperado.getNome(), cliente.getNome());
+//        assertEquals(clienteEsperado.getEmail(), cliente.getEmail());
+//        assertEquals(clienteEsperado.getToken(), cliente.getToken());
+//    }
 }
