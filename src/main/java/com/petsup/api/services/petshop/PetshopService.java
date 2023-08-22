@@ -33,6 +33,8 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
@@ -211,5 +213,25 @@ public class PetshopService {
         ListaObj<Agendamento> listaLocal = ordenaListaAgendamento(listaAgendamentos);
 
         return AgendamentoMapper.ofListaObjAgendamentoRespostaDto(listaLocal);
+    }
+
+    public void adicionarHoraFuncionamento(LocalTime horaAbertura, LocalTime horaFechamento, Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        petshop.setHoraAbertura(horaAbertura);
+        petshop.setHoraFechamento(horaFechamento);
+    }
+
+    public void adicionarDiasFuncionais(List<DayOfWeek> dias, Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        petshop.getDiasFuncionais().clear();
+        for (int i = 0; i < dias.size(); i++) {
+            petshop.getDiasFuncionais().add(dias.get(i));
+        }
     }
 }

@@ -30,6 +30,9 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
+import java.sql.Time;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 
 /*
@@ -221,6 +224,19 @@ public class PetshopController {
                 .contentType(MediaType.APPLICATION_OCTET_STREAM)
                 .body(resource);
     }
+
+    @PostMapping("/adicionarHoraFuncionamento/{idPetshop}")
+    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestParam LocalTime horaAbertura, @RequestParam LocalTime horaFechamento){
+        petshopService.adicionarHoraFuncionamento(horaAbertura,horaFechamento, idPetshop);
+        return ResponseEntity.ok().build();
+    }
+
+    @PostMapping("/adicionarDiasFuncionais/{idPetshop}")
+    public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestParam List<DayOfWeek> diasDaSemana){
+        petshopService.adicionarDiasFuncionais(diasDaSemana, idPetshop);
+        return ResponseEntity.ok().build();
+    }
+
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")

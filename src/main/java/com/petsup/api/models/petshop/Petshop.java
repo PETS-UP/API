@@ -8,6 +8,10 @@ import com.petsup.api.models.cliente.ClienteSubscriber;
 import jakarta.persistence.*;
 import org.springframework.mail.javamail.JavaMailSender;
 
+import java.sql.Time;
+import java.text.SimpleDateFormat;
+import java.time.DayOfWeek;
+import java.time.LocalTime;
 import java.util.List;
 
 @Entity
@@ -56,6 +60,12 @@ public class Petshop implements ClienteObserver {
 
     @OneToMany(mappedBy = "fkPetshop")
     private List<ClienteSubscriber> inscritos;
+
+    private LocalTime horaAbertura;
+
+    private LocalTime horaFechamento;
+
+    private List<DayOfWeek> diasFuncionais;
 
     public Integer getId() {
         return id;
@@ -199,6 +209,30 @@ public class Petshop implements ClienteObserver {
 
     public void setInscritos(List<ClienteSubscriber> inscritos) {
         this.inscritos = inscritos;
+    }
+
+    public LocalTime getHoraAbertura() {
+        return horaAbertura;
+    }
+
+    public void setHoraAbertura(LocalTime horaAbertura) {
+        this.horaAbertura = horaAbertura;
+    }
+
+    public LocalTime getHoraFechamento() {
+        return horaFechamento;
+    }
+
+    public void setHoraFechamento(LocalTime horaFechamento) {
+        this.horaFechamento = horaFechamento;
+    }
+
+    public List<DayOfWeek> getDiasFuncionais() {
+        return diasFuncionais;
+    }
+
+    public void setDiasFuncionais(List<DayOfWeek> diasFuncionais) {
+        this.diasFuncionais = diasFuncionais;
     }
 
     public void inscricao(ClienteSubscriber listener){
