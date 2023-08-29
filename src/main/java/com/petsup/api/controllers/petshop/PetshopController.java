@@ -226,17 +226,22 @@ public class PetshopController {
     }
 
     @PostMapping("/adicionarHoraFuncionamento/{idPetshop}")
-    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestParam LocalTime horaAbertura, @RequestParam LocalTime horaFechamento){
+    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody LocalTime horaAbertura, @RequestBody LocalTime horaFechamento){
         petshopService.adicionarHoraFuncionamento(horaAbertura,horaFechamento, idPetshop);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/adicionarDiasFuncionais/{idPetshop}")
-    public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestParam List<DayOfWeek> diasDaSemana){
+    public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestBody List<DayOfWeek> diasDaSemana){
         petshopService.adicionarDiasFuncionais(diasDaSemana, idPetshop);
         return ResponseEntity.ok().build();
     }
 
+    @GetMapping("/checarAberto/{idPetshop}")
+    public ResponseEntity<Boolean> checkOpenHour(@PathVariable Integer idPetshop){
+        Boolean aberto = petshopService.estaAberto(idPetshop);
+        return ResponseEntity.ok(aberto);
+    }
 
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")

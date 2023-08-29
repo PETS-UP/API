@@ -234,4 +234,15 @@ public class PetshopService {
             petshop.getDiasFuncionais().add(dias.get(i));
         }
     }
+
+    public Boolean estaAberto(Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+        LocalTime horaAbrir = petshop.getHoraAbertura();
+        LocalTime horaFechar = petshop.getHoraFechamento();
+        LocalTime agora = LocalTime.now();
+        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar);
+    }
+
 }
