@@ -1,7 +1,8 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoRespostaDto;
-import com.petsup.api.dto.HorariosDTO;
+import com.petsup.api.dto.DiaSemanaDto;
+import com.petsup.api.dto.HorariosDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -21,7 +22,6 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.cglib.core.Local;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -32,9 +32,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.sql.Time;
 import java.time.DayOfWeek;
-import java.time.LocalTime;
 import java.util.List;
 
 /*
@@ -156,13 +154,6 @@ public class PetshopController {
 
     //Crud fim
 
-//    @GetMapping("/report/arquivo/csv/{id}")
-//    @ApiResponse(responseCode = "201", description = "Relatório gravado em CSV.")
-//    public ResponseEntity<Void> reportCsv(@PathVariable int id) {
-//        petshopService.gerarRelatorioCsv(id);
-//        return ResponseEntity.status(201).build();
-//    }
-
     @GetMapping("/download/csv/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
     public ResponseEntity<Resource> downloadCsv(@PathVariable int idPetshop) {
@@ -228,14 +219,14 @@ public class PetshopController {
     }
 
     @PostMapping("/adicionarHoraFuncionamento/{idPetshop}")
-    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody HorariosDTO horarios){
+    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody HorariosDto horarios){
         petshopService.adicionarHoraFuncionamento(horarios.horaAbertura(),horarios.horaFechamento(), idPetshop);
         return ResponseEntity.ok().build();
     }
 
     @PostMapping("/adicionarDiasFuncionais/{idPetshop}")
-    public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestBody List<DayOfWeek> diasDaSemana){
-        petshopService.adicionarDiasFuncionais(diasDaSemana, idPetshop);
+    public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestBody DiaSemanaDto diasDaSemana){
+        petshopService.adicionarDiasFuncionais(diasDaSemana.diasFuncionais(), idPetshop);
         return ResponseEntity.ok().build();
     }
 
