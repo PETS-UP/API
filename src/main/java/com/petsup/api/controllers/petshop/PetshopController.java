@@ -1,6 +1,7 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoRespostaDto;
+import com.petsup.api.dto.HorariosDTO;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -20,6 +21,7 @@ import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.http.HttpHeaders;
@@ -226,8 +228,8 @@ public class PetshopController {
     }
 
     @PostMapping("/adicionarHoraFuncionamento/{idPetshop}")
-    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody LocalTime horaAbertura, @RequestBody LocalTime horaFechamento){
-        petshopService.adicionarHoraFuncionamento(horaAbertura,horaFechamento, idPetshop);
+    public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody HorariosDTO horarios){
+        petshopService.adicionarHoraFuncionamento(horarios.horaAbertura(),horarios.horaFechamento(), idPetshop);
         return ResponseEntity.ok().build();
     }
 
@@ -242,7 +244,6 @@ public class PetshopController {
         Boolean aberto = petshopService.estaAberto(idPetshop);
         return ResponseEntity.ok(aberto);
     }
-
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")

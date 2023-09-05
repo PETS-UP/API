@@ -1,11 +1,13 @@
 package com.petsup.api.models.petshop;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.models.AvaliacaoPetshop;
 import com.petsup.api.models.Favorito;
 import com.petsup.api.models.cliente.ClienteObserver;
 import com.petsup.api.models.cliente.ClienteSubscriber;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Pattern;
 import org.springframework.mail.javamail.JavaMailSender;
 
 import java.sql.Time;
@@ -61,8 +63,10 @@ public class Petshop implements ClienteObserver {
     @OneToMany(mappedBy = "fkPetshop")
     private List<ClienteSubscriber> inscritos;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss")
     private LocalTime horaAbertura;
 
+    @JsonFormat(shape=JsonFormat.Shape.STRING, pattern="HH:mm:ss")
     private LocalTime horaFechamento;
 
     private List<DayOfWeek> diasFuncionais;
