@@ -24,6 +24,9 @@ public class PetshopMapper {
         petshop.setBairro(petshopCriacaoDto.getBairro());
         petshop.setRua(petshopCriacaoDto.getRua());
         petshop.setNumero(petshopCriacaoDto.getNumero());
+        petshop.setHoraAbertura(petshopCriacaoDto.getHoraAbertura());
+        petshop.setHoraFechamento(petshopCriacaoDto.getHoraFechamento());
+        petshop.setDiasFuncionais(petshopCriacaoDto.getDiasFuncionais());
 
         return petshop;
     }
@@ -54,6 +57,9 @@ public class PetshopMapper {
         petshopDto.setBairro(petshop.getBairro());
         petshopDto.setRua(petshop.getRua());
         petshopDto.setNumero(petshop.getNumero());
+        petshopDto.setHoraAbertura(petshop.getHoraAbertura());
+        petshopDto.setHoraFechamento(petshop.getHoraFechamento());
+        petshopDto.setDiasFuncionais(petshop.getDiasFuncionais());
 
         return petshopDto;
     }
@@ -73,6 +79,9 @@ public class PetshopMapper {
         petshopAtt.setBairro(petshopAtualizacaoDto.getBairro());
         petshopAtt.setRua(petshopAtualizacaoDto.getRua());
         petshopAtt.setNumero(petshopAtualizacaoDto.getNumero());
+        petshopAtt.setHoraAbertura(petshopAtualizacaoDto.getHoraAbertura());
+        petshopAtt.setHoraFechamento(petshopAtualizacaoDto.getHoraFechamento());
+        petshopAtt.setDiasFuncionais(petshopAtualizacaoDto.getDiasFuncionais());
 
         return petshopAtt;
     }
