@@ -23,6 +23,7 @@ import com.petsup.api.repositories.cliente.ClienteSubscriberRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
 import com.petsup.api.repositories.petshop.ServicoRepository;
 import com.petsup.api.util.ListaObj;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -33,6 +34,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 import static com.petsup.api.util.OrdenacaoAgendametos.ordenaListaAgendamento;
@@ -171,21 +175,6 @@ public class PetshopService {
         return ServicoMapper.ofServicoRespostaDto(servico);
     }
 
-//    public void gerarRelatorioCsv(int id){
-//        List<Agendamento> as = agendamentoRepository.findByFkPetshopId(id);
-//
-//        if (as.isEmpty()){
-//            throw new RuntimeException("Petshop não possui agendamentos");
-//        }
-//
-//        ListaObj<Agendamento> listaLocal = new ListaObj<>(as.size());
-//
-//        for (int i = 0; i < as.size(); i++) {
-//            listaLocal.adiciona(as.get(i));
-//        }
-//        GeradorCsv.gravaArquivoCsv(listaLocal);
-//    }
-
     public void subscribeToPetshop(Integer idPetshop, Integer idCliente){
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
@@ -212,4 +201,37 @@ public class PetshopService {
 
         return AgendamentoMapper.ofListaObjAgendamentoRespostaDto(listaLocal);
     }
+
+    public void adicionarHoraFuncionamento(LocalTime horaAbertura, LocalTime horaFechamento, Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+
+        petshop.setHoraAbertura(horaAbertura);
+        petshop.setHoraFechamento(horaFechamento);
+        petshopRepository.save(petshop);
+    }
+
+    public void adicionarDiasFuncionais(@NotNull List<DayOfWeek> dias, Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+        List<DayOfWeek> aux = new ArrayList<>();
+        for (int i = 0; i < dias.size(); i++) {
+            aux.add(dias.get(i));
+        }
+        petshop.setDiasFuncionais(aux);
+        petshopRepository.save(petshop);
+    }
+
+    public Boolean estaAberto(Integer idPetshop){
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
+        );
+        LocalTime horaAbrir = petshop.getHoraAbertura();
+        LocalTime horaFechar = petshop.getHoraFechamento();
+        LocalTime agora = LocalTime.now();
+        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar);
+    }
+
 }

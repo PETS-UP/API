@@ -6,6 +6,10 @@ import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
 
+import java.time.DayOfWeek;
+import java.time.LocalTime;
+import java.util.List;
+
 public class PetshopDto {
 
     private int id;
@@ -48,6 +52,9 @@ public class PetshopDto {
     @Size(min = 6, max = 100)
     @Schema(description = "Nome do petshop", example = "Fofinho Petshop")
     private String razaoSocial;
+    private LocalTime horaAbertura;
+    private LocalTime horaFechamento;
+    private List<DayOfWeek> diasFuncionais;
 
     public int getId() {
         return id;
@@ -151,5 +158,29 @@ public class PetshopDto {
 
     public void setRazaoSocial(String razaoSocial) {
         this.razaoSocial = razaoSocial;
+    }
+
+    public LocalTime getHoraAbertura() {
+        return horaAbertura;
+    }
+
+    public void setHoraAbertura(LocalTime horaAbertura) {
+        this.horaAbertura = horaAbertura;
+    }
+
+    public LocalTime getHoraFechamento() {
+        return horaFechamento;
+    }
+
+    public void setHoraFechamento(LocalTime horaFechamento) {
+        this.horaFechamento = horaFechamento;
+    }
+
+    public List<DayOfWeek> getDiasFuncionais() {
+        return diasFuncionais;
+    }
+
+    public void setDiasFuncionais(List<DayOfWeek> diasFuncionais) {
+        this.diasFuncionais = diasFuncionais;
     }
 }
