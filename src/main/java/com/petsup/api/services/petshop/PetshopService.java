@@ -35,6 +35,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.DayOfWeek;
+import java.time.LocalDate;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -230,8 +231,10 @@ public class PetshopService {
         );
         LocalTime horaAbrir = petshop.getHoraAbertura();
         LocalTime horaFechar = petshop.getHoraFechamento();
+        List<DayOfWeek> diasAbertos = petshop.getDiasFuncionais();
+        DayOfWeek hoje = LocalDate.now().getDayOfWeek();
         LocalTime agora = LocalTime.now();
-        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar);
+        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje);
     }
 
 }
