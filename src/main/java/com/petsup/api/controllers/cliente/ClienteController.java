@@ -8,8 +8,8 @@ import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.ClienteDto;
 import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.AvaliacaoPetshop;
-import com.petsup.api.services.cliente.ClienteService;
 import com.petsup.api.services.GeocodingService;
+import com.petsup.api.services.cliente.ClienteService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -17,7 +17,9 @@ import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /*
@@ -93,6 +95,46 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
     }
 
+    @PostMapping("/adicionar-pfp/{idCliente}")
+    public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idCliente,
+                                                      @RequestParam MultipartFile image) throws IOException {
+        if (this.clienteService.postProfilePicture(idCliente, image)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/retornar-blob/{idCliente}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable int idCliente) {
+        byte[] response = this.clienteService.getProfilePicture(idCliente);
+
+        if (response.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/retornar-imagem/{idCliente}")
+    public ResponseEntity<String> getImage(@PathVariable int idCliente) {
+        return ResponseEntity.ok(clienteService.getImage(idCliente));
+    }
+
+    @PutMapping("/atualizar-imagem/{idCliente}")
+    public ResponseEntity<Boolean> updateImage(@PathVariable int idCliente,
+                                              @RequestParam MultipartFile image) throws IOException {
+        return ResponseEntity.ok(clienteService.updateImage(idCliente, image));
+    }
+
+    @DeleteMapping("/deletar-imagem/{idCliente}")
+    public ResponseEntity<String> deleteImage(@PathVariable int idCliente) {
+        if (clienteService.deleteImage(idCliente)){
+            return ResponseEntity.ok("Imagem deletada");
+        }
+
+        return ResponseEntity.internalServerError().body("Erro ao deletar imagem");
+    }
+
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
     @DeleteMapping("/{idCliente}")
@@ -149,7 +191,7 @@ public class ClienteController {
     public ResponseEntity<List<PetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
         List<PetshopDto> petshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
 
-        if (petshopDtos.isEmpty()){
+        if (petshopDtos.isEmpty()) {
             return ResponseEntity.noContent().build();
         }
 

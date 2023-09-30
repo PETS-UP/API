@@ -3,6 +3,7 @@ package com.petsup.api.dto.cliente;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.*;
 import org.hibernate.validator.constraints.br.CPF;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.LocalDate;
 
@@ -37,6 +38,8 @@ public class ClienteDto {
     private String rua;
 
     private String numero;
+
+    private MultipartFile imagemPerfil;
 
     @Schema(description = "Data de nascimento do cliente", example = "1999-01-01")
     @Past
@@ -140,5 +143,13 @@ public class ClienteDto {
 
     public void setCpf(String cpf) {
         this.cpf = cpf;
+    }
+
+    public MultipartFile getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(MultipartFile imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 }

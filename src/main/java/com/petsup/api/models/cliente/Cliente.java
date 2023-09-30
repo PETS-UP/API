@@ -36,6 +36,8 @@ public class Cliente /*implements ClienteObserver*/ {
 
     private String numero;
 
+    private String imagemPerfil;
+
     @OneToMany(mappedBy = "fkCliente")
     private List<AvaliacaoPetshop> avaliacoes;
 
@@ -58,9 +60,6 @@ public class Cliente /*implements ClienteObserver*/ {
 
     @OneToMany(mappedBy = "fkCliente", fetch = FetchType.LAZY)
     private List<Agendamento> agendamentos;
-
-//    private MailSender mailSender;
-//    private SimpleMailMessage templateMessage;
 
     public Integer getId() {
         return id;
@@ -222,86 +221,13 @@ public class Cliente /*implements ClienteObserver*/ {
         this.inscritos = inscritos;
     }
 
-//    public void setMailSender(MailSender mailSender) {
-//        this.mailSender = mailSender;
-//    }
-//
-//    public void setTemplateMessage(SimpleMailMessage templateMessage) {
-//        this.templateMessage = templateMessage;
-//    }
+    public String getImagemPerfil() {
+        return imagemPerfil;
+    }
 
-//    @Override
-//    public void atualiza(UsuarioClienteDto usuarioClienteDto) {
-//        // Recipient's email ID needs to be mentioned.
-//        // String to = "fromaddress@gmail.com";
-//
-//        // Sender's email ID needs to be mentioned
-//        // String from = "toaddress@gmail.com";
-//
-//        // Assuming you are sending email from through gmails smtp
-//         String host = "smtp.gmail.com";
-//
-//        // Get system properties
-//        Properties properties = System.getProperties();
-//
-//        // Setup mail server
-//        properties.put("mail.smtp.host", host);
-//        properties.put("mail.smtp.port", "465");
-//        properties.put("mail.smtp.ssl.enable", "true");
-//        properties.put("mail.smtp.auth", "true");
-//
-//        // Get the Session object.// and pass username and password
-//        Session session = Session.getInstance(properties, new javax.mail.Authenticator() {
-//
-//            protected PasswordAuthentication getPasswordAuthentication() {
-//
-//                return new PasswordAuthentication(emailRemetente, "*******");
-//
-//            }
-//
-//        });
-//
-//        // Used to debug SMTP issues
-//        session.setDebug(true);
-//
-//        try {
-//            // Create a default MimeMessage object.
-//            MimeMessage message = new MimeMessage(session);
-//
-//            // Set From: header field of the header.
-//            message.setFrom(new InternetAddress(emailRemetente));
-//
-//            // Set To: header field of the header.
-//            message.addRecipient(Message.RecipientType.TO, new InternetAddress(emailDestinatario));
-//
-//            // Set Subject: header field
-//            message.setSubject("This is the Subject Line!");
-//
-//            // Send the actual HTML message.
-//            message.setContent(
-//                    "<h1>Nova promoção!</h1>",
-//                    "text/html");
-//
-//            System.out.println("sending...");
-//            // Send message
-//            Transport.send(message);
-//            System.out.println("Sent message successfully....");
-//        } catch (MessagingException mex) {
-//            mex.printStackTrace();
-//        }
-//        SimpleMailMessage msg = new SimpleMailMessage(this.templateMessage);
-//        msg.setTo(usuarioClienteDto.getEmail());
-//        msg.setText(
-//                "Dear " + order.getCustomer().getFirstName()
-//                        + order.getCustomer().getLastName()
-//                        + ", thank you for placing order. Your order number is "
-//                        + order.getOrderNumber());
-//        try{
-//            this.mailSender.send(msg);
-//        }
-//        catch (MailException ex) {
-//            // simply log it and go on...
-//            System.err.println(ex.getMessage());
-//        }
-//    }
+    public void setImagemPerfil(String imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
+    }
+
+
 }
