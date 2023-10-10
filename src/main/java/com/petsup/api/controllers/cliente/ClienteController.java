@@ -82,19 +82,6 @@ public class ClienteController {
         return ResponseEntity.ok(clienteService.getClienteById(idCliente));
     }
 
-    @GetMapping("/busca-email/{email}")
-    public ResponseEntity<ClienteDto> getUserByEmail(@PathVariable String email) {
-        return ResponseEntity.ok(clienteService.getUserByEmail(email));
-    }
-
-    @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
-    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @PatchMapping("/{idCliente}")
-    public ResponseEntity<ClienteDto> updateClienteById(@RequestBody ClienteDto usuarioDto,
-                                                        @PathVariable Integer idCliente) {
-        return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
-    }
-
     @PostMapping("/adicionar-pfp/{idCliente}")
     public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idCliente,
                                                       @RequestParam MultipartFile image) throws IOException {
@@ -122,7 +109,7 @@ public class ClienteController {
 
     @PutMapping("/atualizar-imagem/{idCliente}")
     public ResponseEntity<Boolean> updateImage(@PathVariable int idCliente,
-                                              @RequestParam MultipartFile image) throws IOException {
+                                               @RequestParam MultipartFile image) throws IOException {
         return ResponseEntity.ok(clienteService.updateImage(idCliente, image));
     }
 
@@ -133,6 +120,19 @@ public class ClienteController {
         }
 
         return ResponseEntity.internalServerError().body("Erro ao deletar imagem");
+    }
+
+    @GetMapping("/busca-email/{email}")
+    public ResponseEntity<ClienteDto> getUserByEmail(@PathVariable String email) {
+        return ResponseEntity.ok(clienteService.getUserByEmail(email));
+    }
+
+    @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
+    @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
+    @PatchMapping("/{idCliente}")
+    public ResponseEntity<ClienteDto> updateClienteById(@RequestBody ClienteDto usuarioDto,
+                                                        @PathVariable Integer idCliente) {
+        return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
     }
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")

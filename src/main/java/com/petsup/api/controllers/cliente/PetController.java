@@ -11,6 +11,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 /*
@@ -38,6 +39,46 @@ public class PetController {
     public ResponseEntity<Void> postPet(@RequestBody @Valid Pet pet, @RequestParam Integer idCliente) {
         petService.postPet(pet, idCliente);
         return ResponseEntity.status(201).build();
+    }
+
+    @PostMapping("/adicionar-pfp/{idPet}")
+    public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idPet,
+                                                      @RequestParam MultipartFile image) throws IOException {
+        if (this.petService.postProfilePicture(idPet, image)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/retornar-blob/{idPet}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable int idPet) {
+        byte[] response = this.petService.getProfilePicture(idPet);
+
+        if (response.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/retornar-imagem/{idPet}")
+    public ResponseEntity<String> getImage(@PathVariable int idPet) {
+        return ResponseEntity.ok(petService.getImage(idPet));
+    }
+
+    @PutMapping("/atualizar-imagem/{idPet}")
+    public ResponseEntity<Boolean> updateImage(@PathVariable int idPet,
+                                               @RequestParam MultipartFile image) throws IOException {
+        return ResponseEntity.ok(petService.updateImage(idPet, image));
+    }
+
+    @DeleteMapping("/deletar-imagem/{idPet}")
+    public ResponseEntity<String> deleteImage(@PathVariable int idPet) {
+        if (petService.deleteImage(idPet)){
+            return ResponseEntity.ok("Imagem deletada");
+        }
+
+        return ResponseEntity.internalServerError().body("Erro ao deletar imagem");
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de pets atrelados ao cliente.")

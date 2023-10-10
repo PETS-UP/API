@@ -44,6 +44,8 @@ public class Petshop implements ClienteObserver {
 
     private String numero;
 
+    private String imagemPerfil;
+
     @OneToMany(mappedBy = "fkPetshop")
     private List<AvaliacaoPetshop> avaliacoes;
 
@@ -157,6 +159,14 @@ public class Petshop implements ClienteObserver {
 
     public void setNumero(String numero) {
         this.numero = numero;
+    }
+
+    public String getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(String imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 
     public String getCnpj() {
