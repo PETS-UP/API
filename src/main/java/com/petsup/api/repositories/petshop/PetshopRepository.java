@@ -22,5 +22,8 @@ public interface PetshopRepository  extends JpaRepository<Petshop, Integer> {
 
     @Query("SELECT new com.petsup.api.dto.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome ORDER BY AVG(a.nota) DESC")
     List<PetshopAvaliacaoDto> ordenarMediaAvaliacao();
+
+    @Query("SELECT new com.petsup.api.dto.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome")
+    List<PetshopAvaliacaoDto> listarMediaAvaliacao();
     List<Petshop> findAllByBairroAndCidade(String bairro, String cidade);
 }
