@@ -3,6 +3,7 @@ package com.petsup.api.controllers.petshop;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.DiaSemanaDto;
 import com.petsup.api.dto.HorariosDto;
+import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -34,7 +35,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
-import java.time.DayOfWeek;
 import java.util.List;
 
 /*
@@ -300,4 +300,8 @@ public class PetshopController {
         return ResponseEntity.ok(agendamentoDtoListaObj);
     }
 
+    @GetMapping("/media-avaliacao")
+    public ResponseEntity<List<PetshopAvaliacaoDto>> getMediaAvaliacao() {
+        return ResponseEntity.ok(petshopService.getMediaAvaliacao());
+    }
 }
