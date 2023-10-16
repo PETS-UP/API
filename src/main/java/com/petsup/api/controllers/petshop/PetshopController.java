@@ -3,6 +3,7 @@ package com.petsup.api.controllers.petshop;
 import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.DiaSemanaDto;
 import com.petsup.api.dto.HorariosDto;
+import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.ServicoDto;
@@ -29,10 +30,11 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.io.File;
 import java.io.FileNotFoundException;
-import java.time.DayOfWeek;
+import java.io.IOException;
 import java.util.List;
 
 /*
@@ -85,6 +87,45 @@ public class PetshopController {
         return ResponseEntity.ok(usuarioTokenDto);
     }
 
+    @PostMapping("/adicionar-pfp/{idPetshop}")
+    public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idPetshop,
+                                                      @RequestParam MultipartFile image) throws IOException {
+        if (this.petshopService.postProfilePicture(idPetshop, image)) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.internalServerError().build();
+    }
+
+    @GetMapping("/retornar-blob/{idPetshop}")
+    public ResponseEntity<byte[]> getProfilePicture(@PathVariable int idPetshop) {
+        byte[] response = this.petshopService.getProfilePicture(idPetshop);
+
+        if (response.length == 0) {
+            return ResponseEntity.notFound().build();
+        }
+
+        return ResponseEntity.ok().body(response);
+    }
+
+    @GetMapping("/retornar-imagem/{idPetshop}")
+    public ResponseEntity<String> getImage(@PathVariable int idPetshop) {
+        return ResponseEntity.ok(petshopService.getImage(idPetshop));
+    }
+
+    @PutMapping("/atualizar-imagem/{idPetshop}")
+    public ResponseEntity<Boolean> updateImage(@PathVariable int idPetshop,
+                                               @RequestParam MultipartFile image) throws IOException {
+        return ResponseEntity.ok(petshopService.updateImage(idPetshop, image));
+    }
+
+    @DeleteMapping("/deletar-imagem/{idPetshop}")
+    public ResponseEntity<String> deleteImage(@PathVariable int idPetshop) {
+        if (petshopService.deleteImage(idPetshop)){
+            return ResponseEntity.ok("Imagem deletada");
+        }
+
+        return ResponseEntity.internalServerError().body("Erro ao deletar imagem");
+    }
     @GetMapping
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
@@ -259,4 +300,8 @@ public class PetshopController {
         return ResponseEntity.ok(agendamentoDtoListaObj);
     }
 
+    @GetMapping("/media-avaliacao")
+    public ResponseEntity<List<PetshopAvaliacaoDto>> getMediaAvaliacao() {
+        return ResponseEntity.ok(petshopService.getMediaAvaliacao());
+    }
 }

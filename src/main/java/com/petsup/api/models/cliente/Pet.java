@@ -27,6 +27,8 @@ public class Pet {
     @JoinColumn(name = "fkCliente")
     private Cliente fkCliente;
 
+    private String imagemPerfil;
+
     public Integer getId() {
         return id;
     }
@@ -73,5 +75,13 @@ public class Pet {
 
     public void setAgendamentos(List<Agendamento> agendamentos) {
         this.agendamentos = agendamentos;
+    }
+
+    public String getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(String imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 }
