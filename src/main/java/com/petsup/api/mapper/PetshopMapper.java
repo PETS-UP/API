@@ -1,6 +1,5 @@
 package com.petsup.api.mapper;
 
-import com.petsup.api.dto.petshop.PetshopAbertoDto;
 import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
@@ -85,16 +84,6 @@ public class PetshopMapper {
         petshopAtt.setDiasFuncionais(petshopAtualizacaoDto.getDiasFuncionais());
 
         return petshopAtt;
-    }
-
-    public static PetshopAbertoDto ofPetshopAbertoDto(Petshop petshop, Boolean estaAberto) {
-        PetshopAbertoDto petshopAbertoDto = new PetshopAbertoDto();
-
-        petshopAbertoDto.setId(petshop.getId());
-        petshopAbertoDto.setEstaAberto(estaAberto);
-        petshopAbertoDto.setNome(petshop.getNome());
-
-        return petshopAbertoDto;
     }
 
     public static List<PetshopDto> ofListUsuarioPetshopDto(List<Petshop> petshops){
