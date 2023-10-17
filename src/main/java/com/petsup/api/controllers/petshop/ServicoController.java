@@ -1,7 +1,7 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.models.petshop.Servico;
-import com.petsup.api.dto.petshop.ServicoRespostaDto;
+import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.services.petshop.PetshopService;
 import com.petsup.api.services.petshop.ServicoService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -12,6 +12,12 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+
+/*
+ POST:  /servicos
+ GET:   /servicos
+ GET:   /servicos/{id}
+*/
 
 @Tag(name = "Serviços", description = "Requisições relacionadas a serviços.")
 @RestController

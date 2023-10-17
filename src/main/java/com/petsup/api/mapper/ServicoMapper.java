@@ -1,7 +1,6 @@
 package com.petsup.api.mapper;
 
-import com.petsup.api.dto.petshop.ServicoDto;
-import com.petsup.api.dto.petshop.ServicoRespostaDto;
+import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.models.petshop.Servico;
 
 import java.util.ArrayList;

@@ -1,4 +1,4 @@
-package com.petsup.api.dto;
+package com.petsup.api.dto.petshop;
 
 import java.time.DayOfWeek;
 import java.util.List;

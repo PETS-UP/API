@@ -2,7 +2,7 @@ package com.petsup.api.builder;
 
 import com.petsup.api.models.cliente.Pet;
 import com.petsup.api.models.enums.Especie;
-import com.petsup.api.dto.cliente.PetDto;
+import com.petsup.api.dto.pet.PetDto;
 
 import java.util.ArrayList;
 import java.util.List;

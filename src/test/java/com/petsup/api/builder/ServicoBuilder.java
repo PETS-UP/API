@@ -2,7 +2,7 @@ package com.petsup.api.builder;
 
 import com.petsup.api.models.petshop.Servico;
 import com.petsup.api.models.enums.NomeServico;
-import com.petsup.api.dto.petshop.ServicoDto;
+import com.petsup.api.dto.servico.ServicoDto;
 
 import java.util.ArrayList;
 import java.util.List;
