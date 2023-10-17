@@ -12,6 +12,7 @@ import com.petsup.api.dto.AgendamentoRespostaDto;
 import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
+import com.petsup.api.dto.petshop.PetshopAbertoDto;
 import com.petsup.api.dto.petshop.ServicoDto;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.PetshopDto;
@@ -236,16 +237,30 @@ public class PetshopService {
         petshopRepository.save(petshop);
     }
 
-    public Boolean estaAberto(Integer idPetshop){
-        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
-        );
-        LocalTime horaAbrir = petshop.getHoraAbertura();
-        LocalTime horaFechar = petshop.getHoraFechamento();
-        List<DayOfWeek> diasAbertos = petshop.getDiasFuncionais();
+    public List<PetshopAbertoDto> estaAberto(){
+        List<Petshop> petshops = petshopRepository.findAll();
+        List<PetshopAbertoDto> statusList = new ArrayList<>();
         DayOfWeek hoje = LocalDate.now().getDayOfWeek();
         LocalTime agora = LocalTime.now();
-        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje);
+        LocalTime horaAbrir;
+        LocalTime horaFechar;
+        List<DayOfWeek> diasAbertos;
+        Petshop petshopAtual;
+
+        for (int i = 0; i < petshops.size(); i++) {
+            petshopAtual = petshops.get(i);
+            horaAbrir = petshopAtual.getHoraAbertura();
+            horaFechar = petshopAtual.getHoraFechamento();
+            diasAbertos = petshopAtual.getDiasFuncionais();
+
+            if (agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje)) {
+                statusList.add(PetshopMapper.ofPetshopAbertoDto(petshopAtual, true));
+            } else {
+                statusList.add(PetshopMapper.ofPetshopAbertoDto(petshopAtual, false));
+            }
+        }
+
+        return statusList;
     }
 
     public Boolean postProfilePicture(int idPetshop, MultipartFile image) throws IOException {
@@ -454,22 +469,6 @@ public class PetshopService {
     }
 
     public List<PetshopAvaliacaoDto> getMediaAvaliacao() {
-        List<PetshopAvaliacaoDto> avaliacoes = petshopRepository.listarMediaAvaliacao();
-
-        return avaliacoes;
-//        List<PetshopAvaliacaoDto> avaliacoesDtos = new ArrayList<>();
-//
-//        if (avaliacoes.isEmpty()) {
-//            return new ArrayList<>();
-//        }
-//
-//        Double media = 0.0;
-//        for (int i = 0; i < avaliacoes.size(); i++) {
-//            for (int j = 0; j < avaliacoes.size(); j++) {
-//
-//            }
-//        }
-//
-//        return media / avaliacoes.size();
+        return petshopRepository.listarMediaAvaliacao();
     }
 }
