@@ -240,6 +240,9 @@ public class PetshopService {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
+        if(petshop.getHoraAbertura() == null || petshop.getHoraFechamento() == null || petshop.getDiasFuncionais() == null){
+            return false;
+        }
         LocalTime horaAbrir = petshop.getHoraAbertura();
         LocalTime horaFechar = petshop.getHoraFechamento();
         List<DayOfWeek> diasAbertos = petshop.getDiasFuncionais();

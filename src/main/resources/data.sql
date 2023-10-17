@@ -4,11 +4,11 @@ VALUES
 ('Ana Beatriz', 'ana@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '1993-01-01', '11902345678', '12345678901', '01414001', 'SP', 'São Paulo', 'Cerqueira César', 'Rua Haddock Lobo', '595', -23.561860, -46.665830);
 
 INSERT INTO petshop
-(nome, email, senha, telefone, razao_social, cnpj, cep, estado, cidade, bairro, rua, numero)
+(nome, email, senha, telefone, razao_social, cnpj, cep, estado, cidade, bairro, rua, numero, hora_abertura, hora_fechamento)
 VALUES
-('PetsUp Pet Shop', 'petsup@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11912345678', 'PetsUp Serviços de Cuidados a Animais LTDA', '12345678901234', '01412000', 'SP', 'São Paulo', 'Cerqueira César', 'Rua Augusta', '1818'),
-('Petmania', 'petmania@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11987654321', 'Petmania Atendimento a Animais LTDA', '12345678901235', '01419100', 'SP', 'São Paulo', 'Cerqueira César', 'Alameda Santos', '2053'),
-('Petlove', 'petlove@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11901234567', 'Petlove Serviços a Animais LTDA', '12345678901236', '05418001', 'SP', 'São Paulo', 'Pinheiros', 'Rua Deputado Lacerda Franco', '268');
+('PetsUp Pet Shop', 'petsup@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11912345678', 'PetsUp Serviços de Cuidados a Animais LTDA', '12345678901234', '01412000', 'SP', 'São Paulo', 'Cerqueira César', 'Rua Augusta', '1818', '01:00:00', '00:00:00'),
+('Petmania', 'petmania@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11987654321', 'Petmania Atendimento a Animais LTDA', '12345678901235', '01419100', 'SP', 'São Paulo', 'Cerqueira César', 'Alameda Santos', '2053', '12:00:00', '20:00:00'),
+('Petlove', 'petlove@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '11901234567', 'Petlove Serviços a Animais LTDA', '12345678901236', '05418001', 'SP', 'São Paulo', 'Pinheiros', 'Rua Deputado Lacerda Franco', '268', '13:00:00', '21:30:00');
 
 INSERT INTO cliente
 (nome, email, senha, data_nasc, telefone, cpf, cep, estado, cidade, bairro, rua, numero, latitude, longitude)
