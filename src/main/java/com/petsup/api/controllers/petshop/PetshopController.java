@@ -6,6 +6,7 @@ import com.petsup.api.dto.HorariosDto;
 import com.petsup.api.dto.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
+import com.petsup.api.dto.petshop.PetshopAbertoDto;
 import com.petsup.api.dto.petshop.ServicoDto;
 import com.petsup.api.dto.petshop.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.PetshopDto;
@@ -271,10 +272,14 @@ public class PetshopController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/checarAberto/{idPetshop}")
-    public ResponseEntity<Boolean> checkOpenHour(@PathVariable Integer idPetshop){
-        Boolean aberto = petshopService.estaAberto(idPetshop);
-        return ResponseEntity.ok(aberto);
+    @GetMapping("/checarAberto")
+    public ResponseEntity<List<PetshopAbertoDto>> checkOpenHour(){
+        List<PetshopAbertoDto> statusList = petshopService.estaAberto();
+
+        if (statusList.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+        return ResponseEntity.ok(statusList);
     }
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
@@ -302,6 +307,12 @@ public class PetshopController {
 
     @GetMapping("/media-avaliacao")
     public ResponseEntity<List<PetshopAvaliacaoDto>> getMediaAvaliacao() {
-        return ResponseEntity.ok(petshopService.getMediaAvaliacao());
+        List<PetshopAvaliacaoDto> avaliacoes = petshopService.getMediaAvaliacao();
+
+        if (avaliacoes.isEmpty()) {
+            return ResponseEntity.noContent().build();
+        }
+
+        return ResponseEntity.ok(avaliacoes);
     }
 }
