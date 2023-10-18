@@ -53,8 +53,8 @@ public class ServicoController {
 
     @ApiResponse(responseCode = "200", description = "Retorna o serviço a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @GetMapping("/{id}")
-    public ResponseEntity<ServicoRespostaDto> getServicoById(@PathVariable Integer id) {
-        return ResponseEntity.ok(servicoService.getServicoById(id));
+    @GetMapping("/{idServico}")
+    public ResponseEntity<ServicoRespostaDto> getServicoById(@PathVariable Integer idServico) {
+        return ResponseEntity.ok(servicoService.getServicoById(idServico));
     }
 }
