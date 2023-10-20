@@ -11,6 +11,15 @@ import java.time.LocalDateTime;
 
 import java.util.List;
 
+/*
+ POST:  /agendamentos
+ GET:   /agendamentos/petshop
+ GET:   /agendamentos/cliente
+ GET:   /agendamentos/report/agendamento/{usuario}
+ GET:   /agendamentos/report/dia/{idPetshop}
+ GET:   /agendamentos/{id}
+ */
+
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
 @RequestMapping("/agendamentos")
@@ -57,7 +66,8 @@ public class AgendamentoController {
 
     @ApiResponse(responseCode = "200", description = "Retorna o agendamento com a data e hora especificada.")
     @GetMapping("/report/agendamento/{usuario}")
-    public ResponseEntity<AgendamentoRespostaDto> findAgendamentoByData(@RequestParam LocalDateTime dataHora, @PathVariable Integer usuario) {
+    public ResponseEntity<AgendamentoRespostaDto> findAgendamentoByData(@RequestParam LocalDateTime dataHora,
+                                                                        @PathVariable Integer usuario) {
         AgendamentoRespostaDto agendamento = agendamentoService.findAgendamentoByData(dataHora, usuario);
         return ResponseEntity.ok(agendamento);
     }
@@ -80,36 +90,4 @@ public class AgendamentoController {
         AgendamentoRespostaDto agendamento = agendamentoService.getAgendamentoById(id);
         return ResponseEntity.ok(agendamento);
     }
-
-//    @PostMapping("/upload")
-//    public ResponseEntity<Void> uploadMultipleAgendamento(@RequestParam("arquivo") MultipartFile file){
-//        Path diretorioBase;
-//        List<AgendamentoDto> listaTxt;
-//        List<Agendamento> listaAgendamentos = new ArrayList<>();
-//        if(file.isEmpty()){
-//            return ResponseEntity.status(400).build();
-//        }
-//        listaTxt =  (List<AgendamentoDto>) GeradorTxt.leArquivoTxt(file);
-//        for (AgendamentoDto elemento: listaTxt) {
-//            Agendamento newAg = new Agendamento();
-//            newAg.setDataHora(elemento.getDataHora());
-//            newAg.setFkCliente(clienteRepository.findByEmail(elemento.getEmailCliente()).get());
-//            newAg.setFkPet(petRepository.filterPet(clienteRepository.findByEmail(elemento.getEmailCliente()).get().getId(), elemento.getNomePet()));
-//            newAg.setFkPetshop(petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1));
-//            List listaServicos = petshopRepository.findAllByNomeLike(elemento.getNomePetshop()).get(1).getServicos();
-//            Servico servico = null;
-//            for (int i = 0; i < listaServicos.size(); i++) {
-//                if(listaServicos.get(i).equals(elemento.getServico())){
-//                    servico = (Servico) listaServicos.get(i);
-//                    break;
-//                }
-//            }
-//            newAg.setFkServico(servico);
-//
-//            listaAgendamentos.add(newAg);
-//            agendamentoRepository.save(newAg);
-//        }
-//
-//        return ResponseEntity.status(201).build();
-//    }
 }

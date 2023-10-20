@@ -7,7 +7,7 @@ import com.azure.storage.blob.BlobContainerClient;
 import com.azure.storage.blob.BlobContainerClientBuilder;
 import com.azure.storage.blob.models.BlockBlobItem;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
-import com.petsup.api.dto.cliente.PetRespostaDto;
+import com.petsup.api.dto.pet.PetRespostaDto;
 import com.petsup.api.mapper.PetMapper;
 import com.petsup.api.models.cliente.Pet;
 import com.petsup.api.models.cliente.Cliente;

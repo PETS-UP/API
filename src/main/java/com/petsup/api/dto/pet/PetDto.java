@@ -1,4 +1,4 @@
-package com.petsup.api.dto.cliente;
+package com.petsup.api.dto.pet;
 
 import com.petsup.api.models.enums.Especie;
 import jakarta.validation.constraints.*;
