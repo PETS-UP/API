@@ -1,7 +1,7 @@
 package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.models.cliente.Pet;
-import com.petsup.api.dto.cliente.PetRespostaDto;
+import com.petsup.api.dto.pet.PetRespostaDto;
 import com.petsup.api.services.cliente.PetService;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;

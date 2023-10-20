@@ -1,4 +1,4 @@
-package com.petsup.api.dto;
+package com.petsup.api.dto.cliente;
 
 public class DetalhesEnderecoDto {
     private String formattedAddress;

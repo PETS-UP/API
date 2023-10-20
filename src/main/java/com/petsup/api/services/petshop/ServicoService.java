@@ -1,6 +1,6 @@
 package com.petsup.api.services.petshop;
 
-import com.petsup.api.dto.petshop.ServicoRespostaDto;
+import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.mapper.ServicoMapper;
 import com.petsup.api.models.petshop.Servico;
 import com.petsup.api.models.petshop.Petshop;

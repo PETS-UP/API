@@ -1,14 +1,16 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoRespostaDto;
-import com.petsup.api.dto.DiaSemanaDto;
-import com.petsup.api.dto.HorariosDto;
-import com.petsup.api.dto.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.DiaSemanaDto;
+import com.petsup.api.dto.petshop.HorariosDto;
+import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
+
 import com.petsup.api.dto.petshop.PetshopAbertoDto;
-import com.petsup.api.dto.petshop.ServicoDto;
-import com.petsup.api.dto.petshop.ServicoRespostaDto;
+import com.petsup.api.dto.servico.ServicoDto;
+import com.petsup.api.dto.servico.ServicoRespostaDto;
+
 import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.repositories.AgendamentoRepository;
