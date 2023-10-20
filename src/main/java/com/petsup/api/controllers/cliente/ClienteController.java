@@ -1,8 +1,8 @@
 package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.dto.AvaliacaoDto;
-import com.petsup.api.dto.PetshopAvaliacaoDto;
-import com.petsup.api.dto.PetshopMediaPrecoDto;
+import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.ClienteDto;

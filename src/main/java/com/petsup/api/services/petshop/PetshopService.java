@@ -9,17 +9,17 @@ import com.azure.storage.blob.models.BlockBlobItem;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AgendamentoRespostaDto;
-import com.petsup.api.dto.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
-import com.petsup.api.dto.petshop.ServicoDto;
-import com.petsup.api.dto.petshop.ServicoRespostaDto;
+import com.petsup.api.dto.petshop.PetshopAbertoDto;
+import com.petsup.api.dto.servico.ServicoDto;
+import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.mapper.AgendamentoMapper;
 import com.petsup.api.mapper.ServicoMapper;
 import com.petsup.api.mapper.PetshopMapper;
 import com.petsup.api.models.Agendamento;
-import com.petsup.api.models.AvaliacaoPetshop;
 import com.petsup.api.models.cliente.ClienteSubscriber;
 import com.petsup.api.models.cliente.Cliente;
 import com.petsup.api.models.enums.NomeServico;
@@ -236,16 +236,33 @@ public class PetshopService {
         petshopRepository.save(petshop);
     }
 
-    public Boolean estaAberto(Integer idPetshop){
-        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
-        );
-        LocalTime horaAbrir = petshop.getHoraAbertura();
-        LocalTime horaFechar = petshop.getHoraFechamento();
-        List<DayOfWeek> diasAbertos = petshop.getDiasFuncionais();
+    public List<PetshopAbertoDto> estaAberto(){
+        List<Petshop> petshops = petshopRepository.findAll();
+        List<PetshopAbertoDto> statusList = new ArrayList<>();
         DayOfWeek hoje = LocalDate.now().getDayOfWeek();
         LocalTime agora = LocalTime.now();
-        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje);
+        LocalTime horaAbrir;
+        LocalTime horaFechar;
+        List<DayOfWeek> diasAbertos;
+        Petshop petshopAtual;
+        for (int i = 0; i < petshops.size(); i++) {
+            petshopAtual = petshops.get(i);
+            horaAbrir = petshopAtual.getHoraAbertura();
+            horaFechar = petshopAtual.getHoraFechamento();
+            diasAbertos = petshopAtual.getDiasFuncionais();
+
+            if (agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje)) {
+                statusList.add(PetshopMapper.ofPetshopAbertoDto(petshopAtual, true));
+            } else {
+                statusList.add(PetshopMapper.ofPetshopAbertoDto(petshopAtual, false));
+            }
+        }
+
+        return statusList;
+//        if(petshop.getHoraAbertura() == null || petshop.getHoraFechamento() == null || petshop.getDiasFuncionais() == null){
+//            return false;
+//        }
+//        return agora.isAfter(horaAbrir) && agora.isBefore(horaFechar) && diasAbertos.contains(hoje);
     }
 
     public Boolean postProfilePicture(int idPetshop, MultipartFile image) throws IOException {
@@ -454,22 +471,6 @@ public class PetshopService {
     }
 
     public List<PetshopAvaliacaoDto> getMediaAvaliacao() {
-        List<PetshopAvaliacaoDto> avaliacoes = petshopRepository.listarMediaAvaliacao();
-
-        return avaliacoes;
-//        List<PetshopAvaliacaoDto> avaliacoesDtos = new ArrayList<>();
-//
-//        if (avaliacoes.isEmpty()) {
-//            return new ArrayList<>();
-//        }
-//
-//        Double media = 0.0;
-//        for (int i = 0; i < avaliacoes.size(); i++) {
-//            for (int j = 0; j < avaliacoes.size(); j++) {
-//
-//            }
-//        }
-//
-//        return media / avaliacoes.size();
+        return petshopRepository.listarMediaAvaliacao();
     }
 }

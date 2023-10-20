@@ -1,4 +1,4 @@
-package com.petsup.api.dto.cliente;
+package com.petsup.api.dto.pet;
 
 public class PetRespostaDto {
     private int id;

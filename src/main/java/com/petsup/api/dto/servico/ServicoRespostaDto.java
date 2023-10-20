@@ -1,4 +1,4 @@
-package com.petsup.api.dto.petshop;
+package com.petsup.api.dto.servico;
 
 public class ServicoRespostaDto {
 
