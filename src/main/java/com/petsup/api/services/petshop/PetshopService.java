@@ -276,8 +276,8 @@ public class PetshopService {
             throw new IOException("Conteúdo vazio");
         }
 
-        Cliente cliente = clienteRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
         String fileName = LocalDateTime.now() + image.getOriginalFilename();
@@ -304,19 +304,19 @@ public class PetshopService {
             throw new IOException("request failed");
         }
 
-        cliente.setImagemPerfil(fileName);
+        petshop.setImagemPerfil(fileName);
 
-        clienteRepository.save(cliente);
+        petshopRepository.save(petshop);
 
         return true;
     }
 
     public byte[] getProfilePicture(int idPetshop) {
-        Cliente cliente = clienteRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        String blobName = cliente.getImagemPerfil();
+        String blobName = petshop.getImagemPerfil();
 
         String accessKey = "DefaultEndpointsProtocol=https;" +
                 "AccountName=petsupstorage;" +
@@ -342,15 +342,15 @@ public class PetshopService {
         //String pathBase = "https://ezscheduleusersimages.blob.core.windows.net/ezschedules/";
         String pathBase = "";
 
-        Cliente cliente = clienteRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        if (cliente.getImagemPerfil() == null || cliente.getImagemPerfil() == "") {
+        if (petshop.getImagemPerfil() == null || petshop.getImagemPerfil() == "") {
             throw new ResponseStatusException(404, "Imagem não encontrada", null);
         }
 
-        String blobName = cliente.getImagemPerfil();
+        String blobName = petshop.getImagemPerfil();
 
         String accessKey = "DefaultEndpointsProtocol=https;" +
                 "AccountName=petsupstorage;" +
@@ -368,18 +368,18 @@ public class PetshopService {
             throw new ResponseStatusException(404, "Conteúdo blob vazio", null);
         }
 
-        String pathImage = pathBase + cliente.getImagemPerfil();
+        String pathImage = pathBase + petshop.getImagemPerfil();
 
         return pathImage;
     }
 
     public Boolean updateImage(int idPetshop, MultipartFile image) throws IOException {
 
-        Cliente cliente = clienteRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-//        if (cliente.getImagemPerfil() == null || cliente.getImagemPerfil() == "") {
+//        if (petshop.getImagemPerfil() == null || petshop.getImagemPerfil() == "") {
 //            throw new ResponseStatusException(404, "Imagem não encontrada", null);
 //        }
 
@@ -387,7 +387,7 @@ public class PetshopService {
             throw new ResponseStatusException(404, "Imagem não encontrada", null);
         }
 
-        String nameBlobOriginal = cliente.getImagemPerfil();
+        String nameBlobOriginal = petshop.getImagemPerfil();
 
         String accessKey = "DefaultEndpointsProtocol=https;" +
                 "AccountName=petsupstorage;" +
@@ -421,9 +421,9 @@ public class PetshopService {
                 throw new ResponseStatusException(400, "Falha na atualização", null);
             }
 
-            cliente.setImagemPerfil(nameUpdate);
+            petshop.setImagemPerfil(nameUpdate);
 
-            clienteRepository.save(cliente);
+            petshopRepository.save(petshop);
 
             return true;
 
@@ -434,15 +434,15 @@ public class PetshopService {
 
     public Boolean deleteImage(int idPetshop) {
 
-        Cliente cliente = clienteRepository.findById(idPetshop).orElseThrow(
-                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
-        if (cliente.getImagemPerfil().isEmpty()) {
+        if (petshop.getImagemPerfil().isEmpty()) {
             throw new ResponseStatusException(404, "Imagem não encontrada", null);
         }
 
-        String nameBlobOriginal = cliente.getImagemPerfil();
+        String nameBlobOriginal = petshop.getImagemPerfil();
 
         String accessKey = "DefaultEndpointsProtocol=https;" +
                 "AccountName=petsupstorage;" +
@@ -460,9 +460,9 @@ public class PetshopService {
 
         if (delete) {
 
-            cliente.setImagemPerfil(null);
+            petshop.setImagemPerfil(null);
 
-            clienteRepository.save(cliente);
+            petshopRepository.save(petshop);
 
             return true;
         }

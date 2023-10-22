@@ -5,6 +5,7 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
@@ -55,6 +56,8 @@ public class PetshopDto {
     private LocalTime horaAbertura;
     private LocalTime horaFechamento;
     private List<DayOfWeek> diasFuncionais;
+
+    private MultipartFile imagemPerfil;
 
     public int getId() {
         return id;
@@ -182,5 +185,13 @@ public class PetshopDto {
 
     public void setDiasFuncionais(List<DayOfWeek> diasFuncionais) {
         this.diasFuncionais = diasFuncionais;
+    }
+
+    public MultipartFile getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(MultipartFile imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 }
