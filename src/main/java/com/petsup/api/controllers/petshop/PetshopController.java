@@ -96,7 +96,7 @@ public class PetshopController {
         if (this.petshopService.postProfilePicture(idPetshop, image)) {
             return ResponseEntity.noContent().build();
         }
-        return ResponseEntity.internalServerError().build();
+        return ResponseEntity.status(400).build();
     }
 
     @GetMapping("/retornar-blob/{idPetshop}")
