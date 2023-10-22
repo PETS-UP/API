@@ -58,7 +58,7 @@ import java.util.List;
 
 @Tag(name = "Petshops", description = "Requisições relacionadas a petshops")
 @RestController
-@RequestMapping("/petshops")
+@RequestMapping("/api/petshops")
 public class PetshopController {
     @Autowired
     private PetshopService petshopService;

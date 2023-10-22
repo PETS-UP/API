@@ -40,7 +40,7 @@ import java.util.List;
 
 @Tag(name = "Clientes", description = "Requisições relacionadas a clientes")
 @RestController
-@RequestMapping("/clientes")
+@RequestMapping("/api/clientes")
 public class ClienteController {
 
     @Autowired
