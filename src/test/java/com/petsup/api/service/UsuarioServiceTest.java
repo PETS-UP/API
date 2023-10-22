@@ -10,17 +10,17 @@ import org.mockito.junit.jupiter.MockitoExtension;
 @ExtendWith(MockitoExtension.class)
 class UsuarioServiceTest {
 
-    @Mock
-    private UsuarioRepository usuarioRepository;
-
-    @Mock
-    private ClienteRepository clienteRepository;
-
-    @Mock
-    private PetshopRepository petshopRepository;
-
-    @InjectMocks
-    private UsuarioService usuarioService;
+//    @Mock
+//    private UsuarioRepository usuarioRepository;
+//
+//    @Mock
+//    private ClienteRepository clienteRepository;
+//
+//    @Mock
+//    private PetshopRepository petshopRepository;
+//
+//    @InjectMocks
+//    private UsuarioService usuarioService;
 
 //    @Test
 //    void criarClienteRetornaMesmoUsuario() {
