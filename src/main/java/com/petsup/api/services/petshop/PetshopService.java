@@ -340,15 +340,14 @@ public class PetshopService {
 
     public String getImage(int idPetshop) {
 
-        //String pathBase = "https://ezscheduleusersimages.blob.core.windows.net/ezschedules/";
-        String pathBase = "";
+        String pathBase = "https://petsupstorage.blob.core.windows.net/imagesstorage/";
 
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
         if (petshop.getImagemPerfil() == null || petshop.getImagemPerfil() == "") {
-            throw new ResponseStatusException(404, "Imagem não encontrada", null);
+            return pathBase;
         }
 
         String blobName = petshop.getImagemPerfil();
