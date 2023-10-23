@@ -1,5 +1,7 @@
 package com.petsup.api.dto.petshop;
 
+import org.springframework.web.multipart.MultipartFile;
+
 public class PetshopAvaliacaoDto {
     private Integer id;
 
@@ -7,13 +9,16 @@ public class PetshopAvaliacaoDto {
 
     private String nome;
 
+    private String imagemPerfil;
+
     public PetshopAvaliacaoDto() {
     }
 
-    public PetshopAvaliacaoDto(Integer id, double media, String nome) {
+    public PetshopAvaliacaoDto(Integer id, double media, String nome, String imagemPerfil) {
         this.id = id;
         this.media = media;
         this.nome = nome;
+        this.imagemPerfil = imagemPerfil;
     }
 
     public Integer getId() {
@@ -38,5 +43,13 @@ public class PetshopAvaliacaoDto {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    public String getImagemPerfil() {
+        return imagemPerfil;
+    }
+
+    public void setImagemPerfil(String imagemPerfil) {
+        this.imagemPerfil = imagemPerfil;
     }
 }

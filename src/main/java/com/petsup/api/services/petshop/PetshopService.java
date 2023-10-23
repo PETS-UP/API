@@ -155,6 +155,7 @@ public class PetshopService {
         );
 
         Petshop petshopAtt = PetshopMapper.ofPetshop(petshopDto, petshop);
+        petshopAtt.setImagemPerfil(petshop.getImagemPerfil());
         petshopRepository.save(petshopAtt);
 
         return PetshopMapper.ofPetshopDto(petshopAtt);
@@ -474,6 +475,10 @@ public class PetshopService {
     }
 
     public List<PetshopAvaliacaoDto> getMediaAvaliacao() {
-        return petshopRepository.listarMediaAvaliacao();
+        List<PetshopAvaliacaoDto> petshops = petshopRepository.listarMediaAvaliacao();
+        petshops.forEach(petshop ->
+                petshop.setImagemPerfil("https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshop.getImagemPerfil())
+        );
+        return petshops;
     }
 }
