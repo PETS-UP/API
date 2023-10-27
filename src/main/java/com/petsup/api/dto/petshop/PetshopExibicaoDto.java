@@ -5,14 +5,12 @@ import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Pattern;
 import jakarta.validation.constraints.Size;
-import org.springframework.web.multipart.MultipartFile;
 
 import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.List;
 
-public class PetshopDto {
-
+public class PetshopExibicaoDto {
     private int id;
 
     @NotBlank
@@ -56,6 +54,8 @@ public class PetshopDto {
     private LocalTime horaAbertura;
     private LocalTime horaFechamento;
     private List<DayOfWeek> diasFuncionais;
+    private Double nota;
+    private Boolean isOpen;
     private String imagemPerfil;
 
     public int getId() {
@@ -184,6 +184,22 @@ public class PetshopDto {
 
     public void setDiasFuncionais(List<DayOfWeek> diasFuncionais) {
         this.diasFuncionais = diasFuncionais;
+    }
+
+    public Double getNota() {
+        return nota;
+    }
+
+    public void setNota(Double nota) {
+        this.nota = nota;
+    }
+
+    public Boolean getOpen() {
+        return isOpen;
+    }
+
+    public void setOpen(Boolean open) {
+        isOpen = open;
     }
 
     public String getImagemPerfil() {

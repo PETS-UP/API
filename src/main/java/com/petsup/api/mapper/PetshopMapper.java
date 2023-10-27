@@ -1,10 +1,14 @@
 package com.petsup.api.mapper;
 
 import com.petsup.api.dto.petshop.PetshopAbertoDto;
+import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 
+import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class PetshopMapper {
@@ -95,6 +99,41 @@ public class PetshopMapper {
         petshopAbertoDto.setNome(petshop.getNome());
 
         return petshopAbertoDto;
+    }
+
+    public static PetshopExibicaoDto ofPetshopExibicaoDto(Petshop petshop, PetshopAvaliacaoDto petshopAvaliacaoDto) {
+        PetshopExibicaoDto petshopExibicaoDto = new PetshopExibicaoDto();
+
+        petshopExibicaoDto.setId(petshop.getId());
+        petshopExibicaoDto.setNome(petshop.getNome());
+        petshopExibicaoDto.setEmail(petshop.getEmail());
+        petshopExibicaoDto.setSenha(petshop.getSenha());
+        petshopExibicaoDto.setCep(petshop.getCep());
+        petshopExibicaoDto.setTelefone(petshop.getTelefone());
+        petshopExibicaoDto.setCnpj(petshop.getCnpj());
+        petshopExibicaoDto.setEstado(petshop.getEstado());
+        petshopExibicaoDto.setCidade(petshop.getCidade());
+        petshopExibicaoDto.setBairro(petshop.getBairro());
+        petshopExibicaoDto.setRua(petshop.getRua());
+        petshopExibicaoDto.setNumero(petshop.getNumero());
+        petshopExibicaoDto.setHoraAbertura(petshop.getHoraAbertura());
+        petshopExibicaoDto.setHoraFechamento(petshop.getHoraFechamento());
+        petshopExibicaoDto.setDiasFuncionais(petshop.getDiasFuncionais());
+        petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getMedia() : 0.0);
+        petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshop.getHoraAbertura()) && LocalTime.now().isBefore(petshop.getHoraFechamento()));
+        /petshopExibicaoDto.setImagemPerfil(
+                petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/null"
+                        && petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/"
+                        ? petshop.getImagemPerfil() : "https://petsupstorage.blob.core.windows.net/imagesstorage/"
+        );
+        return petshopExibicaoDto;
+    }
+
+    public static List<PetshopExibicaoDto> ofListPetshopExibicaoDto(List<Petshop> petshops, List<PetshopAvaliacaoDto> petshopAvaliacaoDtos) {
+
+        List<PetshopExibicaoDto> petshopExibicaoDtos = new ArrayList<>(ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos));
+
+        return petshopExibicaoDtos;
     }
 
     public static List<PetshopDto> ofListUsuarioPetshopDto(List<Petshop> petshops){
