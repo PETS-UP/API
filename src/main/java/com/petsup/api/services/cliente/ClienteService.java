@@ -11,6 +11,7 @@ import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AvaliacaoDto;
 import com.petsup.api.dto.cliente.DetalhesEnderecoDto;
 import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.dto.petshop.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
@@ -42,6 +43,7 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -189,12 +191,33 @@ public class ClienteService {
 //    }
 
     public List<PetshopAvaliacaoDto> getPetshopsOrderByMedia() {
-        return petshopRepository.ordenarMediaAvaliacao();
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = petshopRepository.ordenarMediaAvaliacao();
+        petshopAvaliacaoDtos.stream().forEach(
+                petshopMediaPrecoDto ->
+                        petshopMediaPrecoDto.setOpen(
+                                LocalTime.now().isAfter(petshopMediaPrecoDto.getHoraAbertura())
+                                        && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento())
+                        )
+        );
+        return petshopAvaliacaoDtos;
     }
 
     public List<PetshopMediaPrecoDto> getPetshopsOrderByPrecoAsc() {
         List<PetshopMediaPrecoDto> petshopMediaPrecoDtos = petshopRepository.ordenarPorPreco();
-
+        petshopMediaPrecoDtos.stream().forEach(
+                petshopMediaPrecoDto -> {
+                    Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = Optional.of(petshopRepository.encontrarMediaAvaliacao(petshopMediaPrecoDto.getId()));
+                    petshopMediaPrecoDto.setNota(
+                            petshopAvaliacaoDto.isEmpty() ? 0.0 : petshopAvaliacaoDto.get().getNota()
+                    );
+                    petshopMediaPrecoDto.setOpen(
+                            (petshopMediaPrecoDto.getHoraAbertura() != null && petshopMediaPrecoDto.getHoraFechamento() != null)
+                                    ? (LocalTime.now().isAfter(petshopMediaPrecoDto.getHoraAbertura())
+                                    && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento()))
+                                    : false
+                    );
+                }
+        );
         return petshopMediaPrecoDtos;
     }
 
@@ -207,7 +230,7 @@ public class ClienteService {
         clienteRepository.save(usuarioAtt);
     }
 
-    public List<PetshopDto> getPetshopsByClienteBairro(Integer idCliente) {
+    public List<PetshopExibicaoDto> getPetshopsByClienteBairro(Integer idCliente) {
         String bairro = "";
 
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
@@ -231,13 +254,9 @@ public class ClienteService {
         List<Petshop> petshops = petshopRepository
                 .findAllByBairroAndCidade(detalhesEnderecoDto.getNeighborhood(), detalhesEnderecoDto.getCity());
 
-        List<PetshopDto> petshopsDto = new ArrayList<>();
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = petshopRepository.listarMediaAvaliacao();
 
-        for (int i = 0; i < petshops.size(); i++) {
-            petshopsDto.add(PetshopMapper.ofPetshopDto(petshops.get(i)));
-        }
-
-        return petshopsDto;
+        return PetshopMapper.ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos);
     }
 
     public Boolean postProfilePicture(int idCliente, MultipartFile image) throws IOException {

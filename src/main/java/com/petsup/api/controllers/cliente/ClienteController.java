@@ -2,6 +2,7 @@ package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.dto.AvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.dto.petshop.PetshopMediaPrecoDto;
 import com.petsup.api.dto.authentication.ClienteLoginDto;
 import com.petsup.api.dto.authentication.ClienteTokenDto;
@@ -188,8 +189,8 @@ public class ClienteController {
     }
 
     @GetMapping("/petshops-proximos/{idCliente}")
-    public ResponseEntity<List<PetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
-        List<PetshopDto> petshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
+    public ResponseEntity<List<PetshopExibicaoDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
+        List<PetshopExibicaoDto> petshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
 
         if (petshopDtos.isEmpty()) {
             return ResponseEntity.noContent().build();

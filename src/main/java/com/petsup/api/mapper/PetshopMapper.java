@@ -116,12 +116,12 @@ public class PetshopMapper {
         petshopExibicaoDto.setBairro(petshop.getBairro());
         petshopExibicaoDto.setRua(petshop.getRua());
         petshopExibicaoDto.setNumero(petshop.getNumero());
-        petshopExibicaoDto.setHoraAbertura(petshop.getHoraAbertura());
-        petshopExibicaoDto.setHoraFechamento(petshop.getHoraFechamento());
+        petshopExibicaoDto.setHoraAbertura(petshop.getHoraAbertura() != null ? petshop.getHoraAbertura() : LocalTime.of(0, 0));
+        petshopExibicaoDto.setHoraFechamento(petshop.getHoraFechamento() != null ? petshop.getHoraFechamento() : LocalTime.of(0, 0));
         petshopExibicaoDto.setDiasFuncionais(petshop.getDiasFuncionais());
-        petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getMedia() : 0.0);
-        petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshop.getHoraAbertura()) && LocalTime.now().isBefore(petshop.getHoraFechamento()));
-        /petshopExibicaoDto.setImagemPerfil(
+        petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getNota() : 0.0);
+        petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshopExibicaoDto.getHoraAbertura()) && LocalTime.now().isBefore(petshopExibicaoDto.getHoraFechamento()));
+        petshopExibicaoDto.setImagemPerfil(
                 petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/null"
                         && petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/"
                         ? petshop.getImagemPerfil() : "https://petsupstorage.blob.core.windows.net/imagesstorage/"
@@ -131,7 +131,17 @@ public class PetshopMapper {
 
     public static List<PetshopExibicaoDto> ofListPetshopExibicaoDto(List<Petshop> petshops, List<PetshopAvaliacaoDto> petshopAvaliacaoDtos) {
 
-        List<PetshopExibicaoDto> petshopExibicaoDtos = new ArrayList<>(ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos));
+        List<PetshopExibicaoDto> petshopExibicaoDtos = new ArrayList<>();
+
+        for (Petshop petshop : petshops) {
+            PetshopAvaliacaoDto matchingAvaliacaoDto = petshopAvaliacaoDtos.stream()
+                    .filter(dto -> dto.getId().equals(petshop.getId()))
+                    .findFirst()
+                    .orElse(new PetshopAvaliacaoDto());
+
+            PetshopExibicaoDto exibicaoDto = ofPetshopExibicaoDto(petshop, matchingAvaliacaoDto);
+            petshopExibicaoDtos.add(exibicaoDto);
+        }
 
         return petshopExibicaoDtos;
     }
