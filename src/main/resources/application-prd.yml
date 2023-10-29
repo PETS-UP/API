@@ -11,7 +11,7 @@ spring:
 
 server:
   ssl:
-    key-store: classpath:petsup.p12
+    key-store: classpath:keystore2.p12
     key-store-password: petsup123
     key-store-type: pkcs12
     key-alias: petsup

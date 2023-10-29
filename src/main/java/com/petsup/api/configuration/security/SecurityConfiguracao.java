@@ -23,6 +23,7 @@ import org.springframework.web.cors.CorsConfiguration;
 
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.List;
 
 @Configuration
 @EnableWebSecurity
@@ -57,7 +58,8 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/clientes"),
             new AntPathRequestMatcher("/clientes/busca-email/{email}"),
             new AntPathRequestMatcher("/h2-console/**"),
-            new AntPathRequestMatcher("/error/**")
+            new AntPathRequestMatcher("/error/**"),
+            new AntPathRequestMatcher("/api/**")
     };
 
     @Bean
@@ -66,7 +68,13 @@ public class SecurityConfiguracao {
                 .frameOptions().disable()
                 .and()
                 .cors()
-                .configurationSource(request -> buildCorsConfiguration())
+                .configurationSource(request -> {
+                    CorsConfiguration configuration = new CorsConfiguration();
+                    configuration.setAllowedOrigins(List.of("*"));
+                    configuration.setAllowedMethods(List.of("*"));
+                    configuration.setAllowedHeaders(List.of("*"));
+                    return configuration;
+                })
                 .and()
                 .csrf()
                 .disable()

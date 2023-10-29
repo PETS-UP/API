@@ -22,7 +22,7 @@ import java.util.List;
 
 @Tag(name = "Agendamentos", description = "Requisições relacionadas a agendamentos.")
 @RestController
-@RequestMapping("/agendamentos")
+@RequestMapping("/api/agendamentos")
 public class AgendamentoController {
 
     @Autowired

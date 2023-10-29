@@ -21,7 +21,7 @@ import java.util.List;
 */
 
 @RestController
-@RequestMapping("/dashboard/{idPetshop}")
+@RequestMapping("/api/dashboard/{idPetshop}")
 public class DashboardController {
 
     @Autowired

@@ -13,6 +13,7 @@ import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.PetshopAbertoDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.dto.servico.ServicoDto;
 import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.PetshopDto;
@@ -114,18 +115,25 @@ public class PetshopService {
         return PetshopMapper.ofPetshop(usuarioAutenticado, token);
     }
 
-    public List<PetshopDto> listPetshops(){
+    public List<PetshopExibicaoDto> listPetshops() {
         List<Petshop> petshops = this.petshopRepository.findAll();
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = this.petshopRepository.listarMediaAvaliacao();
 
-        return PetshopMapper.ofListUsuarioPetshopDto(petshops);
+        return PetshopMapper.ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos);
     }
 
-    public PetshopDto getPetshopById(Integer id){
+    public PetshopExibicaoDto getPetshopById(Integer id) {
         Petshop petshop = petshopRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
+        Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = petshopRepository.encontrarMediaAvaliacao(id);
 
-        return PetshopMapper.ofPetshopDto(petshop);
+        if (petshopAvaliacaoDto.isEmpty()) {
+            PetshopAvaliacaoDto emptyPetshopAvaliacao = new PetshopAvaliacaoDto();
+            return PetshopMapper.ofPetshopExibicaoDto(petshop, emptyPetshopAvaliacao);
+        }
+
+        return PetshopMapper.ofPetshopExibicaoDto(petshop, petshopAvaliacaoDto.get());
     }
 
     public List<PetshopDto> getPetshopsByNome(String nome) {
@@ -133,7 +141,7 @@ public class PetshopService {
         return PetshopMapper.ofListUsuarioPetshopDto(petshops);
     }
 
-    public PetshopDto getPetshopByEmail(String email){
+    public PetshopDto getPetshopByEmail(String email) {
         Petshop petshop = petshopRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
@@ -141,26 +149,27 @@ public class PetshopService {
         return PetshopMapper.ofPetshopDto(petshop);
     }
 
-    public void deleteById(Integer id){
-        if(!petshopRepository.existsById(id)){
+    public void deleteById(Integer id) {
+        if (!petshopRepository.existsById(id)) {
             throw new ResponseStatusException(404, "Petshop não encontrado", null);
         }
 
         petshopRepository.deleteById(id);
     }
 
-    public PetshopDto updatePetshop(Integer idPetshop, PetshopDto petshopDto){
+    public PetshopDto updatePetshop(Integer idPetshop, PetshopDto petshopDto) {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
         Petshop petshopAtt = PetshopMapper.ofPetshop(petshopDto, petshop);
+        petshopAtt.setImagemPerfil(petshop.getImagemPerfil());
         petshopRepository.save(petshopAtt);
 
         return PetshopMapper.ofPetshopDto(petshopAtt);
     }
 
-    public ServicoRespostaDto updateServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop){
+    public ServicoRespostaDto updateServico(ServicoDto servicoAtt, Integer idServico, Integer idPetshop) {
         Servico servico = servicoRepository.findById(idServico).orElseThrow(
                 () -> new ResponseStatusException(404, "Serviço não encontrado", null)
         );
@@ -187,7 +196,7 @@ public class PetshopService {
         return ServicoMapper.ofServicoRespostaDto(servico);
     }
 
-    public void subscribeToPetshop(Integer idPetshop, Integer idCliente){
+    public void subscribeToPetshop(Integer idPetshop, Integer idCliente) {
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
@@ -203,7 +212,7 @@ public class PetshopService {
         clienteSubscriberRepository.save(inscrito);
     }
 
-    public ListaObj<AgendamentoRespostaDto> orderAgendamentosByDate(Integer idPetshop){
+    public ListaObj<AgendamentoRespostaDto> orderAgendamentosByDate(Integer idPetshop) {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
@@ -214,7 +223,7 @@ public class PetshopService {
         return AgendamentoMapper.ofListaObjAgendamentoRespostaDto(listaLocal);
     }
 
-    public void adicionarHoraFuncionamento(LocalTime horaAbertura, LocalTime horaFechamento, Integer idPetshop){
+    public void adicionarHoraFuncionamento(LocalTime horaAbertura, LocalTime horaFechamento, Integer idPetshop) {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
@@ -224,7 +233,7 @@ public class PetshopService {
         petshopRepository.save(petshop);
     }
 
-    public void adicionarDiasFuncionais(@NotNull List<DayOfWeek> dias, Integer idPetshop){
+    public void adicionarDiasFuncionais(@NotNull List<DayOfWeek> dias, Integer idPetshop) {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
@@ -236,7 +245,7 @@ public class PetshopService {
         petshopRepository.save(petshop);
     }
 
-    public List<PetshopAbertoDto> estaAberto(){
+    public List<PetshopAbertoDto> estaAberto() {
         List<Petshop> petshops = petshopRepository.findAll();
         List<PetshopAbertoDto> statusList = new ArrayList<>();
         DayOfWeek hoje = LocalDate.now().getDayOfWeek();
@@ -339,15 +348,14 @@ public class PetshopService {
 
     public String getImage(int idPetshop) {
 
-        //String pathBase = "https://ezscheduleusersimages.blob.core.windows.net/ezschedules/";
-        String pathBase = "";
+        String pathBase = "https://petsupstorage.blob.core.windows.net/imagesstorage/";
 
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
 
         if (petshop.getImagemPerfil() == null || petshop.getImagemPerfil() == "") {
-            throw new ResponseStatusException(404, "Imagem não encontrada", null);
+            return pathBase;
         }
 
         String blobName = petshop.getImagemPerfil();
@@ -389,44 +397,47 @@ public class PetshopService {
 
         String nameBlobOriginal = petshop.getImagemPerfil();
 
-        String accessKey = "DefaultEndpointsProtocol=https;" +
-                "AccountName=petsupstorage;" +
-                "AccountKey=4ClVfz8iLUJyqdWBSgqT2Nt45MVvjMqNAnUYz8qIft0xqSu2nxZ0QX1flS1OykoJcl13z0pUMXzO+AStmsWYgw==;" +
-                "EndpointSuffix=core.windows.net";
+        if (nameBlobOriginal != null) {
 
-        BlobContainerClient container = new BlobContainerClientBuilder()
-                .connectionString(accessKey)
-                .containerName("imagesstorage")
-                .buildClient();
+            String accessKey = "DefaultEndpointsProtocol=https;" +
+                    "AccountName=petsupstorage;" +
+                    "AccountKey=4ClVfz8iLUJyqdWBSgqT2Nt45MVvjMqNAnUYz8qIft0xqSu2nxZ0QX1flS1OykoJcl13z0pUMXzO+AStmsWYgw==;" +
+                    "EndpointSuffix=core.windows.net";
 
-        Optional<BlobClient> blob = Optional.of(container.getBlobClient(nameBlobOriginal));
+            BlobContainerClient container = new BlobContainerClientBuilder()
+                    .connectionString(accessKey)
+                    .containerName("imagesstorage")
+                    .buildClient();
 
-        boolean delete = blob.get().deleteIfExists();
+            Optional<BlobClient> blob = Optional.of(container.getBlobClient(nameBlobOriginal));
 
-        if (delete) {
+            boolean delete = blob.get().deleteIfExists();
 
-            String nameUpdate = LocalDateTime.now() + image.getOriginalFilename();
+            if (delete) {
 
-            byte[] imageNewBytes = image.getBytes();
+                String nameUpdate = LocalDateTime.now() + image.getOriginalFilename();
 
-            Optional<BlobClient> blobUpdate = Optional.of(container.getBlobClient(nameUpdate));
+                byte[] imageNewBytes = image.getBytes();
 
-            Response<BlockBlobItem> response =
-                    blobUpdate.get().uploadWithResponse(
-                            new BlobParallelUploadOptions(new ByteArrayInputStream(imageNewBytes), imageNewBytes.length),
-                            Duration.ofHours(5),
-                            null);
+                Optional<BlobClient> blobUpdate = Optional.of(container.getBlobClient(nameUpdate));
 
-            if (response.getStatusCode() != 201) {
-                throw new ResponseStatusException(400, "Falha na atualização", null);
+                Response<BlockBlobItem> response =
+                        blobUpdate.get().uploadWithResponse(
+                                new BlobParallelUploadOptions(new ByteArrayInputStream(imageNewBytes), imageNewBytes.length),
+                                Duration.ofHours(5),
+                                null);
+
+                if (response.getStatusCode() != 201) {
+                    throw new ResponseStatusException(400, "Falha na atualização", null);
+                }
+
+                petshop.setImagemPerfil(nameUpdate);
+
+                petshopRepository.save(petshop);
+
+                return true;
+
             }
-
-            petshop.setImagemPerfil(nameUpdate);
-
-            petshopRepository.save(petshop);
-
-            return true;
-
         }
 
         return postProfilePicture(idPetshop, image);
@@ -471,6 +482,10 @@ public class PetshopService {
     }
 
     public List<PetshopAvaliacaoDto> getMediaAvaliacao() {
-        return petshopRepository.listarMediaAvaliacao();
+        List<PetshopAvaliacaoDto> petshops = petshopRepository.listarMediaAvaliacao();
+        petshops.forEach(petshop ->
+                petshop.setImagemPerfil("https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshop.getImagemPerfil())
+        );
+        return petshops;
     }
 }

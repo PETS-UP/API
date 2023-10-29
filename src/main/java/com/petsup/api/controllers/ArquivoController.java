@@ -13,7 +13,7 @@ import org.springframework.web.multipart.MultipartFile;
 */
 
 @RestController
-@RequestMapping("/arquivos")
+@RequestMapping("/api/arquivos")
 public class ArquivoController { // Controller com endpoints para download e upload de arquivos
 
     @Autowired
