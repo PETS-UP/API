@@ -11,6 +11,7 @@ import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PetshopMapper {
 
@@ -124,8 +125,9 @@ public class PetshopMapper {
         petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getNota() : 0.0);
         petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshopExibicaoDto.getHoraAbertura()) && LocalTime.now().isBefore(petshopExibicaoDto.getHoraFechamento()));
         petshopExibicaoDto.setImagemPerfil(
-                petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
-                        ? petshop.getImagemPerfil() : "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
+                !Objects.equals(petshop.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                        ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshop.getImagemPerfil()
+                        : "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
         );
         return petshopExibicaoDto;
     }
