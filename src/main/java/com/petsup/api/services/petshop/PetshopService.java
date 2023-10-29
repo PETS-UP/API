@@ -126,9 +126,14 @@ public class PetshopService {
         Petshop petshop = petshopRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
-        PetshopAvaliacaoDto petshopAvaliacaoDto = petshopRepository.encontrarMediaAvaliacao(id);
+        Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = petshopRepository.encontrarMediaAvaliacao(id);
 
-        return PetshopMapper.ofPetshopExibicaoDto(petshop, petshopAvaliacaoDto);
+        if (petshopAvaliacaoDto.isEmpty()) {
+            PetshopAvaliacaoDto emptyPetshopAvaliacao = new PetshopAvaliacaoDto();
+            return PetshopMapper.ofPetshopExibicaoDto(petshop, emptyPetshopAvaliacao);
+        }
+
+        return PetshopMapper.ofPetshopExibicaoDto(petshop, petshopAvaliacaoDto.get());
     }
 
     public List<PetshopDto> getPetshopsByNome(String nome) {

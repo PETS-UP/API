@@ -206,7 +206,7 @@ public class ClienteService {
         List<PetshopMediaPrecoDto> petshopMediaPrecoDtos = petshopRepository.ordenarPorPreco();
         petshopMediaPrecoDtos.stream().forEach(
                 petshopMediaPrecoDto -> {
-                    Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = Optional.of(petshopRepository.encontrarMediaAvaliacao(petshopMediaPrecoDto.getId()));
+                    Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = petshopRepository.encontrarMediaAvaliacao(petshopMediaPrecoDto.getId());
                     petshopMediaPrecoDto.setNota(
                             petshopAvaliacaoDto.isEmpty() ? 0.0 : petshopAvaliacaoDto.get().getNota()
                     );

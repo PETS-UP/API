@@ -7,6 +7,7 @@ import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 
+import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,9 +30,10 @@ public class PetshopMapper {
         petshop.setBairro(petshopCriacaoDto.getBairro());
         petshop.setRua(petshopCriacaoDto.getRua());
         petshop.setNumero(petshopCriacaoDto.getNumero());
-        petshop.setHoraAbertura(petshopCriacaoDto.getHoraAbertura());
-        petshop.setHoraFechamento(petshopCriacaoDto.getHoraFechamento());
-        petshop.setDiasFuncionais(petshopCriacaoDto.getDiasFuncionais());
+        petshop.setHoraAbertura(LocalTime.of(0, 0));
+        petshop.setHoraFechamento(LocalTime.of(0, 0));
+        petshop.setDiasFuncionais(new ArrayList<>());
+        petshop.setImagemPerfil("https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png");
 
         return petshop;
     }
@@ -122,9 +124,8 @@ public class PetshopMapper {
         petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getNota() : 0.0);
         petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshopExibicaoDto.getHoraAbertura()) && LocalTime.now().isBefore(petshopExibicaoDto.getHoraFechamento()));
         petshopExibicaoDto.setImagemPerfil(
-                petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/null"
-                        && petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/"
-                        ? petshop.getImagemPerfil() : "https://petsupstorage.blob.core.windows.net/imagesstorage/"
+                petshop.getImagemPerfil() != "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
+                        ? petshop.getImagemPerfil() : "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
         );
         return petshopExibicaoDto;
     }
