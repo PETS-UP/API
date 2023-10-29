@@ -13,6 +13,7 @@ import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 import com.petsup.api.dto.petshop.PetshopAbertoDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.dto.servico.ServicoDto;
 import com.petsup.api.dto.servico.ServicoRespostaDto;
 import com.petsup.api.dto.petshop.PetshopDto;
@@ -114,18 +115,25 @@ public class PetshopService {
         return PetshopMapper.ofPetshop(usuarioAutenticado, token);
     }
 
-    public List<PetshopDto> listPetshops() {
+    public List<PetshopExibicaoDto> listPetshops() {
         List<Petshop> petshops = this.petshopRepository.findAll();
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = this.petshopRepository.listarMediaAvaliacao();
 
-        return PetshopMapper.ofListUsuarioPetshopDto(petshops);
+        return PetshopMapper.ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos);
     }
 
-    public PetshopDto getPetshopById(Integer id) {
+    public PetshopExibicaoDto getPetshopById(Integer id) {
         Petshop petshop = petshopRepository.findById(id).orElseThrow(
                 () -> new ResponseStatusException(404, "Petshop não encontrado", null)
         );
+        Optional<PetshopAvaliacaoDto> petshopAvaliacaoDto = petshopRepository.encontrarMediaAvaliacao(id);
 
-        return PetshopMapper.ofPetshopDto(petshop);
+        if (petshopAvaliacaoDto.isEmpty()) {
+            PetshopAvaliacaoDto emptyPetshopAvaliacao = new PetshopAvaliacaoDto();
+            return PetshopMapper.ofPetshopExibicaoDto(petshop, emptyPetshopAvaliacao);
+        }
+
+        return PetshopMapper.ofPetshopExibicaoDto(petshop, petshopAvaliacaoDto.get());
     }
 
     public List<PetshopDto> getPetshopsByNome(String nome) {

@@ -1,17 +1,13 @@
 package com.petsup.api.controllers.petshop;
 
 import com.petsup.api.dto.AgendamentoRespostaDto;
-import com.petsup.api.dto.petshop.DiaSemanaDto;
-import com.petsup.api.dto.petshop.HorariosDto;
-import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
+import com.petsup.api.dto.petshop.*;
 import com.petsup.api.dto.authentication.PetshopLoginDto;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 
-import com.petsup.api.dto.petshop.PetshopAbertoDto;
 import com.petsup.api.dto.servico.ServicoDto;
 import com.petsup.api.dto.servico.ServicoRespostaDto;
 
-import com.petsup.api.dto.petshop.PetshopDto;
 import com.petsup.api.models.Agendamento;
 import com.petsup.api.repositories.AgendamentoRepository;
 import com.petsup.api.repositories.petshop.PetshopRepository;
@@ -133,8 +129,8 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Não há petshops cadastrados.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshops encontrados.")
-    public ResponseEntity<List<PetshopDto>> getPetshops() {
-        List<PetshopDto> petshopsDto = petshopService.listPetshops();
+    public ResponseEntity<List<PetshopExibicaoDto>> getPetshops() {
+        List<PetshopExibicaoDto> petshopsDto = petshopService.listPetshops();
 
         if (petshopsDto.isEmpty()) {
             return ResponseEntity.noContent().build();
@@ -147,7 +143,7 @@ public class PetshopController {
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
-    public ResponseEntity<PetshopDto> getPetshopById(@PathVariable Integer idPetshop) {
+    public ResponseEntity<PetshopExibicaoDto> getPetshopById(@PathVariable Integer idPetshop) {
         return ResponseEntity.ok(petshopService.getPetshopById(idPetshop));
     }
 
