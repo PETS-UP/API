@@ -49,17 +49,17 @@ public class SecurityConfiguracao {
             new AntPathRequestMatcher("/webjars/**"),
             new AntPathRequestMatcher("/v3/api-docs/**"),
             new AntPathRequestMatcher("/actuator/*"),
-//            new AntPathRequestMatcher("/petshops/login/**"),
+            new AntPathRequestMatcher("/petshops/login/**"),
             new AntPathRequestMatcher("/api/petshops/login"),
 //            new AntPathRequestMatcher("/petshops"),
 //            new AntPathRequestMatcher("/petshops/busca-email/{email}"),
-//            new AntPathRequestMatcher("/clientes/login/**"),
+            new AntPathRequestMatcher("/clientes/login/**"),
             new AntPathRequestMatcher("/api/clientes/login"),
 //            new AntPathRequestMatcher("/clientes"),
 //            new AntPathRequestMatcher("/clientes/busca-email/{email}"),
             new AntPathRequestMatcher("/h2-console/**"),
             new AntPathRequestMatcher("/error/**"),
-//            new AntPathRequestMatcher("/api/**")
+            new AntPathRequestMatcher("/api/**")
     };
 
     @Bean

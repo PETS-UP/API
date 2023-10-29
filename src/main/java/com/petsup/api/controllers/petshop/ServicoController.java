@@ -21,7 +21,7 @@ import java.util.List;
 
 @Tag(name = "Serviços", description = "Requisições relacionadas a serviços.")
 @RestController
-@RequestMapping("/api/servicos")
+@RequestMapping("/api/tk/servicos")
 public class ServicoController {
 
     @Autowired

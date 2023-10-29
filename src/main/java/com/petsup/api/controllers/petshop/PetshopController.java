@@ -90,7 +90,7 @@ public class PetshopController {
         return ResponseEntity.ok(usuarioTokenDto);
     }
 
-    @PostMapping("/adicionar-pfp/{idPetshop}")
+    @PostMapping("/tk/adicionar-pfp/{idPetshop}")
     public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idPetshop,
                                                       @RequestParam MultipartFile image) throws IOException {
         if (this.petshopService.postProfilePicture(idPetshop, image)) {
@@ -99,7 +99,7 @@ public class PetshopController {
         return ResponseEntity.status(400).build();
     }
 
-    @GetMapping("/retornar-blob/{idPetshop}")
+    @GetMapping("/tk/retornar-blob/{idPetshop}")
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable int idPetshop) {
         byte[] response = this.petshopService.getProfilePicture(idPetshop);
 
@@ -110,18 +110,18 @@ public class PetshopController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/retornar-imagem/{idPetshop}")
+    @GetMapping("/tk/retornar-imagem/{idPetshop}")
     public ResponseEntity<String> getImage(@PathVariable int idPetshop) {
         return ResponseEntity.ok(petshopService.getImage(idPetshop));
     }
 
-    @PutMapping("/atualizar-imagem/{idPetshop}")
+    @PutMapping("/tk/atualizar-imagem/{idPetshop}")
     public ResponseEntity<Boolean> updateImage(@PathVariable int idPetshop,
                                                @RequestParam MultipartFile image) throws IOException {
         return ResponseEntity.ok(petshopService.updateImage(idPetshop, image));
     }
 
-    @DeleteMapping("/deletar-imagem/{idPetshop}")
+    @DeleteMapping("/tk/deletar-imagem/{idPetshop}")
     public ResponseEntity<String> deleteImage(@PathVariable int idPetshop) {
         if (petshopService.deleteImage(idPetshop)){
             return ResponseEntity.ok("Imagem deletada");
@@ -143,7 +143,7 @@ public class PetshopController {
         return ResponseEntity.ok(petshopsDto);
     }
 
-    @GetMapping("/{idPetshop}")
+    @GetMapping("/tk/{idPetshop}")
     @ApiResponse(responseCode = "204", description =
             "Petshops não encontrado.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
@@ -151,7 +151,7 @@ public class PetshopController {
         return ResponseEntity.ok(petshopService.getPetshopById(idPetshop));
     }
 
-    @GetMapping("/busca/nome")
+    @GetMapping("/tk/busca/nome")
     public ResponseEntity<List<PetshopDto>> getPetshopsByNome(@RequestParam String nome) {
         List<PetshopDto> petshopsDto = petshopService.getPetshopsByNome(nome);
 
@@ -162,7 +162,7 @@ public class PetshopController {
         return ResponseEntity.ok(petshopsDto);
     }
 
-    @GetMapping("/busca-email/{email}")
+    @GetMapping("/tk/busca-email/{email}")
     @ApiResponse(responseCode = "204", description = "Petshops não encontrado.",
             content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Petshop encontrado.")
@@ -170,7 +170,7 @@ public class PetshopController {
         return ResponseEntity.ok(petshopService.getPetshopByEmail(email));
     }
 
-    @PatchMapping("/{idPetshop}")
+    @PatchMapping("/tk/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Petshop atualizado.")
     public ResponseEntity<PetshopDto> updatePetshop(@PathVariable Integer idPetshop,
                                                     @RequestBody PetshopDto petshopDto) {
@@ -189,7 +189,7 @@ public class PetshopController {
     // Método para atualizar preços fica na controller
     @ApiResponse(responseCode = "200", description = "Preço do serviço atualizado com sucesso.")
     @ApiResponse(responseCode = "404", description = "Serviço não encontrado.")
-    @PatchMapping("/atualizar/servico")
+    @PatchMapping("/tk/atualizar/servico")
     public ResponseEntity<ServicoRespostaDto> updateServico(@RequestBody ServicoDto servicoAtt,
                                                             @RequestParam Integer idServico,
                                                             @RequestParam Integer idPetshop) {
@@ -198,7 +198,7 @@ public class PetshopController {
 
     //Crud fim
 
-    @GetMapping("/download/csv/{idPetshop}")
+    @GetMapping("/tk/download/csv/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em CSV.")
     public ResponseEntity<Resource> downloadCsv(@PathVariable int idPetshop) {
         if (petshopRepository.findById(idPetshop).isEmpty()){
@@ -230,7 +230,7 @@ public class PetshopController {
                 .body(resource);
     }
 
-    @GetMapping("/download/txt/{idPetshop}")
+    @GetMapping("/tk/download/txt/{idPetshop}")
     @ApiResponse(responseCode = "200", description = "Endpoint de download de agendamentos em TXT.")
     public ResponseEntity<Resource> downloadTxt(@PathVariable int idPetshop) throws FileNotFoundException {
         if (petshopRepository.findById(idPetshop).isEmpty()){
@@ -262,19 +262,19 @@ public class PetshopController {
                 .body(resource);
     }
 
-    @PostMapping("/adicionarHoraFuncionamento/{idPetshop}")
+    @PostMapping("/tk/adicionarHoraFuncionamento/{idPetshop}")
     public ResponseEntity<Void> addWorkingHours(@PathVariable Integer idPetshop, @RequestBody HorariosDto horarios){
         petshopService.adicionarHoraFuncionamento(horarios.horaAbertura(),horarios.horaFechamento(), idPetshop);
         return ResponseEntity.ok().build();
     }
 
-    @PostMapping("/adicionarDiasFuncionais/{idPetshop}")
+    @PostMapping("/tk/adicionarDiasFuncionais/{idPetshop}")
     public ResponseEntity<Void> addWorkingDays(@PathVariable Integer idPetshop, @RequestBody DiaSemanaDto diasDaSemana){
         petshopService.adicionarDiasFuncionais(diasDaSemana.diasFuncionais(), idPetshop);
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/checarAberto")
+    @GetMapping("/tk/checarAberto")
     public ResponseEntity<List<PetshopAbertoDto>> checkOpenHour(){
         List<PetshopAbertoDto> statusList = petshopService.estaAberto();
 
@@ -286,13 +286,13 @@ public class PetshopController {
     @ApiResponse(responseCode = "201", description = "Inscrição realizada com sucesso.")
     @ApiResponse(responseCode = "404", description = "Cliente não encontrado.")
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")
-    @PostMapping("/inscrever/{idPetshop}")
+    @PostMapping("/tk/inscrever/{idPetshop}")
     public ResponseEntity<Void> subscribeToPetshop(@PathVariable Integer idPetshop, @RequestParam Integer idCliente) {
         petshopService.subscribeToPetshop(idPetshop, idCliente);
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/report/{idPetshop}")
+    @GetMapping("/tk/report/{idPetshop}")
     @ApiResponse(responseCode = "204", description =
             "Retorna uma lista de agendamentos vazia.", content = @Content(schema = @Schema(hidden = true)))
     @ApiResponse(responseCode = "200", description = "Lista de agendamentos em ordem crescente de data.")
@@ -307,7 +307,7 @@ public class PetshopController {
         return ResponseEntity.ok(agendamentoDtoListaObj);
     }
 
-    @GetMapping("/media-avaliacao")
+    @GetMapping("/tk/media-avaliacao")
     public ResponseEntity<List<PetshopAvaliacaoDto>> getMediaAvaliacao() {
         List<PetshopAvaliacaoDto> avaliacoes = petshopService.getMediaAvaliacao();
 

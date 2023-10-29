@@ -77,12 +77,12 @@ public class ClienteController {
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @GetMapping("/{idCliente}")
+    @GetMapping("/tk/{idCliente}")
     public ResponseEntity<ClienteDto> getClienteById(@PathVariable Integer idCliente) {
         return ResponseEntity.ok(clienteService.getClienteById(idCliente));
     }
 
-    @PostMapping("/adicionar-pfp/{idCliente}")
+    @PostMapping("/tk/adicionar-pfp/{idCliente}")
     public ResponseEntity<Boolean> postProfilePicture(@PathVariable Integer idCliente,
                                                       @RequestParam MultipartFile image) throws IOException {
         if (this.clienteService.postProfilePicture(idCliente, image)) {
@@ -91,7 +91,7 @@ public class ClienteController {
         return ResponseEntity.internalServerError().build();
     }
 
-    @GetMapping("/retornar-blob/{idCliente}")
+    @GetMapping("/tk/retornar-blob/{idCliente}")
     public ResponseEntity<byte[]> getProfilePicture(@PathVariable int idCliente) {
         byte[] response = this.clienteService.getProfilePicture(idCliente);
 
@@ -102,18 +102,18 @@ public class ClienteController {
         return ResponseEntity.ok().body(response);
     }
 
-    @GetMapping("/retornar-imagem/{idCliente}")
+    @GetMapping("/tk/retornar-imagem/{idCliente}")
     public ResponseEntity<String> getImage(@PathVariable int idCliente) {
         return ResponseEntity.ok(clienteService.getImage(idCliente));
     }
 
-    @PutMapping("/atualizar-imagem/{idCliente}")
+    @PutMapping("/tk/atualizar-imagem/{idCliente}")
     public ResponseEntity<Boolean> updateImage(@PathVariable int idCliente,
                                                @RequestParam MultipartFile image) throws IOException {
         return ResponseEntity.ok(clienteService.updateImage(idCliente, image));
     }
 
-    @DeleteMapping("/deletar-imagem/{idCliente}")
+    @DeleteMapping("/tk/deletar-imagem/{idCliente}")
     public ResponseEntity<String> deleteImage(@PathVariable int idCliente) {
         if (clienteService.deleteImage(idCliente)){
             return ResponseEntity.ok("Imagem deletada");
@@ -122,14 +122,14 @@ public class ClienteController {
         return ResponseEntity.internalServerError().body("Erro ao deletar imagem");
     }
 
-    @GetMapping("/busca-email/{email}")
+    @GetMapping("/tk/busca-email/{email}")
     public ResponseEntity<ClienteDto> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(clienteService.getUserByEmail(email));
     }
 
     @ApiResponse(responseCode = "200", description = "Retorna o cliente atualizado a partir do id.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @PatchMapping("/{idCliente}")
+    @PatchMapping("/tk/{idCliente}")
     public ResponseEntity<ClienteDto> updateClienteById(@RequestBody ClienteDto usuarioDto,
                                                         @PathVariable Integer idCliente) {
         return ResponseEntity.ok(clienteService.updateClienteById(usuarioDto, idCliente));
@@ -137,13 +137,13 @@ public class ClienteController {
 
     @ApiResponse(responseCode = "204", description = "Retorna conteúdo vazio após deletar o cliente.")
     @ApiResponse(responseCode = "404", description = "Retorna Not Found caso o id não seja encontrado.")
-    @DeleteMapping("/{idCliente}")
+    @DeleteMapping("/tk/{idCliente}")
     public ResponseEntity<Void> deleteById(@PathVariable Integer idCliente) {
         clienteService.deleteById(idCliente);
         return ResponseEntity.noContent().build();
     }
 
-    @PostMapping("/avaliar/{idCliente}/{idPetshop}")
+    @PostMapping("/tk/avaliar/{idCliente}/{idPetshop}")
     public ResponseEntity<Void> postAvaliacao(@RequestBody @Valid AvaliacaoPetshop avl, @PathVariable int idCliente,
                                               @PathVariable int idPetshop) {
         clienteService.postAvaliacao(avl, idCliente, idPetshop);
@@ -151,13 +151,13 @@ public class ClienteController {
         return ResponseEntity.status(201).build();
     }
 
-    @GetMapping("/avaliacao/{idCliente}/{idPetshop}")
+    @GetMapping("/tk/avaliacao/{idCliente}/{idPetshop}")
     public ResponseEntity<AvaliacaoDto> getAvaliacaoCliente(@PathVariable int idCliente,
                                                             @PathVariable int idPetshop) {
         return ResponseEntity.ok(clienteService.getAvaliacaoCliente(idCliente, idPetshop));
     }
 
-    @GetMapping("/ordenar-media-avaliacao")
+    @GetMapping("/tk/ordenar-media-avaliacao")
     public ResponseEntity<List<PetshopAvaliacaoDto>> getPetshopsOrderByMedia() {
         List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = clienteService.getPetshopsOrderByMedia();
 
@@ -168,7 +168,7 @@ public class ClienteController {
         return ResponseEntity.ok().body(petshopAvaliacaoDtos);
     }
 
-    @GetMapping("/ordenar-media-preco")
+    @GetMapping("/tk/ordenar-media-preco")
     public ResponseEntity<List<PetshopMediaPrecoDto>> getPetshopsOrderByPrecoAsc() {
         List<PetshopMediaPrecoDto> petshops = clienteService.getPetshopsOrderByPrecoAsc();
 
@@ -179,7 +179,7 @@ public class ClienteController {
         return ResponseEntity.ok().body(petshops);
     }
 
-    @PatchMapping("/latitude-longitude/{idCliente}/{latitude}/{longitude}")
+    @PatchMapping("/tk/latitude-longitude/{idCliente}/{latitude}/{longitude}")
     public ResponseEntity<Void> updateLocalizacaoAtual(@PathVariable Integer idCliente, @PathVariable double latitude,
                                                        @PathVariable double longitude) {
         clienteService.updateLocalizacaoAtual(idCliente, latitude, longitude);
@@ -187,7 +187,7 @@ public class ClienteController {
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/petshops-proximos/{idCliente}")
+    @GetMapping("/tk/petshops-proximos/{idCliente}")
     public ResponseEntity<List<PetshopDto>> getPetshopsByClienteBairro(@PathVariable Integer idCliente) {
         List<PetshopDto> petshopDtos = clienteService.getPetshopsByClienteBairro(idCliente);
 

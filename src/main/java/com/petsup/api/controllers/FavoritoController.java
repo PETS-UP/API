@@ -16,7 +16,7 @@ import java.util.List;
 */
 
 @RestController
-@RequestMapping("/api/favoritos/{idCliente}")
+@RequestMapping("/api/tk/favoritos/{idCliente}")
 public class FavoritoController {
 
     @Autowired
