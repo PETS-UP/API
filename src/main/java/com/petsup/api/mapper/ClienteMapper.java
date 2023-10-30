@@ -5,6 +5,7 @@ import com.petsup.api.dto.cliente.ClienteDto;
 import com.petsup.api.models.cliente.Cliente;
 
 import java.util.List;
+import java.util.Objects;
 
 public class ClienteMapper {
 
@@ -22,6 +23,7 @@ public class ClienteMapper {
         cliente.setBairro(clienteCriacaoDto.getBairro());
         cliente.setRua(clienteCriacaoDto.getRua());
         cliente.setNumero(clienteCriacaoDto.getNumero());
+        cliente.setImagemPerfil("https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PROFILE.png");
 
         return cliente;
     }
@@ -51,6 +53,9 @@ public class ClienteMapper {
         clienteDto.setBairro(cliente.getBairro());
         clienteDto.setRua(cliente.getRua());
         clienteDto.setNumero(cliente.getNumero());
+        clienteDto.setImagemPerfil(!Objects.equals(cliente.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PROFILE.png")
+                ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + cliente.getImagemPerfil()
+                : cliente.getImagemPerfil());
 
         return clienteDto;
     }
@@ -90,6 +95,7 @@ public class ClienteMapper {
         usuario.setBairro(cliente.getBairro());
         usuario.setRua(cliente.getRua());
         usuario.setNumero(cliente.getNumero());
+        usuario.setImagemPerfil(cliente.getImagemPerfil());
         usuario.setLatitude(latitude);
         usuario.setLongitude(longitude);
 
