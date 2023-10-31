@@ -46,6 +46,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -193,11 +194,16 @@ public class ClienteService {
     public List<PetshopAvaliacaoDto> getPetshopsOrderByMedia() {
         List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = petshopRepository.ordenarMediaAvaliacao();
         petshopAvaliacaoDtos.stream().forEach(
-                petshopMediaPrecoDto ->
-                        petshopMediaPrecoDto.setOpen(
-                                LocalTime.now().isAfter(petshopMediaPrecoDto.getHoraAbertura())
-                                        && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento())
-                        )
+                petshopAvaliacaoDto -> {
+                    petshopAvaliacaoDto.setOpen(
+                            LocalTime.now().isAfter(petshopAvaliacaoDto.getHoraAbertura())
+                                    && LocalTime.now().isBefore(petshopAvaliacaoDto.getHoraFechamento())
+                    );
+                    petshopAvaliacaoDto.setImagemPerfil(
+                            !Objects.equals(petshopAvaliacaoDto.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                            ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshopAvaliacaoDto.getImagemPerfil()
+                            : petshopAvaliacaoDto.getImagemPerfil());
+                }
         );
         return petshopAvaliacaoDtos;
     }
@@ -216,6 +222,10 @@ public class ClienteService {
                                     && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento()))
                                     : false
                     );
+                    petshopMediaPrecoDto.setImagemPerfil(
+                            !Objects.equals(petshopMediaPrecoDto.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                            ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshopMediaPrecoDto.getImagemPerfil()
+                            : petshopMediaPrecoDto.getImagemPerfil());
                 }
         );
         return petshopMediaPrecoDtos;

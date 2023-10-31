@@ -12,17 +12,21 @@ public class PetshopMediaPrecoDto {
     private Double nota;
     private LocalTime horaAbertura;
     private LocalTime horaFechamento;
+    private String rua;
+    private String numero;
 
     public PetshopMediaPrecoDto() {
     }
 
-    public PetshopMediaPrecoDto(Integer id, String nome, Double media, String imagemPerfil, LocalTime horaAbertura, LocalTime horaFechamento) {
+    public PetshopMediaPrecoDto(Integer id, String nome, Double media, String imagemPerfil, LocalTime horaAbertura, LocalTime horaFechamento, String rua, String numero) {
         this.id = id;
         this.nome = nome;
         this.media = media;
         this.imagemPerfil = imagemPerfil;
         this.horaAbertura = horaAbertura;
         this.horaFechamento = horaFechamento;
+        this.rua = rua;
+        this.numero = numero;
     }
 
     public Integer getId() {
@@ -87,5 +91,21 @@ public class PetshopMediaPrecoDto {
 
     public void setHoraFechamento(LocalTime horaFechamento) {
         this.horaFechamento = horaFechamento;
+    }
+
+    public String getRua() {
+        return rua;
+    }
+
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 }

@@ -1,6 +1,8 @@
 package com.petsup.api.services;
 
+import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopDto;
+import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.mapper.PetshopMapper;
 import com.petsup.api.models.Favorito;
 import com.petsup.api.models.cliente.Cliente;
@@ -46,19 +48,21 @@ public class FavoritoService {
         favoritoRepository.save(favorito);
     }
 
-        public List<PetshopDto> getFavoritos(Integer idCliente){
+        public List<PetshopExibicaoDto> getFavoritos(Integer idCliente){
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
         List<Favorito> favoritos = favoritoRepository.findAllByFkClienteId(idCliente);
+        List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = this.petshopRepository.listarMediaAvaliacao();
         List<Petshop> petshops = new ArrayList<>();
-        List<PetshopDto> petshopDetalhesDtos = new ArrayList<>();
+        List<PetshopExibicaoDto> petshopDetalhesDtos = new ArrayList<>();
 
-        for (int i = 0; i < favoritos.size(); i ++){
-            petshops.add(favoritos.get(i).getFkPetshop());
-            petshopDetalhesDtos.add(PetshopMapper.ofPetshopDto(petshops.get(i)));
-        }
+        favoritos.forEach(
+                favorito -> petshops.add(favorito.getFkPetshop())
+        );
+
+        petshopDetalhesDtos.addAll(PetshopMapper.ofListPetshopExibicaoDto(petshops, petshopAvaliacaoDtos));
 
         return petshopDetalhesDtos;
     }
