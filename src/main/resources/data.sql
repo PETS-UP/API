@@ -1,7 +1,7 @@
 INSERT INTO cliente
-(nome, email, senha, data_nasc, telefone, cpf, cep, estado, cidade, bairro, rua, numero, latitude, longitude)
+(nome, email, senha, data_nasc, telefone, cpf, cep, estado, cidade, bairro, rua, numero, latitude, longitude, imagem_perfil)
 VALUES
-('Ana Beatriz', 'ana@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '1993-01-01', '11902345678', '12345678901', '01414001', 'SP', 'São Paulo', 'Cerqueira César', 'Rua Haddock Lobo', '595', -23.561860, -46.665830);
+('Ana Beatriz', 'ana@gmail.com', '$2a$10$QvpTkHUC36.jMoXZMO9pWusTiYEelC9ZcDSYGDEniQlQuMV0RuiKW', '1993-01-01', '11902345678', '12345678901', '01414001', 'SP', 'São Paulo', 'Cerqueira César', 'Rua Haddock Lobo', '595', -23.561860, -46.665830, 'https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PROFILE.png');
 
 INSERT INTO petshop
 (nome, email, senha, telefone, razao_social, cnpj, cep, estado, cidade, bairro, rua, numero, hora_abertura, hora_fechamento, imagem_perfil)
