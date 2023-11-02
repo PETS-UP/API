@@ -105,6 +105,7 @@ public class ClienteService {
         );
 
         Cliente usuarioAtt = ClienteMapper.ofCliente(clienteDto, cliente);
+        usuarioAtt.setImagemPerfil(cliente.getImagemPerfil());
         clienteRepository.save(usuarioAtt);
 
         return ClienteMapper.ofClienteDto(usuarioAtt);
