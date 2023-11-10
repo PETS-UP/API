@@ -74,7 +74,7 @@ public class ClienteMapper {
         clienteAtt.setCidade(clienteAtualizacaoDto.getCidade());
         clienteAtt.setBairro(clienteAtualizacaoDto.getBairro());
         clienteAtt.setRua(clienteAtualizacaoDto.getRua());
-        clienteAtt.setNumero(cliente.getNumero());
+        clienteAtt.setNumero(clienteAtualizacaoDto.getNumero());
 
         return clienteAtt;
     }
