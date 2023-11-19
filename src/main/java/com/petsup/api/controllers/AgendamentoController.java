@@ -38,6 +38,16 @@ public class AgendamentoController {
         return ResponseEntity.status(201).build();
     }
 
+    @ApiResponse(responseCode = "201", description = "Serviço cadastrado com sucesso.")
+    @ApiResponse(responseCode = "404", description = "Entidade não encontrada.")
+    @PostMapping("/v2")
+    public ResponseEntity<Void> postAgendamento(@RequestParam String dataHora,
+                                                @RequestParam Integer idCliente, @RequestParam Integer idPetshop,
+                                                @RequestParam Integer idPet, @RequestParam Integer idServico) {
+        agendamentoService.postAgendamento(dataHora, idCliente, idPetshop, idPet, idServico);
+        return ResponseEntity.status(201).build();
+    }
+
     @ApiResponse(responseCode = "200", description = "Retorna uma lista de agendamentos atrelados ao pet shop.")
     @ApiResponse(responseCode = "204", description = "Retorna uma lista vazia caso o pet shop não tenha agendamentos.")
     @ApiResponse(responseCode = "404", description = "Pet shop não encontrado.")

@@ -65,6 +65,30 @@ public class AgendamentoService {
         agendamentoRepository.save(agendamento);
     }
 
+    public void postAgendamento(String dataHora,
+                                Integer idCliente, Integer idPetshop,
+                                Integer idPet, Integer idServico) {
+        Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
+                () -> new ResponseStatusException(404, "Cliente não encontrado", null)
+        );
+        Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
+                () -> new ResponseStatusException(404, "Pet shop não encontrado", null)
+        );
+        Pet pet = petRepository.findById(idPet).orElseThrow(
+                () -> new ResponseStatusException(404, "Pet não encontrado", null)
+        );
+        Servico servico = servicoRepository.findById(idServico).orElseThrow(
+                () -> new ResponseStatusException(404, "Serviço não encontrado", null)
+        );
+        Agendamento agendamento = new Agendamento();
+        agendamento.setFkCliente(cliente);
+        agendamento.setFkPetshop(petshop);
+        agendamento.setFkPet(pet);
+        agendamento.setFkServico(servico);
+        agendamento.setDataHora(LocalDateTime.parse(dataHora));
+        agendamentoRepository.save(agendamento);
+    }
+
     public List<AgendamentoRespostaDto> getAgendamentosByIdPetshop(Integer idPetshop) {
         Petshop petshop = petshopRepository.findById(idPetshop).orElseThrow(
                 () -> new ResponseStatusException(404, "Pet shop não encontrado", null)
