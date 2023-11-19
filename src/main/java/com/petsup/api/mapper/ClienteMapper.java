@@ -2,6 +2,7 @@ package com.petsup.api.mapper;
 
 import com.petsup.api.dto.authentication.ClienteTokenDto;
 import com.petsup.api.dto.cliente.ClienteDto;
+import com.petsup.api.dto.cliente.ClienteDtoID;
 import com.petsup.api.models.cliente.Cliente;
 
 import java.util.List;
@@ -58,6 +59,28 @@ public class ClienteMapper {
                 : cliente.getImagemPerfil());
 
         return clienteDto;
+    }
+
+    public static ClienteDtoID ofClienteDtoID(Cliente cliente) {
+        ClienteDtoID clienteDtoID = new ClienteDtoID();
+
+        clienteDtoID.setId(cliente.getId());
+        clienteDtoID.setNome(cliente.getNome());
+        clienteDtoID.setEmail(cliente.getEmail());
+        clienteDtoID.setCpf(cliente.getCpf());
+        clienteDtoID.setDataNasc(cliente.getDataNasc());
+        clienteDtoID.setTelefone(cliente.getTelefone());
+        clienteDtoID.setCep(cliente.getCep());
+        clienteDtoID.setEstado(cliente.getEstado());
+        clienteDtoID.setCidade(cliente.getCidade());
+        clienteDtoID.setBairro(cliente.getBairro());
+        clienteDtoID.setRua(cliente.getRua());
+        clienteDtoID.setNumero(cliente.getNumero());
+        clienteDtoID.setImagemPerfil(!Objects.equals(cliente.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PROFILE.png")
+                ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + cliente.getImagemPerfil()
+                : cliente.getImagemPerfil());
+
+        return clienteDtoID;
     }
 
     public static Cliente ofCliente(ClienteDto clienteAtualizacaoDto, Cliente cliente) {
