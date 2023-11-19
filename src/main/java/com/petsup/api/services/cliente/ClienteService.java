@@ -9,6 +9,7 @@ import com.azure.storage.blob.models.BlockBlobItem;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AvaliacaoDto;
+import com.petsup.api.dto.cliente.ClienteDtoID;
 import com.petsup.api.dto.cliente.DetalhesEnderecoDto;
 import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopExibicaoDto;
@@ -133,14 +134,14 @@ public class ClienteService {
         return clienteDto;
     }
 
-    public ClienteDto getUserByEmail(String email) {
+    public ClienteDtoID getUserByEmail(String email) {
         Cliente cliente = clienteRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        ClienteDto clienteDto = ClienteMapper.ofClienteDto(cliente);
+        ClienteDtoID clienteDtoID = ClienteMapper.ofClienteDtoID(cliente);
 
-        return clienteDto;
+        return clienteDtoID;
     }
 
     public void deleteById(Integer idCliente) {
