@@ -17,16 +17,16 @@ public interface PetshopRepository extends JpaRepository<Petshop, Integer> {
 
     List<Petshop> findAllByNomeLike(String nome);
 
-    @Query("SELECT new com.petsup.api.dto.petshop.PetshopMediaPrecoDto(p.id, p.nome, AVG(s.preco), p.imagemPerfil, p.horaAbertura, p.horaFechamento, p.rua, p.numero) FROM Petshop p JOIN p.servicos s GROUP BY p.id, p.nome, p.imagemPerfil ORDER BY AVG(s.preco)")
+    @Query("SELECT new com.petsup.api.dto.petshop.PetshopMediaPrecoDto(p.id, p.nome, AVG(s.preco), p.imagemPerfil, p.horaAbertura, p.horaFechamento, p.rua, p.numero) FROM Petshop p JOIN p.servicos s GROUP BY p.id, p.nome, p.imagemPerfil, p.horaAbertura, p.horaFechamento, p.rua, p.numero ORDER BY AVG(s.preco)")
     List<PetshopMediaPrecoDto> ordenarPorPreco();
 
-    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome, a.fkPetshop.imagemPerfil ORDER BY AVG(a.nota) DESC")
+    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero ORDER BY AVG(a.nota) DESC")
     List<PetshopAvaliacaoDto> ordenarMediaAvaliacao();
 
-    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome, a.fkPetshop.imagemPerfil")
+    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a GROUP BY a.fkPetshop.id, a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero")
     List<PetshopAvaliacaoDto> listarMediaAvaliacao();
 
-    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a WHERE a.fkPetshop.id = :idPetshop GROUP BY a.fkPetshop.id, a.fkPetshop.imagemPerfil")
+    @Query("SELECT new com.petsup.api.dto.petshop.PetshopAvaliacaoDto(a.fkPetshop.id, AVG(a.nota), a.fkPetshop.nome, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero) FROM AvaliacaoPetshop a WHERE a.fkPetshop.id = :idPetshop GROUP BY a.fkPetshop.id, a.fkPetshop.imagemPerfil, a.fkPetshop.horaAbertura, a.fkPetshop.horaFechamento, a.fkPetshop.rua, a.fkPetshop.numero")
     Optional<PetshopAvaliacaoDto> encontrarMediaAvaliacao(int idPetshop);
 
     List<Petshop> findAllByBairroAndCidade(String bairro, String cidade);
