@@ -1,6 +1,7 @@
 package com.petsup.api.controllers.cliente;
 
 import com.petsup.api.dto.AvaliacaoDto;
+import com.petsup.api.dto.cliente.ClienteDtoID;
 import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.dto.petshop.PetshopMediaPrecoDto;
@@ -124,7 +125,7 @@ public class ClienteController {
     }
 
     @GetMapping("/busca-email/{email}")
-    public ResponseEntity<ClienteDto> getUserByEmail(@PathVariable String email) {
+    public ResponseEntity<ClienteDtoID> getUserByEmail(@PathVariable String email) {
         return ResponseEntity.ok(clienteService.getUserByEmail(email));
     }
 

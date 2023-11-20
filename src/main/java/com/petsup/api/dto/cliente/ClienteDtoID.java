@@ -6,26 +6,15 @@ import org.hibernate.validator.constraints.br.CPF;
 
 import java.time.LocalDate;
 
-public class ClienteDto {
+public class ClienteDtoID {
 
-    @NotBlank
-    @Size(min=3)
-    @Schema(description = "Nome do usuário", example = "Ana Carolina")
+
+    private int id;
     private String nome;
-    @NotBlank
-    @Email
-    @Schema(description = "Email do usuário", example = "ana@gmail.com")
     private String email;
-    @Size(min=6, max=50)
-    @NotBlank
-    @Schema(description = "Senha do usuário", example = "12345678")
     private String senha;
-
-    @Schema(description = "CEP do usuário", example = "01001-000")
     private String cep;
-    @Pattern(regexp = "^\\d{2}9\\d{8}$" ,
-            message = "Indique um telefone válido")
-    @Schema(description = "Telefone do usuário", example = "99999-9999")
+
     private String telefone;
 
     private String estado;
@@ -40,13 +29,18 @@ public class ClienteDto {
 
     private String imagemPerfil;
 
-    @Schema(description = "Data de nascimento do cliente", example = "1999-01-01")
-    @Past
     private LocalDate dataNasc;
 
-    @Schema(name = "CPF", description = "CPF do cliente", example = "12345678901")
-    @CPF
+
     private String cpf;
+
+    public int getId() {
+        return id;
+    }
+
+    public void setId(int id) {
+        this.id = id;
+    }
 
     public String getNome() {
         return nome;
@@ -152,3 +146,4 @@ public class ClienteDto {
         this.imagemPerfil = imagemPerfil;
     }
 }
+

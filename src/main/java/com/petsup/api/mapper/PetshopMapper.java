@@ -7,7 +7,6 @@ import com.petsup.api.dto.petshop.PetshopExibicaoDto;
 import com.petsup.api.models.petshop.Petshop;
 import com.petsup.api.dto.authentication.PetshopTokenDto;
 
-import java.time.DayOfWeek;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
@@ -124,11 +123,10 @@ public class PetshopMapper {
         petshopExibicaoDto.setDiasFuncionais(petshop.getDiasFuncionais());
         petshopExibicaoDto.setNota(petshopAvaliacaoDto.getId() == petshop.getId() ? petshopAvaliacaoDto.getNota() : 0.0);
         petshopExibicaoDto.setOpen(LocalTime.now().isAfter(petshopExibicaoDto.getHoraAbertura()) && LocalTime.now().isBefore(petshopExibicaoDto.getHoraFechamento()));
-        petshopExibicaoDto.setImagemPerfil(
-                !Objects.equals(petshop.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
-                        ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshop.getImagemPerfil()
-                        : "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png"
-        );
+        petshopExibicaoDto.setImagemPerfil(!Objects.equals(petshop.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshop.getImagemPerfil()
+                : petshop.getImagemPerfil());
+
         return petshopExibicaoDto;
     }
 

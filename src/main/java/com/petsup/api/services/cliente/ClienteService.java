@@ -9,6 +9,7 @@ import com.azure.storage.blob.models.BlockBlobItem;
 import com.azure.storage.blob.options.BlobParallelUploadOptions;
 import com.petsup.api.configuration.security.jwt.GerenciadorTokenJwt;
 import com.petsup.api.dto.AvaliacaoDto;
+import com.petsup.api.dto.cliente.ClienteDtoID;
 import com.petsup.api.dto.cliente.DetalhesEnderecoDto;
 import com.petsup.api.dto.petshop.PetshopAvaliacaoDto;
 import com.petsup.api.dto.petshop.PetshopExibicaoDto;
@@ -46,6 +47,7 @@ import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
@@ -104,6 +106,7 @@ public class ClienteService {
         );
 
         Cliente usuarioAtt = ClienteMapper.ofCliente(clienteDto, cliente);
+        usuarioAtt.setImagemPerfil(cliente.getImagemPerfil());
         clienteRepository.save(usuarioAtt);
 
         return ClienteMapper.ofClienteDto(usuarioAtt);
@@ -131,14 +134,14 @@ public class ClienteService {
         return clienteDto;
     }
 
-    public ClienteDto getUserByEmail(String email) {
+    public ClienteDtoID getUserByEmail(String email) {
         Cliente cliente = clienteRepository.findByEmail(email).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-        ClienteDto clienteDto = ClienteMapper.ofClienteDto(cliente);
+        ClienteDtoID clienteDtoID = ClienteMapper.ofClienteDtoID(cliente);
 
-        return clienteDto;
+        return clienteDtoID;
     }
 
     public void deleteById(Integer idCliente) {
@@ -193,11 +196,16 @@ public class ClienteService {
     public List<PetshopAvaliacaoDto> getPetshopsOrderByMedia() {
         List<PetshopAvaliacaoDto> petshopAvaliacaoDtos = petshopRepository.ordenarMediaAvaliacao();
         petshopAvaliacaoDtos.stream().forEach(
-                petshopMediaPrecoDto ->
-                        petshopMediaPrecoDto.setOpen(
-                                LocalTime.now().isAfter(petshopMediaPrecoDto.getHoraAbertura())
-                                        && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento())
-                        )
+                petshopAvaliacaoDto -> {
+                    petshopAvaliacaoDto.setOpen(
+                            LocalTime.now().isAfter(petshopAvaliacaoDto.getHoraAbertura())
+                                    && LocalTime.now().isBefore(petshopAvaliacaoDto.getHoraFechamento())
+                    );
+                    petshopAvaliacaoDto.setImagemPerfil(
+                            !Objects.equals(petshopAvaliacaoDto.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                            ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshopAvaliacaoDto.getImagemPerfil()
+                            : petshopAvaliacaoDto.getImagemPerfil());
+                }
         );
         return petshopAvaliacaoDtos;
     }
@@ -216,6 +224,10 @@ public class ClienteService {
                                     && LocalTime.now().isBefore(petshopMediaPrecoDto.getHoraFechamento()))
                                     : false
                     );
+                    petshopMediaPrecoDto.setImagemPerfil(
+                            !Objects.equals(petshopMediaPrecoDto.getImagemPerfil(), "https://petsupstorage.blob.core.windows.net/imagesstorage/ICON-PETSHOP.png")
+                            ? "https://petsupstorage.blob.core.windows.net/imagesstorage/" + petshopMediaPrecoDto.getImagemPerfil()
+                            : petshopMediaPrecoDto.getImagemPerfil());
                 }
         );
         return petshopMediaPrecoDtos;
@@ -333,15 +345,14 @@ public class ClienteService {
 
     public String getImage(int idCliente) {
 
-        //String pathBase = "https://ezscheduleusersimages.blob.core.windows.net/ezschedules/";
-        String pathBase = "";
+        String pathBase = "https://petsupstorage.blob.core.windows.net/imagesstorage/";
 
         Cliente cliente = clienteRepository.findById(idCliente).orElseThrow(
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
         if (cliente.getImagemPerfil() == null || cliente.getImagemPerfil() == "") {
-            throw new ResponseStatusException(404, "Imagem não encontrada", null);
+            return pathBase;
         }
 
         String blobName = cliente.getImagemPerfil();
@@ -373,7 +384,7 @@ public class ClienteService {
                 () -> new ResponseStatusException(404, "Cliente não encontrado", null)
         );
 
-//        if (cliente.getImagemPerfil() == null || cliente.getImagemPerfil() == "") {
+//        if (petshop.getImagemPerfil() == null || petshop.getImagemPerfil() == "") {
 //            throw new ResponseStatusException(404, "Imagem não encontrada", null);
 //        }
 
@@ -383,44 +394,47 @@ public class ClienteService {
 
         String nameBlobOriginal = cliente.getImagemPerfil();
 
-        String accessKey = "DefaultEndpointsProtocol=https;" +
-                "AccountName=petsupstorage;" +
-                "AccountKey=4ClVfz8iLUJyqdWBSgqT2Nt45MVvjMqNAnUYz8qIft0xqSu2nxZ0QX1flS1OykoJcl13z0pUMXzO+AStmsWYgw==;" +
-                "EndpointSuffix=core.windows.net";
+        if (nameBlobOriginal != null) {
 
-        BlobContainerClient container = new BlobContainerClientBuilder()
-                .connectionString(accessKey)
-                .containerName("imagesstorage")
-                .buildClient();
+            String accessKey = "DefaultEndpointsProtocol=https;" +
+                    "AccountName=petsupstorage;" +
+                    "AccountKey=4ClVfz8iLUJyqdWBSgqT2Nt45MVvjMqNAnUYz8qIft0xqSu2nxZ0QX1flS1OykoJcl13z0pUMXzO+AStmsWYgw==;" +
+                    "EndpointSuffix=core.windows.net";
 
-        Optional<BlobClient> blob = Optional.of(container.getBlobClient(nameBlobOriginal));
+            BlobContainerClient container = new BlobContainerClientBuilder()
+                    .connectionString(accessKey)
+                    .containerName("imagesstorage")
+                    .buildClient();
 
-        boolean delete = blob.get().deleteIfExists();
+            Optional<BlobClient> blob = Optional.of(container.getBlobClient(nameBlobOriginal));
 
-        if (delete) {
+            boolean delete = blob.get().deleteIfExists();
 
-            String nameUpdate = LocalDateTime.now() + image.getOriginalFilename();
+            if (delete) {
 
-            byte[] imageNewBytes = image.getBytes();
+                String nameUpdate = LocalDateTime.now() + image.getOriginalFilename();
 
-            Optional<BlobClient> blobUpdate = Optional.of(container.getBlobClient(nameUpdate));
+                byte[] imageNewBytes = image.getBytes();
 
-            Response<BlockBlobItem> response =
-                    blobUpdate.get().uploadWithResponse(
-                            new BlobParallelUploadOptions(new ByteArrayInputStream(imageNewBytes), imageNewBytes.length),
-                            Duration.ofHours(5),
-                            null);
+                Optional<BlobClient> blobUpdate = Optional.of(container.getBlobClient(nameUpdate));
 
-            if (response.getStatusCode() != 201) {
-                throw new ResponseStatusException(400, "Falha na atualização", null);
+                Response<BlockBlobItem> response =
+                        blobUpdate.get().uploadWithResponse(
+                                new BlobParallelUploadOptions(new ByteArrayInputStream(imageNewBytes), imageNewBytes.length),
+                                Duration.ofHours(5),
+                                null);
+
+                if (response.getStatusCode() != 201) {
+                    throw new ResponseStatusException(400, "Falha na atualização", null);
+                }
+
+                cliente.setImagemPerfil(nameUpdate);
+
+                clienteRepository.save(cliente);
+
+                return true;
+
             }
-
-            cliente.setImagemPerfil(nameUpdate);
-
-            clienteRepository.save(cliente);
-
-            return true;
-
         }
 
         return postProfilePicture(idCliente, image);

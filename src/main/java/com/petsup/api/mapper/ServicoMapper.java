@@ -13,7 +13,7 @@ public class ServicoMapper {
 
         servicoRespostaDto.setId(servico.getId());
         servicoRespostaDto.setNome(servico.getNome().toString());
-        servicoRespostaDto.setPreco(String.format("R$%.2f", servico.getPreco()));
+        servicoRespostaDto.setPreco(String.format("R$ %.2f", servico.getPreco()));
         servicoRespostaDto.setDescricao(servico.getDescricao());
 
         return servicoRespostaDto;

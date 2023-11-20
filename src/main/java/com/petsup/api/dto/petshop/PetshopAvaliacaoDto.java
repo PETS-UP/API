@@ -17,16 +17,22 @@ public class PetshopAvaliacaoDto {
 
     private LocalTime horaFechamento;
 
+    private String rua;
+
+    private String numero;
+
     public PetshopAvaliacaoDto() {
     }
 
-    public PetshopAvaliacaoDto(Integer id, Double nota, String nome, String imagemPerfil, LocalTime horaAbertura, LocalTime horaFechamento) {
+    public PetshopAvaliacaoDto(Integer id, Double nota, String nome, String imagemPerfil, LocalTime horaAbertura, LocalTime horaFechamento, String rua, String numero) {
         this.id = id;
         this.nota = nota;
         this.nome = nome;
         this.imagemPerfil = imagemPerfil;
         this.horaAbertura = horaAbertura;
         this.horaFechamento = horaFechamento;
+        this.rua = rua;
+        this.numero = numero;
     }
 
     public Integer getId() {
@@ -83,5 +89,21 @@ public class PetshopAvaliacaoDto {
 
     public void setHoraFechamento(LocalTime horaFechamento) {
         this.horaFechamento = horaFechamento;
+    }
+
+    public String getRua() {
+        return rua;
+    }
+
+    public void setRua(String rua) {
+        this.rua = rua;
+    }
+
+    public String getNumero() {
+        return numero;
+    }
+
+    public void setNumero(String numero) {
+        this.numero = numero;
     }
 }

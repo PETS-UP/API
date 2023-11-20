@@ -16,3 +16,4 @@ server:
     key-store-type: pkcs12
     key-alias: petsup
     key-password: petsup123
+    port: 8081
