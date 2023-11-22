@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+
+    tools {
+        maven "Maven"
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                sh 'rm -rf /var/lib/jenkins/workspace/pipeline-petsup/API'
+                sh 'git clone https://github.com/PETS-UP/API.git'
+                dir('/var/lib/jenkins/workspace/pipeline-petsup/API'){
+                    sh 'mvn clean install'
+                }
+            }
+        }
+        stage('Renomeando Jar'){
+            steps{
+                dir('/var/lib/jenkins/workspace/pipeline-petsup/API/target'){
+                    sh 'mv API-0.0.1-SNAPSHOT.jar app-petsup-banco-prd.jar'
+                }
+            }
+        }
+        stage('Executando Jar'){
+            steps{
+                dir('/var/lib/jenkins/workspace/pipeline-petsup/API/target'){
+                    sh 'mv app-petsup-banco-prd.jar /home/ubuntu/'
+                    sh 'java -jar app-petsup-banco-prd.jar'
+                }
+            }
+        }
+    }
+}
