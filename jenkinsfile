@@ -31,14 +31,6 @@ pipeline {
                     sh 'nohup java -jar app-petsup-banco-prd.jar > output.log 2>&1 &'
                 }
             }
-            post {
-                always {
-                    script {
-                        // Salvar o ID do processo Java em um arquivo
-                        sh 'echo $! > /home/ubuntu/java-process.pid'
-                    }
-                }
-            }
         }
     }
 }
