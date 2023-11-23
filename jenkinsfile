@@ -26,7 +26,7 @@ pipeline {
             steps{
                 dir('/var/lib/jenkins/workspace/pipeline-petsup/API/target'){
                     sh 'mv app-petsup-banco-prd.jar /home/ubuntu/'
-                    sh 'java -jar app-petsup-banco-prd.jar &'
+                    sh 'java -jar /home/ubuntu/app-petsup-banco-prd.jar &'
                 }
             }
         }
