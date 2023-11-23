@@ -15,18 +15,28 @@ pipeline {
                 }
             }
         }
-        stage('Renomeando Jar'){
-            steps{
+
+        stage('Renomeando Jar') {
+            steps {
                 dir('/var/lib/jenkins/workspace/pipeline-petsup/API/target'){
                     sh 'mv API-0.0.1-SNAPSHOT.jar app-petsup-banco-prd.jar'
+                    sh 'mv app-petsup-banco-prd.jar /home/ubuntu/'
                 }
             }
         }
-        stage('Executando Jar'){
-            steps{
-                dir('/var/lib/jenkins/workspace/pipeline-petsup/API/target'){
-                    sh 'mv app-petsup-banco-prd.jar /home/ubuntu/'
-                    sh 'java -jar /home/ubuntu/app-petsup-banco-prd.jar &'
+
+        stage('Executando Jar') {
+            steps {
+                dir('/home/ubuntu/') {
+                    sh 'nohup java -jar app-petsup-banco-prd.jar > output.log 2>&1 &'
+                }
+            }
+            post {
+                always {
+                    script {
+                        // Salvar o ID do processo Java em um arquivo
+                        sh 'echo $! > /home/ubuntu/java-process.pid'
+                    }
                 }
             }
         }
